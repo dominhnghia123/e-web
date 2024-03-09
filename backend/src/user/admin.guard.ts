@@ -12,7 +12,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
-export class UserGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
     private jwtService: JwtService,
@@ -37,6 +37,10 @@ export class UserGuard implements CanActivate {
 
       if (!currentUser) {
         throw new ForbiddenException('Not found user!!!');
+      }
+
+      if (currentUser && currentUser.role !== 'admin') {
+        throw new ForbiddenException('You are not an admin');
       }
 
       request['user'] = {

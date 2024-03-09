@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { User } from './user.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -8,7 +13,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UserIdDto } from './dto/userId.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class UserService {
@@ -67,7 +72,7 @@ export class UserService {
     }
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<any> {
+  async login(loginUserDto: LoginUserDto, res: Response): Promise<any> {
     try {
       const { email, password } = loginUserDto;
       const findUser = await this.userModel.findOne({ email: email });
@@ -86,6 +91,25 @@ export class UserService {
       }
 
       const payload = { email: findUser.email, username: findUser.username };
+      const payload1 = { email: findUser.email, mobile: findUser.mobile };
+
+      const refreshToken = await this.jwtService.signAsync(payload1, {
+        expiresIn: '3d',
+      });
+
+      await this.userModel.findByIdAndUpdate(
+        findUser._id,
+        {
+          refreshToken: refreshToken,
+        },
+        {
+          new: true,
+        },
+      );
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        maxAge: 72 * 60 * 60 * 1000,
+      });
 
       return {
         msg: 'Login successfully',
@@ -94,6 +118,7 @@ export class UserService {
           _id: findUser._id,
           username: findUser.username,
           email: findUser.email,
+          role: findUser.role,
           token: await this.jwtService.signAsync(payload),
         },
       };
@@ -102,10 +127,39 @@ export class UserService {
     }
   }
 
+  async handleRefreshToken(refreshToken: string) {
+    try {
+      const user = await this.userModel.findOne({ refreshToken: refreshToken });
+      if (!user) {
+        throw new UnauthorizedException('Not authorization');
+      }
+
+      const decoded = await this.jwtService.decode(refreshToken);
+      if (decoded.exp < new Date().getTime() / 1000) {
+        // refreshToken hết hạn
+        return new ForbiddenException(
+          'Refresh Token is expired or error. Please login again',
+        );
+      } else {
+        //refreshToken còn hạn
+        const payload = {
+          email: user.email,
+          role: user.role,
+        };
+        const newToken = await this.jwtService.signAsync(payload);
+        return {
+          newToken: newToken,
+        };
+      }
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
   async getAUser(userIdDto: UserIdDto) {
     try {
-      const { id } = userIdDto;
-      const findUser = await this.userModel.findById(id);
+      const { _id } = userIdDto;
+      const findUser = await this.userModel.findById(_id);
       if (!findUser) {
         return {
           msg: 'Not found this user!',
@@ -117,10 +171,13 @@ export class UserService {
         status: true,
         user: {
           _id: findUser._id,
-          username: findUser.username,
-          birthday: findUser.birthday,
-          address: findUser.address,
-          role: findUser.role,
+          username: findUser?.username,
+          birthday: findUser?.birthday,
+          address: findUser?.address,
+          role: findUser?.role,
+          avatar: findUser?.avatar,
+          followers: findUser?.followers,
+          numFollows: findUser?.numFollows,
         },
       };
     } catch (error) {
@@ -182,9 +239,9 @@ export class UserService {
   }
 
   async deleteAUser(userIdDto: UserIdDto) {
-    const { id } = userIdDto;
+    const { _id } = userIdDto;
     try {
-      const user = await this.userModel.findById(id);
+      const user = await this.userModel.findById(_id);
       if (!user) {
         return {
           msg: 'This user is not exist',
@@ -192,7 +249,7 @@ export class UserService {
         };
       }
 
-      const deletedUser = await this.userModel.findByIdAndDelete(id);
+      const deletedUser = await this.userModel.findByIdAndDelete(_id);
       return {
         msg: 'Deleted this user successfully',
         status: true,

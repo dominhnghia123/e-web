@@ -3,7 +3,7 @@ import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUserDto {
   @ApiProperty({ example: '65ea8d744f3d63f2131bfe47' })
-  @IsNotEmpty({ message: 'userId is not empty' })
+  @IsNotEmpty({ message: 'UserId cannot be empty' })
   _id: string;
 
   @ApiProperty({ example: '2024-03-08T03:59:22.164+00:00' })
