@@ -1,7 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { Brand } from '../brand/brand.schema';
-import { Category } from '../category/category.schema';
 import { User } from '../user/user.schema';
 
 export type ProductDocument = HydratedDocument<Product>;
@@ -33,40 +31,43 @@ export class Product {
     ram: number;
   };
 
-  @Prop({ required: true })
-  price: number;
-
-  @Prop({ required: true })
-  quantity: number;
-
-  @Prop()
-  sold: number;
-
-  @Prop({ required: true })
-  color: string;
-
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Brand', required: true })
-  brand: Brand;
-
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
     required: true,
+    type: [
+      {
+        quantity: { type: Number, required: true },
+        price: { type: Number, required: true },
+        sold: { type: Number, required: true },
+        color: { type: String, required: true },
+        image: { type: String, required: true },
+      },
+    ],
   })
-  category: Category;
+  type_items: {
+    quantity: number;
+    price: number;
+    sold: number;
+    color: string;
+    image: string;
+  }[];
 
   @Prop({ required: true })
-  images: string[];
+  brand: string;
+
+  @Prop({ required: true })
+  category: string;
 
   @Prop({
-    type: {
-      name: { type: String, required: true },
-      expiry: { type: String, required: true },
-      discount: { type: String, required: true },
-    },
+    type: [
+      {
+        name: { type: String, required: true },
+        expiry: { type: String, required: true },
+        discount: { type: String, required: true },
+      },
+    ],
     timestamp: true,
   })
-  coupons: Array<{ name: string; expiry: string; discount: string }>;
+  coupons: { name: string; expiry: string; discount: string }[];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   seller: User;
@@ -87,14 +88,16 @@ export class Product {
   isDisliked: boolean;
 
   @Prop({
-    type: {
-      star: { type: Number },
-      comment: { type: String },
-      posted: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    },
+    type: [
+      {
+        star: { type: Number },
+        comment: { type: String },
+        posted: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      },
+    ],
     timestamp: true,
   })
-  ratings: Array<{ star: number; comment: string; posted: User }>;
+  ratings: { star: number; comment: string; posted: User }[];
 
   @Prop()
   totalRatings: string;

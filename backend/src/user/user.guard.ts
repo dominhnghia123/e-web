@@ -51,8 +51,8 @@ export class UserGuard implements CanActivate {
         followers: currentUser.followers,
         numFollows: currentUser.numFollows,
       };
-    } catch {
-      throw new UnauthorizedException();
+    } catch (err) {
+      throw new UnauthorizedException(err);
     }
     return true;
   }

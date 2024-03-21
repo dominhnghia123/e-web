@@ -56,7 +56,7 @@ export class BrandService {
     }
   }
 
-  async getAllBrand() {
+  async getAllBrands() {
     try {
       const allBrands = await this.brandModel.find().sort({ title: 'asc' });
       if (allBrands.length > 0) {

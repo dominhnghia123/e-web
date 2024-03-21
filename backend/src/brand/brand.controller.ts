@@ -19,10 +19,14 @@ export class BrandController {
     return this.brandService.createBrand(createBrandDto);
   }
 
-  @ApiBearerAuth()
   @Post('/get-a-brand')
   getABrand(@Body() brandIdDto: BrandIdDto) {
     return this.brandService.getABrand(brandIdDto);
+  }
+
+  @Post('/get-all-brands')
+  getAllBrands() {
+    return this.brandService.getAllBrands();
   }
 
   @ApiBearerAuth()

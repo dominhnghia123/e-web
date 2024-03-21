@@ -16,6 +16,7 @@ export class UpdateUserDto {
   @IsString()
   address: string;
 
+  @ApiProperty({ example: 'http://localhost:8000/avatar.jpg' })
   @IsOptional()
   @IsString()
   avatar: string;

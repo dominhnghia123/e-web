@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from '../user/user.schema';
 import { Product } from '../product/product.schema';
-import { paymentsEnum } from '../utils/variableGlobal';
+import { paymentsEnum, statusEnum } from '../utils/variableGlobal';
 
 export type OrderDocument = HydratedDocument<Order>;
 
@@ -46,6 +46,9 @@ export class Order {
 
   @Prop({ required: true })
   paidAt: Date;
+
+  @Prop({ required: true, enum: statusEnum })
+  status: string;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

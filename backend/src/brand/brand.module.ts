@@ -12,6 +12,5 @@ import { UserModule } from '../user/user.module';
   ],
   controllers: [BrandController],
   providers: [BrandService],
-  exports: [BrandService],
 })
 export class BrandModule {}

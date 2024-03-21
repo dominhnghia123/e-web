@@ -8,6 +8,9 @@ import { ProductModule } from './product/product.module';
 import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
 import { JwtModule } from '@nestjs/jwt';
+import { MulterModule } from '@nestjs/platform-express';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -18,6 +21,7 @@ import { JwtModule } from '@nestjs/jwt';
       secret: process.env.SECRET_KEY,
       signOptions: { expiresIn: '1d' },
     }),
+    MulterModule.register({ dest: './uploads' }),
     UserModule,
     ProductModule,
     CategoryModule,
@@ -25,5 +29,7 @@ import { JwtModule } from '@nestjs/jwt';
     CartModule,
     OrderModule,
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

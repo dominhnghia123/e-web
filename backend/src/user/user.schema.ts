@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 import * as bcrypt from 'bcrypt';
+import { Cart } from '../cart/cart.schema';
+import { Product } from '../product/product.schema';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -24,6 +26,12 @@ export class User {
   @Prop()
   address: string;
 
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Cart' })
+  cart: Cart;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Product' })
+  wishlist: Product[];
+
   @Prop()
   avatar: string;
 
@@ -38,9 +46,6 @@ export class User {
 
   @Prop()
   isFollowed: boolean;
-
-  @Prop()
-  token: string;
 
   @Prop()
   refreshToken: string;
