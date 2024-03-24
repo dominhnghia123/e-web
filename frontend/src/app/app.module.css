@@ -1,0 +1,294 @@
+.container {
+  background-color: rgb(235, 225, 233);
+  width: 100%;
+  height: auto;
+}
+
+/* header part */
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 120px;
+  background-color: rgb(241, 179, 33);
+  display: flex;
+  flex-direction: column;
+}
+.header__header_top {
+  margin-top: 10px;
+  width: 100%;
+  flex-basis: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.header__header_top__nav_container {
+  width: 80%;
+  height: 90%;
+  min-height: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header__header_top__nav_container__left {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.header__header_top__nav_container__left__link {
+  text-decoration: none;
+  color: white;
+  margin: 0 10px;
+  font-size: 14px;
+}
+.header__header_top__nav_container__right {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.header__header_top__nav_container__right__link {
+  text-decoration: none;
+  color: white;
+  margin: 0 10px;
+  font-size: 14px;
+}
+.header__header_bottom {
+  flex-basis: 75%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.header__header_bottom__container {
+  width: 80%;
+  height: 60%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header__header_bottom__container__logo_section {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 5px;
+  height: 80%;
+}
+.header__header_bottom__container__logo_section__logo {
+  width: 35px;
+  height: 35px;
+  color: white;
+}
+.header__header_bottom__container__logo_section__link {
+  text-decoration: none;
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+}
+.header__header_bottom__container__search_section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80%;
+  width: 70%;
+}
+.header__header_bottom__container__search_section__form {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.header__header_bottom__container__search_section__form__input_container {
+  height: 80%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header__header_bottom__container__search_section__form__input_container__input {
+  height: 100%;
+  width: 85%;
+  border: none;
+  border-radius: 5px;
+  padding: 0 12px;
+}
+.header__header_bottom__container__search_section__form__input_container__input:hover {
+  background-color: rgb(216, 233, 248);
+}
+.header__header_bottom__container__search_section__form__input_container__input:focus {
+  outline: none;
+  background-color: rgb(216, 233, 248);
+}
+.header__header_bottom__container__search_section__form__input_container__button {
+  height: 100%;
+  width: 10%;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: rgb(154, 120, 41);
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  color: white;
+}
+.header__header_bottom__container__search_section__form__input_container__button:hover {
+  cursor: pointer;
+  background-color: rgb(95, 73, 21);
+}
+.header__header_bottom__container__cart_section {
+  height: 40px;
+  width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+}
+
+/* main part */
+.main {
+  margin-top: 120px;
+  height: 1000px;
+  /* height: auto; */
+  width: 100%;
+}
+
+/* footer part */
+.footer {
+  width: 100%;
+  height: 400px;
+  background-color: rgb(51, 51, 51);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.footer_container {
+  width: 95%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+}
+.footer_container__top {
+  flex-basis: 90%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer_container__top__left {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+.footer_container__top__left__column {
+  height: 80%;
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+}
+.footer_container__top__left__column .title {
+  font-size: 24px;
+  color: white;
+  font-weight: 500;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.footer_container__top__left__column .option {
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+}
+.footer_container__top__right {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+.footer_container__top__right__container {
+  width: 80%;
+  height: 70%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+.footer_container__top__right__container__text {
+  font-size: 24px;
+  color: white;
+  font-weight: 500;
+}
+
+.footer_container__top__right__container__search {
+  height: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 40px 0;
+}
+.footer_container__top__right__container__search__form {
+  width: 90%;
+  height: 90%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.footer_container__top__right__container__search__form__input {
+  height: 90%;
+  width: 80%;
+  border: none;
+  border-radius: 15px;
+  padding: 0 12px;
+}
+.footer_container__top__right__container__search__form__input:hover {
+  background-color: rgb(248, 226, 230);
+}
+.footer_container__top__right__container__search__form__input:focus {
+  outline: none;
+  background-color: rgb(248, 226, 230);
+}
+
+.footer_container__top__right__container__search__form__button {
+  height: 90%;
+  width: 20%;
+  margin-left: 5px;
+  border: none;
+  border-radius: 15px;
+  background-color: rgb(207, 149, 50);
+  cursor: pointer;
+}
+.footer_container__top__right__container__search__form__button:hover {
+  background-color: rgb(233, 112, 13);
+}
+.footer_container__top__right__container__icon {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.footer_container__top__right__container__icon .icon {
+  width: 35px;
+  height: 35px;
+  color: white;
+  margin: 0 15px;
+  cursor: pointer;
+}
+
+.footer_container__bottom {
+  flex-basis: 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer_container__bottom__left {
+  font-size: 18px;
+  color: white;
+}
+.footer_container__bottom__right__link {
+  text-decoration: none;
+  margin: 0 10px;
+  color: rgb(247, 226, 226);
+}

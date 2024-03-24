@@ -1,0 +1,202 @@
+.container {
+  background-color: rgb(247, 247, 247);
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* nav */
+.nav {
+  width: 100%;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nav_content {
+  width: 100%;
+  height: 50%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 100px;
+}
+.nav_content__left {
+  display: flex;
+  width: auto;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+.nav_content__left__title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.nav_content__left__shopify {
+  text-decoration: none;
+  color: red;
+  font-weight: bold;
+  font-size: 22px;
+}
+.nav_content__left__signin {
+  font-size: 18px;
+  color: black;
+}
+.nav_content__right {
+  text-decoration: none;
+  font-size: 14px;
+  color: blue;
+}
+
+/* main */
+.main {
+  background-color: rgb(237, 237, 239);
+  width: 100%;
+  height: 600px;
+  display: flex;
+  justify-content: center;
+}
+
+/* footer part */
+.footer {
+  width: 100%;
+  height: 400px;
+  background-color: rgb(51, 51, 51);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.footer_container {
+  width: 95%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+}
+.footer_container__top {
+  flex-basis: 90%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer_container__top__left {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+.footer_container__top__left__column {
+  height: 80%;
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+}
+.footer_container__top__left__column .title {
+  font-size: 24px;
+  color: white;
+  font-weight: 500;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.footer_container__top__left__column .option {
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+}
+.footer_container__top__right {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+.footer_container__top__right__container {
+  width: 80%;
+  height: 70%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+.footer_container__top__right__container__text {
+  font-size: 24px;
+  color: white;
+  font-weight: 500;
+}
+
+.footer_container__top__right__container__search {
+  height: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 40px 0;
+}
+.footer_container__top__right__container__search__form {
+  width: 90%;
+  height: 90%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.footer_container__top__right__container__search__form__input {
+  height: 90%;
+  width: 80%;
+  border: none;
+  border-radius: 15px;
+  padding: 0 12px;
+}
+.footer_container__top__right__container__search__form__input:hover {
+  background-color: rgb(248, 226, 230);
+}
+.footer_container__top__right__container__search__form__input:focus {
+  outline: none;
+  background-color: rgb(248, 226, 230);
+}
+
+.footer_container__top__right__container__search__form__button {
+  height: 90%;
+  width: 20%;
+  margin-left: 5px;
+  border: none;
+  border-radius: 15px;
+  background-color: rgb(207, 149, 50);
+  cursor: pointer;
+}
+.footer_container__top__right__container__search__form__button:hover {
+  background-color: rgb(233, 112, 13);
+}
+.footer_container__top__right__container__icon {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.footer_container__top__right__container__icon .icon {
+  width: 35px;
+  height: 35px;
+  color: white;
+  margin: 0 15px;
+  cursor: pointer;
+}
+
+.footer_container__bottom {
+  flex-basis: 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer_container__bottom__left {
+  font-size: 18px;
+  color: white;
+}
+.footer_container__bottom__right__link {
+  text-decoration: none;
+  margin: 0 10px;
+  color: rgb(247, 226, 226);
+}

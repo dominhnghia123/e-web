@@ -7,7 +7,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class RegisterUserDto {
+export class RegisterSellerDto {
   @ApiProperty({ example: 'hien' })
   @Length(4, 20, { message: 'Tên đăng nhập phải có độ dài từ 4 đến 20 ký tự.' })
   @IsNotEmpty({ message: 'Vui lòng điền tên đăng nhập.' })

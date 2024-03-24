@@ -17,38 +17,44 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  @Prop()
-  birthday: Date;
-
-  @Prop({ unique: true })
+  @Prop({ required: true, unique: true })
   mobile: string;
 
-  @Prop()
-  address: string;
-
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Cart' })
-  cart: Cart;
-
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Product' })
-  wishlist: Product[];
-
-  @Prop()
-  avatar: string;
-
-  @Prop({ required: true })
+  @Prop({ required: true, default: 'user' })
   role: string;
 
-  @Prop()
+  @Prop({ default: false })
+  isSeller: boolean;
+
+  @Prop({ default: '' })
+  avatar: string;
+
+  @Prop({ default: null })
+  birthday: Date;
+
+  @Prop({ default: '' })
+  address: string;
+
+  @Prop({ default: 0 })
   followers: number;
 
-  @Prop()
+  @Prop({ default: 0 })
   numFollows: number;
 
-  @Prop()
+  @Prop({ default: false })
   isFollowed: boolean;
 
   @Prop()
   refreshToken: string;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Cart', default: null })
+  cart: Cart;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Product', default: null })
+  wishlist: Product[];
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Product', default: null })
+  warehouses: Product[];
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   isMatchedPassword: Function;

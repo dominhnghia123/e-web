@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class UpdateUserDto {
   @ApiProperty({ example: '65ea8d744f3d63f2131bfe47' })
@@ -13,23 +13,18 @@ export class UpdateUserDto {
 
   @ApiProperty({ example: 'Ha Noi' })
   @IsOptional()
-  @IsString()
   address: string;
 
   @ApiProperty({ example: 'http://localhost:8000/avatar.jpg' })
   @IsOptional()
-  @IsString()
   avatar: string;
 
   @IsOptional()
-  @IsString()
   followers: number;
 
   @IsOptional()
-  @IsString()
   numFollows: number;
 
   @IsOptional()
-  @IsString()
   isFollowed: boolean;
 }

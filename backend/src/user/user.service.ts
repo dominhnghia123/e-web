@@ -8,12 +8,12 @@ import { User } from './user.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { RegisterUserDto } from './dto/register-user.dto';
-import { roleUserEnum } from '../utils/variableGlobal';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UserIdDto } from './dto/userId.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Request, Response } from 'express';
+import { ChangePasswordDto } from './dto/changePassword.dto';
 
 @Injectable()
 export class UserService {
@@ -24,32 +24,34 @@ export class UserService {
   ) {}
 
   async registerUser(registerUserDto: RegisterUserDto) {
+    const { username, email, password, mobile } = registerUserDto;
     try {
-      const { username, email, password, mobile, role } = registerUserDto;
-      const findUser = await this.userModel.findOne({ email: email });
-      if (findUser) {
+      if (await this.userModel.findOne({ username: username })) {
         return {
-          msg: 'This email already exists',
+          property: 'username',
+          msg: 'Tên người dùng này đã tồn tại.',
           status: false,
         };
       }
 
-      if (username !== '' && username.length < 2) {
+      if (await this.userModel.findOne({ email: email })) {
         return {
-          msg: 'Username should be least 2 characters',
+          property: 'email',
+          msg: 'Địa chỉ email đã tồn tại.',
           status: false,
         };
       }
-
-      if (password !== '' && password.length < 4) {
+      if (mobile.length != 10) {
         return {
-          msg: 'Password should be least 4 characters',
+          property: 'mobile',
+          msg: 'Số điện thoại không hợp lệ.',
           status: false,
         };
       }
-      if (role !== roleUserEnum.user && role !== roleUserEnum.admin) {
+      if (await this.userModel.findOne({ mobile: mobile })) {
         return {
-          msg: `Value of role must be ${roleUserEnum.user} or ${roleUserEnum.admin}`,
+          property: 'mobile',
+          msg: 'Số điện thoại này đã được sử dụng.',
           status: false,
         };
       }
@@ -59,13 +61,54 @@ export class UserService {
         email: email,
         password: password,
         mobile: mobile,
-        role: role,
       });
 
       return {
-        msg: 'Registered successfully',
+        msg: 'Đăng ký thành công!',
         status: true,
         newUser: newUser,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async registerSeller(registerUserDto: RegisterUserDto) {
+    const { username, email, password, mobile } = registerUserDto;
+    try {
+      const alreadyUser = await this.userModel.findOne({
+        $or: [{ username: username }, { email: email }, { mobile: mobile }],
+      });
+      if (alreadyUser) {
+        if (alreadyUser.isSeller === true) {
+          return {
+            msg: 'Người dùng này đã là người bán',
+            status: false,
+          };
+        }
+        alreadyUser.isSeller = true;
+        await alreadyUser.save();
+      } else {
+        if (mobile.length != 10) {
+          return {
+            property: 'mobile',
+            msg: 'Số điện thoại không hợp lệ.',
+            status: false,
+          };
+        }
+
+        await this.userModel.create({
+          username: username,
+          email: email,
+          password: password,
+          mobile: mobile,
+          isSeller: true,
+        });
+      }
+
+      return {
+        msg: 'Đăng ký trở thành người bán Shopify thành công.',
+        status: true,
       };
     } catch (error) {
       throw new BadRequestException(error);
@@ -78,14 +121,14 @@ export class UserService {
       const findUser = await this.userModel.findOne({ email: email });
       if (!findUser) {
         return {
-          msg: 'Not exists this email',
+          msg: 'Thông tin đăng nhập không chính xác',
           status: false,
         };
       }
 
       if (findUser && !(await findUser.isMatchedPassword(password))) {
         return {
-          msg: 'Password is incorrect',
+          msg: 'Thông tin đăng nhập không chính xác',
           status: false,
         };
       }
@@ -112,13 +155,14 @@ export class UserService {
       });
 
       return {
-        msg: 'Login successfully',
+        msg: 'Đăng nhập thành công',
         status: true,
         currentUser: {
           _id: findUser._id,
           username: findUser.username,
           email: findUser.email,
           role: findUser.role,
+          isSeller: findUser.isSeller,
           token: await this.jwtService.signAsync(payload),
         },
       };
@@ -162,22 +206,29 @@ export class UserService {
       const findUser = await this.userModel.findById(_id);
       if (!findUser) {
         return {
-          msg: 'Not found this user!',
+          msg: 'Không tìm thấy người dùng này!',
           status: false,
         };
       }
       return {
-        msg: 'This user was found successfully',
+        msg: 'Người dùng được tìm thấy thành công.',
         status: true,
         user: {
           _id: findUser._id,
           username: findUser?.username,
+          email: findUser?.email,
+          mobile: findUser?.mobile,
+          avatar: findUser?.avatar,
+          role: findUser?.role,
+          isSeller: findUser?.isSeller,
           birthday: findUser?.birthday,
           address: findUser?.address,
-          role: findUser?.role,
-          avatar: findUser?.avatar,
           followers: findUser?.followers,
           numFollows: findUser?.numFollows,
+          isFollowed: findUser?.isFollowed,
+          cart: findUser?.cart,
+          wishlist: findUser?.wishlist,
+          warehouses: findUser?.warehouses,
         },
       };
     } catch (error) {
@@ -270,6 +321,47 @@ export class UserService {
         msg: 'Deleted users successfully',
         status: true,
         deleteManyUser: deleteManyUser,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async changePassword(changePassword: ChangePasswordDto, req: Request) {
+    const { currentPassword, newPassword, confirmPassword } = changePassword;
+    const currentUser = req['user'];
+    try {
+      const user = await this.userModel.findById(currentUser._id);
+      if (user && !(await user.isMatchedPassword(currentPassword))) {
+        return {
+          msg: 'Current password is incorrectly',
+          status: false,
+        };
+      }
+      if (newPassword !== '' && newPassword.length < 4) {
+        return {
+          msg: 'Password should be least 4 characters',
+          status: false,
+        };
+      }
+
+      if (currentPassword === newPassword) {
+        return {
+          msg: 'The old and new passwords must be different',
+          status: false,
+        };
+      }
+      if (newPassword !== confirmPassword) {
+        return {
+          msg: 'The new password and confirmation password must be the same',
+          status: false,
+        };
+      }
+      user.password = newPassword;
+      await user.save();
+      return {
+        msg: 'Changed password successfully',
+        status: true,
       };
     } catch (error) {
       throw new BadRequestException(error);

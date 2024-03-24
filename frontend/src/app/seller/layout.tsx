@@ -1,111 +1,45 @@
-import { Button, Image } from "react-bootstrap";
-import styles from "./app.module.css";
+"use client";
+import { usePathname } from "next/navigation";
+import styles from "./seller.module.css";
+import { Button, Container, Image } from "react-bootstrap";
 import Link from "next/link";
-import { FaShopify } from "react-icons/fa6";
-import { BsCart4 } from "react-icons/bs";
 import { IoLogoInstagram } from "react-icons/io";
 import { FaFacebookF } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
 
-export default function Home() {
+export default function SellerLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.header__header_top}>
-          <nav className={styles.header__header_top__nav_container}>
-            <div className={styles.header__header_top__nav_container__left}>
-              <Link
-                href="/seller/signin"
-                className={styles.header__header_top__nav_container__left__link}
-              >
-                Kênh người bán
-              </Link>
-              <Link
-                href="/seller/signup"
-                className={styles.header__header_top__nav_container__left__link}
-              >
-                Trở thành người bán Shopify
-              </Link>
-            </div>
-            <div className={styles.header__header_top__nav_container__right}>
-              <Link
-                href="/buyer/signup"
-                className={
-                  styles.header__header_top__nav_container__right__link
-                }
-              >
-                Đăng ký
-              </Link>
-              <Link
-                href="/buyer/signin"
-                className={
-                  styles.header__header_top__nav_container__right__link
-                }
-              >
-                Đăng nhập
-              </Link>
-            </div>
-          </nav>
-        </div>
-        <div className={styles.header__header_bottom}>
-          <div className={styles.header__header_bottom__container}>
-            <div
-              className={styles.header__header_bottom__container__logo_section}
-            >
-              <FaShopify
-                className={
-                  styles.header__header_bottom__container__logo_section__logo
-                }
+      <nav className={styles.nav}>
+        <div className={styles.nav_content}>
+          <div className={styles.nav_content__left}>
+            <div className={styles.nav_content__left__title}>
+              <Image
+                src="/images/shopify-icon.jpg"
+                alt="avatar"
+                height={35}
+                width={35}
+                style={{ borderRadius: "50px" }}
               />
-              <Link
-                href="/"
-                className={
-                  styles.header__header_bottom__container__logo_section__link
-                }
-              >
+              <Link href="/" className={styles.nav_content__left__shopify}>
                 Shopify
               </Link>
             </div>
-            <div
-              className={
-                styles.header__header_bottom__container__search_section
-              }
-            >
-              <form
-                action="#"
-                className={
-                  styles.header__header_bottom__container__search_section__form
-                }
-              >
-                <div
-                  className={
-                    styles.header__header_bottom__container__search_section__form__input_container
-                  }
-                >
-                  <input
-                    type="text"
-                    placeholder="Search here..."
-                    className={
-                      styles.header__header_bottom__container__search_section__form__input_container__input
-                    }
-                  />
-                  <Button
-                    className={
-                      styles.header__header_bottom__container__search_section__form__input_container__button
-                    }
-                  >
-                    Search
-                  </Button>
-                </div>
-              </form>
+            <div className={styles.nav_content__left__signin}>
+              {pathname === "/seller/signin" ? "Kênh người bán" : "Đăng ký"}
             </div>
-            <BsCart4
-              className={styles.header__header_bottom__container__cart_section}
-            />
           </div>
+          <a href="#" className={styles.nav_content__right}>
+            Bạn cần giúp đỡ?
+          </a>
         </div>
-      </header>
-      <main className={styles.main}>main</main>
+      </nav>
+      <Container className={styles.main}>{children}</Container>
       <footer className={styles.footer}>
         <div className={styles.footer_container}>
           <div className={styles.footer_container__top}>
@@ -175,9 +109,9 @@ export default function Home() {
                     styles.footer_container__top__right__container__icon
                   }
                 >
-                  <IoLogoInstagram className={styles.icon}/>
-                  <FaFacebookF className={styles.icon}/>
-                  <FaTwitter className={styles.icon}/>
+                  <IoLogoInstagram className={styles.icon} />
+                  <FaFacebookF className={styles.icon} />
+                  <FaTwitter className={styles.icon} />
                 </div>
               </div>
             </div>
