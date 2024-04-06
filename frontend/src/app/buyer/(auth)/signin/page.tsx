@@ -3,51 +3,57 @@ import { Button } from "react-bootstrap";
 import styles from "./signin.module.css";
 import { IoLogoFacebook } from "react-icons/io5";
 import { IoLogoGoogle } from "react-icons/io";
-import Link from "next/link";
-import axios, { AxiosError } from "axios";
 import { MouseEvent, useState } from "react";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import { useAppDispatch } from "@/redux/store";
+import {
+  logInError,
+  logInStart,
+  logInSuccess,
+} from "@/redux/features/auth/authSlice";
+import { logInUser } from "@/redux/features/auth/authService";
 
 export default function Signin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [loginError, setLoginError] = useState("");
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  const [dataLogin, setDataLogin] = useState({
+    email: "",
+    password: "",
+  });
+  const [dataLoginError, setDataLoginError] = useState({
+    emailError: "",
+    passwordError: "",
+    loginError: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSignin = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    dispatch(logInStart());
     try {
-      const { data } = await axios.post(`${process.env.BASE_HOST}/user/login`, {
-        email: email,
-        password: password,
-      });
-      if (data.status === true) {
-        setLoginError("");
-        alert(data.msg);
+      const response = await logInUser(dataLogin, setDataLoginError);
+      const currentUser = response?.currentUser;
+      if (response.status === true) {
+        dispatch(logInSuccess(currentUser));
+        setDataLoginError((prev) => ({ ...prev, loginError: "" }));
+        setIsLoading(true);
+        toast.success(response.msg);
+        Cookies.set("userActive", "1");
+        router.replace("/buyer/home");
       }
-      if (data.status === false) {
-        setLoginError(data.msg);
+      if (response.status === false) {
+        setDataLoginError((prev) => ({ ...prev, loginError: response.msg }));
       }
     } catch (error) {
-      const err = error as AxiosError<{
-        message: { property: string; message: string }[];
-      }>;
-      if (err.response?.data?.message) {
-        err.response.data.message?.forEach((value) => {
-          if (value.property === "email") {
-            setEmailError(value.message);
-            setLoginError("");
-          }
-          if (value.property === "password") {
-            setPasswordError(value.message);
-            setLoginError("");
-          }
-        });
-      }
+      dispatch(logInError());
     }
   };
   return (
     <div className={styles.signin_content_container}>
+      {isLoading && <div className={styles.loading}></div>}
       <title>Đăng nhập người dùng</title>
       <div className={styles.signin_title}>Đăng nhập</div>
       <div className={styles.signin_container}>
@@ -57,15 +63,20 @@ export default function Signin() {
               type="email"
               placeholder="Email"
               className={styles.input}
-              value={email}
+              value={dataLogin.email}
               onChange={(e) => {
-                setEmail(e.target.value);
-                setEmailError("");
-                setLoginError("");
+                setDataLogin((prev) => ({ ...prev, email: e.target.value }));
+                setDataLoginError((prev) => ({
+                  ...prev,
+                  emailError: "",
+                  loginError: "",
+                }));
               }}
             />
-            {emailError && (
-              <span className={styles.text_warning}>{emailError}</span>
+            {dataLoginError.emailError && (
+              <span className={styles.text_warning}>
+                {dataLoginError.emailError}
+              </span>
             )}
           </div>
           <div className={styles.input_container}>
@@ -73,18 +84,25 @@ export default function Signin() {
               type="password"
               placeholder="Password"
               className={styles.input}
-              value={password}
+              value={dataLogin.password}
               onChange={(e) => {
-                setPassword(e.target.value);
-                setPasswordError("");
-                setLoginError("");
+                setDataLogin((prev) => ({ ...prev, password: e.target.value }));
+                setDataLoginError((prev) => ({
+                  ...prev,
+                  passwordError: "",
+                  loginError: "",
+                }));
               }}
             />
-            {passwordError && (
-              <span className={styles.text_warning}>{passwordError}</span>
+            {dataLoginError.passwordError && (
+              <span className={styles.text_warning}>
+                {dataLoginError.passwordError}
+              </span>
             )}
-            {loginError && (
-              <span className={styles.text_warning}>{loginError}</span>
+            {dataLoginError.loginError && (
+              <span className={styles.text_warning}>
+                {dataLoginError.loginError}
+              </span>
             )}
           </div>
           <Button
@@ -96,7 +114,7 @@ export default function Signin() {
           </Button>
         </form>
         <div className={styles.forgot_password}>
-          <a href="" className={styles.forgot_password__link}>
+          <a href="#" className={styles.forgot_password__link}>
             Quên mật khẩu
           </a>
         </div>
@@ -125,12 +143,12 @@ export default function Signin() {
       <div className={styles.bottom_container}>
         <div className={styles.bottom_container__content}>
           Bạn mới biết đến Shopify?
-          <Link
+          <a
             href="/buyer/signup"
             className={styles.bottom_container__content__link}
           >
             Đăng ký
-          </Link>
+          </a>
         </div>
       </div>
     </div>

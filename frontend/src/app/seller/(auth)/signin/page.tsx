@@ -2,7 +2,6 @@ import { Button, Image } from "react-bootstrap";
 import styles from "./signin.module.css";
 import { IoLogoFacebook } from "react-icons/io5";
 import { IoLogoGoogle } from "react-icons/io";
-import Link from "next/link";
 
 export default function Signin() {
   return (
@@ -51,7 +50,7 @@ export default function Signin() {
             <Button className={styles.button}>Đăng nhập</Button>
           </form>
           <div className={styles.forgot_password}>
-            <a href="" className={styles.forgot_password__link}>
+            <a href="#" className={styles.forgot_password__link}>
               Quên mật khẩu
             </a>
           </div>
@@ -86,12 +85,12 @@ export default function Signin() {
         <div className={styles.bottom_container}>
           <div className={styles.bottom_container__content}>
             Bạn mới biết đến Shopify?
-            <Link
+            <a
               href="/seller/signup"
               className={styles.bottom_container__content__link}
             >
               Đăng ký
-            </Link>
+            </a>
           </div>
         </div>
       </div>

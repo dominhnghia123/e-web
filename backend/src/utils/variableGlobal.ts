@@ -13,3 +13,9 @@ export enum statusEnum {
   processing = 'processing',
   done = 'done',
 }
+
+export enum genderEnum {
+  male = 'male',
+  female = 'female',
+  other = 'other',
+}

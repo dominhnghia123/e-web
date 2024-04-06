@@ -1,0 +1,96 @@
+.container {
+  background-color: rgb(247, 247, 247);
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* nav */
+.nav {
+  width: 100%;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nav_content {
+  width: 100%;
+  height: 50%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 100px;
+}
+.nav_content__left {
+  display: flex;
+  width: auto;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+.nav_content__left__title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.nav_content__left__shopify {
+  text-decoration: none;
+  color: red;
+  font-weight: bold;
+  font-size: 22px;
+}
+.nav_content__left__signin {
+  font-size: 18px;
+  color: black;
+}
+.nav_content__right {
+  text-decoration: none;
+  font-size: 14px;
+  color: blue;
+}
+
+/* main */
+.main {
+  background-color: rgb(232, 136, 99);
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.main_container {
+  height: 100%;
+  width: 70%;
+  display: flex;
+}
+.main_container__content_left {
+  flex-basis: 60%;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.main_container__content_left__logo_shopify {
+  height: 300px;
+  width: 300px;
+  color: white;
+}
+.main_container__content_left__brand {
+  color: white;
+  font-size: 40px;
+  font-weight: bold;
+}
+.main_container__content_left__text {
+  font-size: 24px;
+  text-align: center;
+  padding: 0 50px;
+  font-weight: 500;
+}
+.main_container__children {
+  flex-basis: 40%;
+  padding: 20px 20px;
+}

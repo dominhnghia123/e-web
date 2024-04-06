@@ -1,17 +1,20 @@
-import styles from "./app.module.css";
-import AppHeader from "@/components/appHeader";
+"use client";
+import styles from "./main.module.css";
 import AppFooter from "@/components/appFooter";
+import AppHeader from "@/components/appHeader";
 import AppSideBar from "@/components/appSideBar";
-import AppContent from "@/components/appContent";
 
-export default function Home() {
-  const arr = new Array(25).fill(1);
+export default function BuyerLayout({
+  children,
+}: {
+  children: React.ReactNode;
+  }) {
   return (
     <div className={styles.container}>
       <AppHeader />
       <main className={styles.main}>
         <AppSideBar />
-        <AppContent />
+        {children}
       </main>
       <AppFooter />
     </div>

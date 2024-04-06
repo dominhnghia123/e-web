@@ -54,8 +54,8 @@ export class Product {
   @Prop({ required: true })
   brand: string;
 
-  @Prop({ required: true })
-  category: string;
+  // @Prop({ required: true })
+  // category: string;
 
   @Prop({
     type: [

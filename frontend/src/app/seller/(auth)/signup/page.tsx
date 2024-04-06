@@ -5,7 +5,6 @@ import { IoLogoGoogle } from "react-icons/io";
 import { SiHomeassistantcommunitystore } from "react-icons/si";
 import { FaGift } from "react-icons/fa";
 import { FaHandshake } from "react-icons/fa6";
-import Link from "next/link";
 
 export default function Signup() {
   return (
@@ -114,12 +113,12 @@ export default function Signup() {
         <div className={styles.bottom_container}>
           <div className={styles.bottom_container__content}>
             Bạn đã có tài khoản?
-            <Link
+            <a
               href="/seller/signin"
               className={styles.bottom_container__content__link}
             >
               Đăng nhập
-            </Link>
+            </a>
           </div>
         </div>
       </div>

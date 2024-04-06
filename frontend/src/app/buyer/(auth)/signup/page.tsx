@@ -1,13 +1,23 @@
 "use client";
 import styles from "./signup.module.css";
-import { Button } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
 import { IoLogoFacebook } from "react-icons/io5";
 import { IoLogoGoogle } from "react-icons/io";
-import Link from "next/link";
 import { MouseEvent, useState } from "react";
-import axios, { AxiosError } from "axios";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { useAppDispatch } from "@/redux/store";
+import {
+  registerError,
+  registerStart,
+  registerSuccess,
+} from "@/redux/features/auth/authSlice";
+import { registerUser } from "@/redux/features/auth/authService";
 
 export default function Signup() {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const [dataSignup, setDataSignup] = useState({
     username: "",
     email: "",
@@ -20,72 +30,45 @@ export default function Signup() {
     passwordError: "",
     mobileError: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSignup = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const { username, email, password, mobile } = dataSignup;
+    dispatch(registerStart());
     try {
-      const { data } = await axios.post(
-        `${process.env.BASE_HOST}/user/register`,
-        {
-          username: username,
-          email: email,
-          password: password,
-          mobile: mobile,
-        }
-      );
-      if (data.status === true) {
-        alert(data.msg);
+      const response = await registerUser(dataSignup, setDataSignupError);
+      if (response.status === true) {
+        dispatch(registerSuccess());
+        setDataSignupError((prev) => ({ ...prev, loginError: "" }));
+        setIsLoading(true);
+        toast.success(response.msg);
+        Cookies.set("userActive", "1");
+        router.replace("/buyer/home");
       }
-      if (data.status === false) {
-        if (data.property === "username") {
-          setDataSignupError((prev) => ({ ...prev, usernameError: data.msg }));
+      if (response.status === false) {
+        if (response.property === "username") {
+          setDataSignupError((prev) => ({
+            ...prev,
+            usernameError: response.msg,
+          }));
         }
-        if (data.property === "email") {
-          setDataSignupError((prev) => ({ ...prev, emailError: data.msg }));
+        if (response.property === "email") {
+          setDataSignupError((prev) => ({ ...prev, emailError: response.msg }));
         }
-         if (data.property === "mobile") {
-           setDataSignupError((prev) => ({ ...prev, mobileError: data.msg }));
-         }
+        if (response.property === "mobile") {
+          setDataSignupError((prev) => ({
+            ...prev,
+            mobileError: response.msg,
+          }));
+        }
       }
     } catch (error) {
-      console.log(error);
-
-      const err = error as AxiosError<{
-        message: { property: string; message: string }[];
-      }>;
-      if (err.response?.data?.message) {
-        err.response.data.message?.forEach((value) => {
-          if (value.property === "username") {
-            setDataSignupError((prev) => ({
-              ...prev,
-              usernameError: value.message,
-            }));
-          }
-          if (value.property === "email") {
-            setDataSignupError((prev) => ({
-              ...prev,
-              emailError: value.message,
-            }));
-          }
-          if (value.property === "password") {
-            setDataSignupError((prev) => ({
-              ...prev,
-              passwordError: value.message,
-            }));
-          }
-          if (value.property === "mobile") {
-            setDataSignupError((prev) => ({
-              ...prev,
-              mobileError: value.message,
-            }));
-          }
-        });
-      }
+      dispatch(registerError());
     }
   };
   return (
     <div className={styles.signup_content_container}>
+      {isLoading && <div className={styles.loading}></div>}
       <title>Đăng ký tài khoản</title>
       <div className={styles.signup_title}>Đăng Ký</div>
       <div className={styles.signup_container}>
@@ -203,12 +186,12 @@ export default function Signup() {
       <div className={styles.bottom_container}>
         <div className={styles.bottom_container__content}>
           Bạn đã có tài khoản?
-          <Link
+          <a
             href="/buyer/signin"
             className={styles.bottom_container__content__link}
           >
             Đăng nhập
-          </Link>
+          </a>
         </div>
       </div>
     </div>

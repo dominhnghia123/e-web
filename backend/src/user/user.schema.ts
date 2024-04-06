@@ -3,6 +3,7 @@ import mongoose, { HydratedDocument } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { Cart } from '../cart/cart.schema';
 import { Product } from '../product/product.schema';
+import { genderEnum } from '../utils/variableGlobal';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -31,6 +32,9 @@ export class User {
 
   @Prop({ default: null })
   birthday: Date;
+
+  @Prop({ default: null, enum: genderEnum })
+  gender: string;
 
   @Prop({ default: '' })
   address: string;
