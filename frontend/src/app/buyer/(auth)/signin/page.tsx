@@ -41,8 +41,8 @@ export default function Signin() {
         setDataLoginError((prev) => ({ ...prev, loginError: "" }));
         setIsLoading(true);
         toast.success(response.msg);
-        Cookies.set("userActive", "1");
-        router.replace("/buyer/home");
+        Cookies.set("userActive", "1", {expires: 1});
+        router.replace("/buyer");
       }
       if (response.status === false) {
         setDataLoginError((prev) => ({ ...prev, loginError: response.msg }));

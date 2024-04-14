@@ -10,7 +10,6 @@ export default function ChangePassword() {
           <div className={styles.form__field__title}>Mật khẩu hiện tại</div>
           <input
             type="password"
-            value={"db"}
             className={styles.form__field__input}
           />
         </div>
@@ -18,7 +17,6 @@ export default function ChangePassword() {
           <div className={styles.form__field__title}>Mật khẩu mới</div>
           <input
             type="password"
-            value={"db"}
             className={styles.form__field__input}
           />
         </div>
@@ -26,7 +24,6 @@ export default function ChangePassword() {
           <div className={styles.form__field__title}>Xác nhận mật khẩu</div>
           <input
             type="password"
-            value={"db"}
             className={styles.form__field__input}
           />
         </div>

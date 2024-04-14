@@ -5,7 +5,7 @@ import { FaShopify } from "react-icons/fa6";
 import styles from "../app/app.module.css";
 import Cookies from "js-cookie";
 import { getStogare, removeStogare } from "@/app/helper/stogare";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function AppHeader() {
@@ -116,7 +116,7 @@ export default function AppHeader() {
                 }
               />
               <a
-                href={userActive !== "1" ? "/" : "/buyer/home"}
+                href={userActive !== "1" ? "/" : "/buyer"}
                 className={
                   styles.header__header_bottom__container__logo_section__link
                 }
@@ -158,6 +158,11 @@ export default function AppHeader() {
               </form>
             </div>
             <BsCart4
+              onClick={() =>
+                userActive !== "1"
+                  ? router.replace("/buyer/signin")
+                  : router.replace("/cart")
+              }
               className={styles.header__header_bottom__container__cart_section}
             />
           </div>

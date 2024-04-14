@@ -36,7 +36,7 @@ export class CreateProductDto {
     ],
   })
   @IsNotEmpty({ message: 'Type_items cannot be empty' })
-  type_items: {
+  variants: {
     quantity: number;
     price: number;
     sold: number;

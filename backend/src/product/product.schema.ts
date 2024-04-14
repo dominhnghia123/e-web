@@ -43,7 +43,7 @@ export class Product {
       },
     ],
   })
-  type_items: {
+  variants: {
     quantity: number;
     price: number;
     sold: number;

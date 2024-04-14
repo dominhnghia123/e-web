@@ -1,3 +1,4 @@
+"use client";
 import styles from "./app.module.css";
 import AppHeader from "@/components/appHeader";
 import AppFooter from "@/components/appFooter";

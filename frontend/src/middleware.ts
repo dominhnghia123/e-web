@@ -9,8 +9,6 @@ export function middleware(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
   const checkPath =
-    !path.includes("/buyer/signin") &&
-    !path.includes("/buyer/signup") &&
     !path.includes("/seller/signin") &&
     !path.includes("/seller/signup");
   if (userActive?.value !== "1" && checkPath)
@@ -19,5 +17,5 @@ export function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/buyer/:path*", "/seller/:path*"],
+  matcher: ["/seller/:path*", "/cart", "/user/:path*", "/product/:path*"],
 };

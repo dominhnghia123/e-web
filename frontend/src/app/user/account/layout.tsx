@@ -1,11 +1,18 @@
+"use client";
 import AppFooter from "@/components/appFooter";
 import AppHeader from "@/components/appHeader";
 import styles from "./account.module.css";
 import { Image } from "react-bootstrap";
 import { RiAccountCircleLine } from "react-icons/ri";
 import { FaShoppingBag } from "react-icons/fa";
+import { usePathname } from "next/navigation";
 
-export default function AccountLayout({ children }: { children: React.ReactNode }) {
+export default function AccountLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
   return (
     <div className={styles.container}>
       <title>Thông tin tài khoản</title>
@@ -34,11 +41,32 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                   </a>
                 </div>
                 <div className={styles.options_account}>
-                  <a className={styles.option} href="/user/account/profile">
+                  <a
+                    className={
+                      pathname === "/user/account/profile"
+                        ? `${styles.option} ${styles.focused}`
+                        : `${styles.option}`
+                    }
+                    href="/user/account/profile"
+                  >
                     Hồ sơ
                   </a>
                   <a
-                    className={styles.option}
+                    className={
+                      pathname === "/user/account/address"
+                        ? `${styles.option} ${styles.focused}`
+                        : `${styles.option}`
+                    }
+                    href="/user/account/address"
+                  >
+                    Địa chỉ
+                  </a>
+                  <a
+                    className={
+                      pathname === "/user/account/changePassword"
+                        ? `${styles.option} ${styles.focused}`
+                        : `${styles.option}`
+                    }
                     href="/user/account/changePassword"
                   >
                     Đổi mật khẩu

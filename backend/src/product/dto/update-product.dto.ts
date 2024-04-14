@@ -49,7 +49,7 @@ export class UpdateProductDto {
   @IsNotEmpty()
   @IsArray()
   @ValidateNested({ each: true })
-  type_items: {
+  variants: {
     quantity: number;
     price: number;
     sold: number;

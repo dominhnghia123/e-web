@@ -59,27 +59,15 @@ export default function ViewProfile() {
         <form action="" className={styles.form}>
           <div className={styles.form__field}>
             <div className={styles.form__field__title}>Tên đăng nhập</div>
-            <input
-              type="text"
-              value={"db"}
-              className={styles.form__field__input}
-            />
+            <input type="text" className={styles.form__field__input} />
           </div>
           <div className={styles.form__field}>
             <div className={styles.form__field__title}>Địa chỉ email</div>
-            <input
-              type="text"
-              value={"db"}
-              className={styles.form__field__input}
-            />
+            <input type="text" className={styles.form__field__input} />
           </div>
           <div className={styles.form__field}>
             <div className={styles.form__field__title}>Số điện thoại</div>
-            <input
-              type="text"
-              value={"db"}
-              className={styles.form__field__input}
-            />
+            <input type="text" className={styles.form__field__input} />
           </div>
           <div className={styles.form__field}>
             <div className={styles.form__field__title}>Giới tính</div>

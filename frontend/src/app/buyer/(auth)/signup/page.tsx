@@ -42,7 +42,7 @@ export default function Signup() {
         setDataSignupError((prev) => ({ ...prev, loginError: "" }));
         setIsLoading(true);
         toast.success(response.msg);
-        Cookies.set("userActive", "1");
+        Cookies.set("userActive", "1", {expires: 1});
         router.replace("/buyer/home");
       }
       if (response.status === false) {
