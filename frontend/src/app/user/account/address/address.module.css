@@ -27,6 +27,7 @@
   border-radius: 5px;
   color: white;
   padding: 0 15px;
+  cursor: pointer;
 }
 .address_container__top__button_container__button:hover {
   background-color: rgb(230, 158, 25);

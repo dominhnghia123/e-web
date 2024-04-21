@@ -12,3 +12,9 @@ export const removeStogare = (key: string) => {
   if (typeof window === "undefined" || !window) return;
   window.localStorage.removeItem(key);
 };
+
+export const getToken = () => {
+  const currentUserString = getStogare("currentUser");
+  const token = JSON.parse(currentUserString).token;
+  return token;
+}

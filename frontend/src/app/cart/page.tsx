@@ -6,18 +6,22 @@ import type {
   GetProp,
   InputNumberProps,
 } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./cart.module.css";
 import { Button, Image } from "react-bootstrap";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import AddressModal from "@/components/modal/addressModal/page";
 import CouponModal from "@/components/modal/couponModal/page";
+import PickAddressModal from "@/components/modal/address/pickAddress/page";
+import axios from "axios";
+import { getToken } from "../helper/stogare";
+import { toast } from "react-toastify";
 
 type CheckboxValueType = GetProp<typeof Checkbox.Group, "value">[number];
 
 const CheckboxGroup = Checkbox.Group;
 
 export default function Cart() {
+  const token = getToken();
   const onChangeQuantity: InputNumberProps["onChange"] = (value) => {
     console.log("changed", value);
   };
@@ -47,8 +51,39 @@ export default function Cart() {
   };
 
   //set up modal
-  const [openAddressModal, setOpenAddressModal] = useState(false);
+  const [openPickAddressModal, setOpenPickAddressModal] = useState(false);
   const [openCouponModal, setOpenCouponModal] = useState(false);
+
+  const [selectedAddressId, setSelectedAddressId] = useState<string>(
+    "6623d1a0f71ddedf65579800"
+  );
+  const [selectedAddress, setSelectedAddress] = useState<IAddress | any>();
+  useEffect(() => {
+    const getAnAddress = async () => {
+      try {
+        const { data } = await axios.post(
+          `${process.env.BASE_HOST}/address/get-an-address`,
+          {
+            _id: selectedAddressId,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (data.status === true) {
+          setSelectedAddress(data.address);
+        }
+        if (data.status === false) {
+          toast.error(data.msg);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getAnAddress();
+  }, [selectedAddressId]);
 
   return (
     <div className={styles.cart}>
@@ -69,8 +104,8 @@ export default function Cart() {
             value={checkedList}
             onChange={onChange}
           >
-            {plainOptions.map((option) => (
-              <div className={styles.option_container}>
+            {plainOptions.map((option, index) => (
+              <div className={styles.option_container} key={index}>
                 <Checkbox value={option.value}></Checkbox>
                 <div className={styles.option_container__content}>
                   <div className={styles.image_title_container}>
@@ -101,24 +136,27 @@ export default function Cart() {
             <div className={styles.payment_top__text}>Giao tới</div>
             <a
               className={styles.payment_top__link}
-              onClick={() => setOpenAddressModal(true)}
+              onClick={() => setOpenPickAddressModal(true)}
             >
-              Thay đổi
+              Chọn địa chỉ
             </a>
-            <AddressModal
-              openAddressModal={openAddressModal}
-              setOpenAddressModal={setOpenAddressModal}
+            <PickAddressModal
+              openPickAddressModal={openPickAddressModal}
+              setOpenPickAddressModal={setOpenPickAddressModal}
+              selectedAddressId={selectedAddressId}
+              setSelectedAddressId={setSelectedAddressId}
             />
           </div>
-          <div className={styles.payment_address}>
-            <div className={styles.payment_address__name_phone}>
-              Nguyễn Văn Hiển 0975191025
+          {selectedAddress && (
+            <div className={styles.payment_address}>
+              <div className={styles.payment_address__name_phone}>
+                {selectedAddress.username} {selectedAddress.phone}
+              </div>
+              <div className={styles.payment_address__detail}>
+                {selectedAddress.address}
+              </div>
             </div>
-            <div className={styles.payment_address__detail}>
-              Ngách 78 ngõ 169, phường hoàng văn thụ, quận hoàng mai, hà nội,
-              Phường Hoàng Văn Thụ, Quận Hoàng Mai, Hà Nội
-            </div>
-          </div>
+          )}
           <Divider />
           <div className={styles.payment_voucher}>
             <a

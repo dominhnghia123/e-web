@@ -1,38 +1,89 @@
 "use client";
-import AppFooter from "@/components/appFooter";
-import AppHeader from "@/components/appHeader";
 import styles from "./profile.module.css";
-import { Image } from "react-bootstrap";
-import { RiAccountCircleLine } from "react-icons/ri";
-import { FaShoppingBag } from "react-icons/fa";
-import { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
-  Button,
   DatePicker,
+  DatePickerProps,
   message,
   Radio,
   RadioChangeEvent,
   Upload,
   UploadProps,
+  Button,
 } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { UploadOutlined } from "@ant-design/icons";
+import { getStogare, getToken } from "@/app/helper/stogare";
+import axios from "axios";
+import { toast } from "react-toastify";
+import ButtonReactBootStrap from "react-bootstrap/Button";
+import { PageContext } from "../layout";
 
 export default function ViewProfile() {
+  const { setIsChangeProfile } = useContext(PageContext);
+
+  const currentUserString = getStogare("currentUser");
+  const currentUser = JSON.parse(currentUserString);
+  const token = getToken();
+
+  //get profile
+  const [profile, setProfile] = useState<IUser | any>({});
+  useEffect(() => {
+    const getProfile = async () => {
+      const { data } = await axios.post(
+        `${process.env.BASE_HOST}/user/get-a-user`,
+        {
+          _id: currentUser._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (data.status === true) {
+        setProfile(data.user);
+      }
+      if (data.status === false) {
+        toast.error(data.msg);
+      }
+    };
+    getProfile();
+  }, []);
+
+  // Gender
   const [gender, setGender] = useState("");
   const handleChangeGender = (e: RadioChangeEvent) => {
     setGender(e.target.value);
   };
 
+  //Birthday
   dayjs.extend(customParseFormat);
   const dateFormat = "YYYY-MM-DD";
 
+  const [birthday, setBirthday] = useState<string | any>(profile.birthday);
+  const handleChangeBirthday: DatePickerProps["onChange"] = (
+    date,
+    dateString
+  ) => {
+    setBirthday(dateString);
+  };
+
+  useEffect(() => {
+    setGender(profile.gender);
+    setBirthday(profile.birthday);
+    setUrl(profile.avatar);
+  }, [profile]);
+
+  //upload file
+  const [url, setUrl] = useState("");
   const props: UploadProps = {
     name: "file",
-    action: "https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload",
+    action: `${process.env.BASE_HOST}/app/uploadFiles`,
     headers: {
-      authorization: "authorization-text",
+      Authorization: `Bearer ${token}`,
     },
     onChange(info) {
       if (info.file.status !== "uploading") {
@@ -40,10 +91,38 @@ export default function ViewProfile() {
       }
       if (info.file.status === "done") {
         message.success(`${info.file.name} file uploaded successfully`);
+        setUrl(info.file.response.url);
       } else if (info.file.status === "error") {
         message.error(`${info.file.name} file upload failed.`);
       }
     },
+  };
+
+  //update profile
+  const handleUpdateProfile = async () => {
+    setIsChangeProfile(false);
+    try {
+      const { data } = await axios.post(
+        `${process.env.BASE_HOST}/user/update-user`,
+        {
+          _id: currentUser._id,
+          gender: gender,
+          birthday: birthday,
+          avatar: url,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (data.status === true) {
+        setIsChangeProfile(true);
+        toast.success(data.msg);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -56,18 +135,33 @@ export default function ViewProfile() {
       </div>
       <div className={styles.divider}></div>
       <div className={styles.content_main}>
-        <form action="" className={styles.form}>
+        <form className={styles.form}>
           <div className={styles.form__field}>
             <div className={styles.form__field__title}>Tên đăng nhập</div>
-            <input type="text" className={styles.form__field__input} />
+            <input
+              type="text"
+              className={styles.form__field__input}
+              value={profile.username}
+              disabled
+            />
           </div>
           <div className={styles.form__field}>
             <div className={styles.form__field__title}>Địa chỉ email</div>
-            <input type="text" className={styles.form__field__input} />
+            <input
+              type="text"
+              className={styles.form__field__input}
+              value={profile.email}
+              disabled
+            />
           </div>
           <div className={styles.form__field}>
             <div className={styles.form__field__title}>Số điện thoại</div>
-            <input type="text" className={styles.form__field__input} />
+            <input
+              type="text"
+              className={styles.form__field__input}
+              value={profile.mobile}
+              disabled
+            />
           </div>
           <div className={styles.form__field}>
             <div className={styles.form__field__title}>Giới tính</div>
@@ -80,12 +174,20 @@ export default function ViewProfile() {
           <div className={styles.form__field}>
             <div className={styles.form__field__title}>Ngày sinh</div>
             <DatePicker
-              defaultValue={dayjs("2019-09-03", dateFormat)}
+              value={
+                birthday ? dayjs(birthday, dateFormat) : dayjs("1945-01-01")
+              }
               minDate={dayjs("1945-01-01", dateFormat)}
               maxDate={dayjs("2020-12-31", dateFormat)}
+              onChange={handleChangeBirthday}
             />
           </div>
-          <button className={styles.button}>Lưu</button>
+          <ButtonReactBootStrap
+            className={styles.button}
+            onClick={() => handleUpdateProfile()}
+          >
+            Lưu
+          </ButtonReactBootStrap>
         </form>
         <div className={styles.avatar_edit_container}>
           <Upload {...props}>

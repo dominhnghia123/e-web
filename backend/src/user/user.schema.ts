@@ -30,14 +30,11 @@ export class User {
   @Prop({ default: '' })
   avatar: string;
 
-  @Prop({ default: null })
-  birthday: Date;
+  @Prop({ default: '' })
+  birthday: string;
 
   @Prop({ default: null, enum: genderEnum })
   gender: string;
-
-  @Prop({ default: '' })
-  address: string;
 
   @Prop({ default: 0 })
   followers: number;

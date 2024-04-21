@@ -6,6 +6,18 @@ import { Image } from "react-bootstrap";
 import { RiAccountCircleLine } from "react-icons/ri";
 import { FaShoppingBag } from "react-icons/fa";
 import { usePathname } from "next/navigation";
+import React, { createContext, useEffect, useState } from "react";
+import axios from "axios";
+import { getStogare, getToken } from "@/app/helper/stogare";
+import { toast } from "react-toastify";
+
+interface PageContextType {
+  setIsChangeProfile: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const PageContext = createContext<PageContextType>({
+  setIsChangeProfile: () => {}, // Default value
+});
 
 export default function AccountLayout({
   children,
@@ -13,6 +25,40 @@ export default function AccountLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const currentUserString = getStogare("currentUser");
+  const currentUser = JSON.parse(currentUserString);
+  const token = getToken();
+  //get profile
+  const [profile, setProfile] = useState<IUser | any>({});
+  const getProfile = async () => {
+    const { data } = await axios.post(
+      `${process.env.BASE_HOST}/user/get-a-user`,
+      {
+        _id: currentUser._id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (data.status === true) {
+      setProfile(data.user);
+    }
+    if (data.status === false) {
+      toast.error(data.msg);
+    }
+  };
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  const [isChangeProfile, setIsChangeProfile] = useState<boolean | any>(false);
+  useEffect(() => {
+    getProfile();
+  }, [isChangeProfile]);
+
   return (
     <div className={styles.container}>
       <title>Thông tin tài khoản</title>
@@ -22,11 +68,11 @@ export default function AccountLayout({
           <div className={styles.sidebar}>
             <div className={styles.avatar_username_container}>
               <Image
-                src="/images/avatar.jpg"
+                src={profile.avatar ? profile.avatar : "/images/avatar.jpg"}
                 alt=""
                 className={styles.avatar}
               />
-              <div className={styles.username}>username</div>
+              <div className={styles.username}>{profile.username}</div>
             </div>
             <div className={styles.divider}></div>
             <div className={styles.menu_container}>
@@ -81,7 +127,11 @@ export default function AccountLayout({
               </div>
             </div>
           </div>
-          <div className={styles.content}>{children}</div>
+          <div className={styles.content}>
+            <PageContext.Provider value={{ setIsChangeProfile }}>
+              {children}
+            </PageContext.Provider>
+          </div>
         </div>
       </main>
       <AppFooter />

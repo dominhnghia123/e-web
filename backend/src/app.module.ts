@@ -11,6 +11,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MulterModule } from '@nestjs/platform-express';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AddressModule } from './address/address.module';
 
 @Module({
   imports: [
@@ -28,8 +29,9 @@ import { AppService } from './app.service';
     BrandModule,
     CartModule,
     OrderModule,
+    AddressModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

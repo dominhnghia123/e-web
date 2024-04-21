@@ -21,7 +21,7 @@ export class UserService {
     @InjectModel(User.name)
     private userModel: Model<User>,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async registerUser(registerUserDto: RegisterUserDto) {
     const { username, email, password, mobile } = registerUserDto;
@@ -222,7 +222,7 @@ export class UserService {
           role: findUser?.role,
           isSeller: findUser?.isSeller,
           birthday: findUser?.birthday,
-          address: findUser?.address,
+          gender: findUser?.gender,
           followers: findUser?.followers,
           numFollows: findUser?.numFollows,
           isFollowed: findUser?.isFollowed,
@@ -257,7 +257,7 @@ export class UserService {
   }
 
   async updateUser(updateUserDto: UpdateUserDto) {
-    const { _id, birthday, address, avatar } = updateUserDto;
+    const { _id, gender, birthday, avatar } = updateUserDto;
     try {
       const user = await this.userModel.findById(_id);
       if (!user) {
@@ -271,7 +271,7 @@ export class UserService {
         _id,
         {
           birthday: birthday,
-          address: address,
+          gender: gender,
           avatar: avatar,
         },
         {

@@ -6,25 +6,15 @@ export class UpdateUserDto {
   @IsNotEmpty({ message: 'UserId cannot be empty' })
   _id: string;
 
+  @ApiProperty({ example: 'male' })
+  @IsOptional()
+  gender: string;
+
   @ApiProperty({ example: '2024-03-08T03:59:22.164+00:00' })
   @IsOptional()
-  @IsDate()
-  birthday: Date;
-
-  @ApiProperty({ example: 'Ha Noi' })
-  @IsOptional()
-  address: string;
+  birthday: string;
 
   @ApiProperty({ example: 'http://localhost:8000/avatar.jpg' })
   @IsOptional()
   avatar: string;
-
-  @IsOptional()
-  followers: number;
-
-  @IsOptional()
-  numFollows: number;
-
-  @IsOptional()
-  isFollowed: boolean;
 }

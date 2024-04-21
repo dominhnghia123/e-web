@@ -1,0 +1,44 @@
+.address_container {
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+}
+.addess_container__content {
+  flex: 1;
+  height: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.address_container__content__left {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.address_container__content__left__name_phone {
+  font-size: 20px;
+}
+.address_container__content__left__text {
+  font-size: 16px;
+}
+.address_container__content__left__default {
+  margin-top: 10px;
+  font-size: 16px;
+  width: 75px;
+  height: 25px;
+  color: red;
+  border: 1px solid red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.address_container__content__right {
+  font-size: 16px;
+  min-width: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+}

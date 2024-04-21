@@ -3,9 +3,9 @@ interface IUser {
   username: string;
   email: string;
   password: string;
-  phone: string;
+  mobile: string;
   role: string;
-  status: string;
-  createdAt: date;
-  updatedAt: date;
+  avatar: string;
+  birthday: string,
+  gender: string,
 }
