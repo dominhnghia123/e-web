@@ -61,10 +61,6 @@ export class UpdateProductDto {
   @IsNotEmpty({ message: 'Brand cannot be empty' })
   brand: string;
 
-  @ApiProperty({ example: 'Phone' })
-  @IsNotEmpty({ message: 'Category cannot be empty' })
-  category: string;
-
   @ApiProperty({
     example: [
       {

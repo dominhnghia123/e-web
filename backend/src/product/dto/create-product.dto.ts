@@ -6,8 +6,7 @@ export class CreateProductDto {
   @IsNotEmpty({ message: 'Name cannot be empty' })
   name: string;
 
-  @ApiProperty({ example: 'Iphone-11' })
-  @IsNotEmpty({ message: 'Slug cannot be empty' })
+  @ApiProperty({ example: 'Iphone 11' })
   slug: string;
 
   @ApiProperty({ example: 'Sản phẩm đẹp' })
@@ -31,7 +30,14 @@ export class CreateProductDto {
         price: 28,
         sold: 2,
         color: 'black',
-        image: 'abc',
+        image: 'http://localhost:8000/api/app/iphone.png',
+      },
+      {
+        quantity: 30,
+        price: 38,
+        sold: 3,
+        color: 'white',
+        image: 'http://localhost:8000/api/app/iphone.png',
       },
     ],
   })
@@ -44,13 +50,9 @@ export class CreateProductDto {
     image: string;
   }[];
 
-  @ApiProperty({ example: 'Iphone' })
+  @ApiProperty({ example: 'iphone' })
   @IsNotEmpty({ message: 'Brand cannot be empty' })
   brand: string;
-
-  @ApiProperty({ example: 'Smartphone' })
-  @IsNotEmpty({ message: 'Category cannot be empty' })
-  category: string;
 
   @ApiProperty({
     example: [

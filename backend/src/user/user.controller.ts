@@ -9,11 +9,12 @@ import { Request, Response } from 'express';
 import { UserGuard } from './user.guard';
 import { AdminGuard } from './admin.guard';
 import { ChangePasswordDto } from './dto/changePassword.dto';
+import { CreateRatingDto } from './dto/create-rating.dto';
 
 @ApiTags('User')
 @Controller('api/user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
   @Post('/register')
   registerUser(@Body() registerUserDto: RegisterUserDto) {
@@ -80,5 +81,12 @@ export class UserController {
     @Req() req: Request,
   ) {
     return this.userService.changePassword(changePasswordDto, req);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(UserGuard)
+  @Post('/create-rating')
+  createRating(@Body() createRatingDto: CreateRatingDto, @Req() req: Request) {
+    return this.userService.createRating(createRatingDto, req)
   }
 }

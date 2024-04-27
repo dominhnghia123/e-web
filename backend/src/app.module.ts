@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
-import { CategoryModule } from './category/category.module';
 import { BrandModule } from './brand/brand.module';
 import { ProductModule } from './product/product.module';
 import { CartModule } from './cart/cart.module';
@@ -25,7 +24,6 @@ import { AddressModule } from './address/address.module';
     MulterModule.register({ dest: './uploads' }),
     UserModule,
     ProductModule,
-    CategoryModule,
     BrandModule,
     CartModule,
     OrderModule,

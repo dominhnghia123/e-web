@@ -32,11 +32,7 @@ export class Order {
       price: { type: Number, required: true },
     },
   })
-  orderItems: Array<{
-    productId: Product;
-    quantity: number;
-    price: number;
-  }>;
+  orderItems: { productId: Product; quantity: number; price: number; }[];
 
   @Prop({ required: true })
   totalPrice: number;

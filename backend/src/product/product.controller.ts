@@ -6,11 +6,12 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { ProductIdDto } from './dto/productId.dto';
 import { Request } from 'express';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { BrandDto } from './dto/brand.dto';
 
 @ApiTags('Product')
 @Controller('api/product')
 export class ProductController {
-  constructor(private productService: ProductService) {}
+  constructor(private productService: ProductService) { }
 
   @ApiBearerAuth()
   @UseGuards(UserGuard)
@@ -51,5 +52,17 @@ export class ProductController {
   @Post('/delete-many-products')
   deleteManyProducts(@Req() req: Request) {
     return this.productService.deleteManyProducts(req);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(UserGuard)
+  @Post('/get-ratings')
+  getRatings(@Body() productIdDto: ProductIdDto) {
+    return this.productService.getRatings(productIdDto);
+  }
+
+  @Post('/get-product-by-brand')
+  getProductByBrand(@Body() brandDto: BrandDto) {
+    return this.productService.getProductByBrand(brandDto);
   }
 }

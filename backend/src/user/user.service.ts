@@ -14,12 +14,14 @@ import { UserIdDto } from './dto/userId.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Request, Response } from 'express';
 import { ChangePasswordDto } from './dto/changePassword.dto';
+import { CreateRatingDto } from './dto/create-rating.dto';
+import { Product } from '../product/product.schema';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User.name)
-    private userModel: Model<User>,
+    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(Product.name) private productModel: Model<Product>,
     private jwtService: JwtService,
   ) { }
 
@@ -365,6 +367,70 @@ export class UserService {
       };
     } catch (error) {
       throw new BadRequestException(error);
+    }
+  }
+
+  async createRating(createRatingDto: CreateRatingDto, req: Request) {
+    const { productId, star, comment } = createRatingDto;
+    const { _id } = req['user']
+    try {
+      const product = await this.productModel.findById(productId);
+      let alreadyRated = product.ratings.find(
+        (rating) => rating.posted.toString() === _id.toString()
+      );
+      if (alreadyRated) {
+        const updateRating = await this.productModel.updateOne(
+          {
+            ratings: { $elemMatch: alreadyRated },
+          },
+          {
+            $set: { "ratings.$.star": star, "ratings.$.comment": comment },
+          },
+          {
+            new: true,
+          }
+        );
+      } else {
+        const rateProduct = await this.productModel.findByIdAndUpdate(
+          productId,
+          {
+            $push: {
+              ratings: {
+                star: star,
+                comment: comment,
+                posted: _id,
+              },
+            },
+          },
+          {
+            new: true,
+          }
+        );
+      }
+
+      const getallratings = await this.productModel.findById(productId);
+      let totalRating = getallratings.ratings.length;
+
+      let ratingsum = getallratings.ratings
+        .map((item) => item.star)
+        .reduce((prev, curr) => prev + curr, 0);
+
+      let actualRatings = parseFloat((ratingsum / totalRating).toFixed(1));
+
+      let finalproduct = await this.productModel.findByIdAndUpdate(
+        productId,
+        {
+          totalRatings: actualRatings,
+        },
+        { new: true }
+      );
+      return {
+        msg: 'Cảm ơn vì đã góp ý và đánh giá sản phẩm của chúng tôi',
+        status: true,
+        finalproduct
+      }
+    } catch (error) {
+      throw new BadRequestException(error)
     }
   }
 }

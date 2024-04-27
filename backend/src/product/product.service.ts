@@ -6,12 +6,17 @@ import { Request } from 'express';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductIdDto } from './dto/productId.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { User } from '../user/user.schema';
+import { BrandDto } from './dto/brand.dto';
+import { brandEnum } from '../utils/variableGlobal';
+import slugify from 'slugify';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<Product>,
-  ) {}
+    @InjectModel(User.name) private userModel: Model<User>,
+  ) { }
   async createProduct(createProductDto: CreateProductDto, req: Request) {
     const {
       name,
@@ -20,19 +25,17 @@ export class ProductService {
       specifications,
       variants,
       brand,
-      category,
       coupons,
     } = createProductDto;
     const currentUser = req['user'];
     try {
       const newProduct = await this.productModel.create({
         name: name,
-        slug: slug,
+        slug: slug ? slugify(slug) : slugify(name),
         description: description,
         specifications: specifications,
         variants: variants,
         brand: brand,
-        category: category,
         coupons: coupons,
         seller: currentUser._id,
       });
@@ -96,7 +99,6 @@ export class ProductService {
       specifications,
       variants,
       brand,
-      category,
       coupons,
     } = updateProductDto;
     try {
@@ -117,7 +119,6 @@ export class ProductService {
           specifications: specifications,
           variants: variants,
           brand: brand,
-          category: category,
           coupons: coupons,
         },
         {
@@ -173,4 +174,61 @@ export class ProductService {
       throw new BadRequestException(error);
     }
   }
+
+  async getRatings(productIdDto: ProductIdDto) {
+    const { _id } = productIdDto;
+    try {
+      const product = await this.productModel.findById(_id);
+      const ratings = product.ratings;
+      const detailPosterPromises = ratings.map(async (rating) => {
+        const poster = await this.userModel.findById(rating.posted.toString());
+        return poster;
+      });
+      const detailPosters = await Promise.all(detailPosterPromises);
+      const detailRatings = ratings.map((rating) => {
+        const poster = detailPosters.find((poster) => {
+          return poster._id.toString() === rating.posted.toString();
+        });
+
+        return {
+          star: rating.star,
+          comment: rating.comment,
+          posted: poster,
+          createdAt: rating.createdAt,
+        }
+      })
+      return detailRatings
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async getProductByBrand(brandDto: BrandDto) {
+    const { brand } = brandDto
+    try {
+      if (brand !== "") {
+        if (!(brand in brandEnum)) {
+          return {
+            msg: 'Không có hãng điện thoại này!',
+            status: false
+          }
+        }
+
+        const getProductByBrand = await this.productModel.find({ brand: brand }).sort({ createdAt: -1 })
+        return {
+          status: true,
+          products: getProductByBrand
+        }
+      } else {
+        const getAllProducts = await this.productModel.find().sort({ createdAt: -1 })
+        return {
+          status: true,
+          products: getAllProducts
+        }
+      }
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
+  }
+
 }

@@ -8,21 +8,19 @@ export type CartDocument = HydratedDocument<Cart>;
 @Schema({ timestamps: true })
 export class Cart {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-  user: User;
+  userId: User;
 
-  @Prop({
-    type: {
-      productId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
-        required: true,
-      },
-      quantity: { type: Number, required: true },
-      price: { type: Number, required: true },
-    },
-    required: true,
-  })
-  products: Array<{ productId: Product; quantity: number; price: number }>;
+  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Product' })
+  productId: Product;
+
+  @Prop({ required: true})
+  variantId: string;
+
+  @Prop({ required: true })
+  quantity: number;
+
+  @Prop({ required: true })
+  price: number;
 }
 
 export const CartSchema = SchemaFactory.createForClass(Cart);

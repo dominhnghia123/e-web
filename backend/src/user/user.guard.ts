@@ -43,7 +43,6 @@ export class UserGuard implements CanActivate {
         _id: currentUser._id,
         username: currentUser.username,
         email: currentUser.email,
-        address: currentUser?.address,
         birthday: currentUser.birthday,
         role: currentUser.role,
         mobile: currentUser.mobile,

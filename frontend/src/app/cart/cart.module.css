@@ -59,6 +59,13 @@
 .option_container__content {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  width: 100%;
+}
+.option_container__content__main {
+  display: flex;
+  align-items: center;
   justify-content: flex-start;
   gap: 30px;
   margin-left: 20px;

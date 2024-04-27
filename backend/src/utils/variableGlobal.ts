@@ -19,3 +19,12 @@ export enum genderEnum {
   female = 'female',
   other = 'other',
 }
+
+export enum brandEnum {
+  iphone = 'iphone',
+  samsung = 'samsung',
+  vivo = 'vivo',
+  huawei = 'huawei',
+  oppo = 'oppo',
+  mi = 'mi'
+}

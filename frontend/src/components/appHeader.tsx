@@ -4,12 +4,18 @@ import { BsCart4 } from "react-icons/bs";
 import { FaShopify } from "react-icons/fa6";
 import styles from "../app/app.module.css";
 import Cookies from "js-cookie";
-import { getStogare, removeStogare } from "@/app/helper/stogare";
+import { getStogare, getToken, removeStogare } from "@/app/helper/stogare";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
-export default function AppHeader() {
+interface IProps {
+  changedCart: boolean;
+  setChangedCart: (value: boolean) => void;
+}
+export default function AppHeader(props: IProps) {
   const router = useRouter();
+  const token = getToken();
   const [isLoading, setIsLoading] = useState(false);
   const [userActive, setUserActive] = useState("");
   useEffect(() => {
@@ -31,6 +37,30 @@ export default function AppHeader() {
     removeStogare("currentUser");
     router.replace("/");
   };
+
+  const [getCarts, setGetCarts] = useState([]);
+  useEffect(() => {
+    const getCarts = async () => {
+      try {
+        const { data } = await axios.post(
+          `${process.env.BASE_HOST}/cart/get-cart`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (data.status === true) {
+          setGetCarts(data.variantDetail);
+          props.setChangedCart(false);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getCarts();
+  }, [props.changedCart]);
 
   return (
     <>
@@ -157,14 +187,19 @@ export default function AppHeader() {
                 </div>
               </form>
             </div>
-            <BsCart4
-              onClick={() =>
-                userActive !== "1"
-                  ? router.replace("/buyer/signin")
-                  : router.replace("/cart")
-              }
+            <div
               className={styles.header__header_bottom__container__cart_section}
-            />
+            >
+              <BsCart4
+                onClick={() =>
+                  userActive !== "1"
+                    ? router.replace("/buyer/signin")
+                    : router.replace("/cart")
+                }
+                className={styles.iconCart}
+              />
+              <span className={styles.number}>{getCarts.length}</span>
+            </div>
           </div>
         </div>
       </header>

@@ -172,6 +172,9 @@
   background-color: rgb(195, 137, 2);
 }
 .header__header_bottom__container__cart_section {
+  position: relative;
+}
+.iconCart {
   height: 40px;
   width: 40px;
   display: flex;
@@ -179,6 +182,20 @@
   align-items: center;
   cursor: pointer;
   color: white;
+}
+.number{
+  position: absolute;
+  bottom: 25px;
+  left: 30px;
+  background-color: white;
+  border-radius: 10px;
+  color: red;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
 }
 
 /* main part */

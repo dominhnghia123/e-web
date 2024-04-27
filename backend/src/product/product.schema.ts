@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from '../user/user.schema';
+import { brandEnum } from '../utils/variableGlobal';
 
 export type ProductDocument = HydratedDocument<Product>;
 
@@ -44,6 +45,7 @@ export class Product {
     ],
   })
   variants: {
+    _id: any;
     quantity: number;
     price: number;
     sold: number;
@@ -51,11 +53,8 @@ export class Product {
     image: string;
   }[];
 
-  @Prop({ required: true })
+  @Prop({ required: true, enum: brandEnum })
   brand: string;
-
-  // @Prop({ required: true })
-  // category: string;
 
   @Prop({
     type: [
@@ -63,28 +62,28 @@ export class Product {
         name: { type: String, required: true },
         expiry: { type: String, required: true },
         discount: { type: String, required: true },
+        createdAt: { type: Date, default: Date.now },
       },
     ],
-    timestamp: true,
   })
-  coupons: { name: string; expiry: string; discount: string }[];
+  coupons: { name: string, expiry: string, discount: string, createdAt: Date }[];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   seller: User;
 
-  @Prop()
+  @Prop({ default: 0 })
   likes: number;
 
-  @Prop()
+  @Prop({ default: 0 })
   dislikes: number;
 
-  @Prop()
+  @Prop({ default: 0 })
   numViews: number;
 
-  @Prop()
+  @Prop({ default: false })
   isLiked: boolean;
 
-  @Prop()
+  @Prop({ default: false })
   isDisliked: boolean;
 
   @Prop({
@@ -93,14 +92,15 @@ export class Product {
         star: { type: Number },
         comment: { type: String },
         posted: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        createdAt: { type: Date, default: Date.now },
       },
     ],
-    timestamp: true,
   })
-  ratings: { star: number; comment: string; posted: User }[];
+  ratings: { star: number; comment: string; posted: User, createdAt: Date }[];
 
-  @Prop()
-  totalRatings: string;
+  @Prop({ default: 0 })
+  totalRatings: number;
+  _id: any;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
