@@ -25,7 +25,6 @@ export class ProductService {
       specifications,
       variants,
       brand,
-      coupons,
     } = createProductDto;
     const currentUser = req['user'];
     try {
@@ -36,7 +35,6 @@ export class ProductService {
         specifications: specifications,
         variants: variants,
         brand: brand,
-        coupons: coupons,
         seller: currentUser._id,
       });
 
@@ -99,7 +97,6 @@ export class ProductService {
       specifications,
       variants,
       brand,
-      coupons,
     } = updateProductDto;
     try {
       const findProduct = await this.productModel.findById(_id);
@@ -119,7 +116,6 @@ export class ProductService {
           specifications: specifications,
           variants: variants,
           brand: brand,
-          coupons: coupons,
         },
         {
           new: true,

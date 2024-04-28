@@ -60,22 +60,4 @@ export class UpdateProductDto {
   @ApiProperty({ example: 'Apple' })
   @IsNotEmpty({ message: 'Brand cannot be empty' })
   brand: string;
-
-  @ApiProperty({
-    example: [
-      {
-        name: '50% off',
-        expiry: '2024-12-31',
-        discount: '50%',
-      },
-    ],
-  })
-  @IsArray()
-  @IsNotEmpty()
-  @ValidateNested({ each: true })
-  coupons: {
-    name: string;
-    expiry: string;
-    discount: string;
-  }[];
 }

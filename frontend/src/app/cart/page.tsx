@@ -143,9 +143,8 @@ export default function Cart() {
     setTotalPriceBeforeApplyCoupon(totalPrice);
   }, [checkedList, changeQuantity]);
 
-  //set up modal
+  //set up modal address
   const [openPickAddressModal, setOpenPickAddressModal] = useState(false);
-  const [openCouponModal, setOpenCouponModal] = useState(false);
 
   const [selectedAddressId, setSelectedAddressId] = useState<string>(
     "6623d1a0f71ddedf65579800"
@@ -177,6 +176,39 @@ export default function Cart() {
     };
     getAnAddress();
   }, [selectedAddressId]);
+
+  //set up modal coupon
+  const [openCouponModal, setOpenCouponModal] = useState(false);
+  const [selectedCouponId, setSelectedCouponId] = useState<string>("");
+  const [selectedCoupon, setSelectedCoupon] = useState<ICoupon | any>(
+    undefined
+  );
+  useEffect(() => {
+    const getACoupon = async () => {
+      try {
+        const { data } = await axios.post(
+          `${process.env.BASE_HOST}/coupon/get-a-coupon`,
+          {
+            _id: selectedCouponId,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (data.status === true) {
+          setSelectedCoupon(data.coupon);
+        }
+        if (data.status === false) {
+          toast.error(data.msg);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getACoupon();
+  }, [selectedCouponId]);
 
   return (
     <div className={styles.container}>
@@ -282,13 +314,12 @@ export default function Cart() {
                   <CouponModal
                     openCouponModal={openCouponModal}
                     setOpenCouponModal={setOpenCouponModal}
+                    selectedCouponId={selectedCouponId}
+                    setSelectedCouponId={setSelectedCouponId}
                   />
                   <div className={styles.payment_voucher__container}>
                     <div className={styles.payment_voucher__detail}>
-                      voucher 1
-                    </div>
-                    <div className={styles.payment_voucher__detail}>
-                      voucher 2
+                      {selectedCoupon?.name}
                     </div>
                   </div>
                 </div>
@@ -300,14 +331,23 @@ export default function Cart() {
                       {totalPriceBeforeApllyCoupon} đ
                     </div>
                   </div>
-                  <div className={styles.calc_money_voucher}>
-                    <div className={styles.calc_money_text}>Giảm giá</div>
-                    <div className={styles.calc_money_voucher__value}>10%</div>
-                  </div>
+                  {selectedCoupon && (
+                    <div className={styles.calc_money_voucher}>
+                      <div className={styles.calc_money_text}>Giảm giá</div>
+                      <div className={styles.calc_money_voucher__value}>
+                        {selectedCoupon?.discount}%
+                      </div>
+                    </div>
+                  )}
                   <div className={styles.calc_money_total}>
                     <div className={styles.calc_money_text}>Thành tiền</div>
                     <div className={styles.calc_money_total__value}>
-                      450.000đ
+                      {selectedCoupon
+                        ? (totalPriceBeforeApllyCoupon *
+                            (100 - selectedCoupon?.discount)) /
+                          100
+                        : totalPriceBeforeApllyCoupon}
+                      đ
                     </div>
                   </div>
                 </div>

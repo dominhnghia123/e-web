@@ -11,6 +11,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AddressModule } from './address/address.module';
+import { CouponModule } from './coupon/coupon.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { AddressModule } from './address/address.module';
     BrandModule,
     CartModule,
     OrderModule,
-    AddressModule
+    AddressModule,
+    CouponModule
   ],
   controllers: [AppController],
   providers: [AppService],

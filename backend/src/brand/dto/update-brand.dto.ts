@@ -3,7 +3,7 @@ import { IsNotEmpty } from 'class-validator';
 
 export class UpdateBrandDto {
   @ApiProperty({ example: '65ea8d744f3d63f2131bfe47' })
-  @IsNotEmpty({ message: 'UserId cannot be empty' })
+  @IsNotEmpty({ message: 'Id cannot be empty' })
   _id: string;
 
   @ApiProperty({ example: 'Apple' })

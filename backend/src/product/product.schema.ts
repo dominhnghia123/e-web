@@ -56,18 +56,6 @@ export class Product {
   @Prop({ required: true, enum: brandEnum })
   brand: string;
 
-  @Prop({
-    type: [
-      {
-        name: { type: String, required: true },
-        expiry: { type: String, required: true },
-        discount: { type: String, required: true },
-        createdAt: { type: Date, default: Date.now },
-      },
-    ],
-  })
-  coupons: { name: string, expiry: string, discount: string, createdAt: Date }[];
-
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   seller: User;
 

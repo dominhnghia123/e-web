@@ -48,8 +48,8 @@ export class User {
   @Prop()
   refreshToken: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Cart', default: null })
-  cart: Cart;
+  @Prop({ default: Array })
+  cart: string[];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Product', default: null })
   wishlist: Product[];

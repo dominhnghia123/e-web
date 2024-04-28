@@ -7,12 +7,14 @@ import { Request } from 'express';
 import { Product } from '../product/product.schema';
 import { RemoveProductDto } from './dto/removeProduct.dto';
 import { ChangeQuantityProductDto } from './dto/changeQuantityProduct.dto';
+import { User } from '../user/user.schema';
 
 @Injectable()
 export class CartService {
   constructor(
     @InjectModel(Cart.name) private cartModel: Model<Cart>,
-    @InjectModel(Product.name) private productModel: Model<Product>
+    @InjectModel(Product.name) private productModel: Model<Product>,
+    @InjectModel(User.name) private userModel: Model<User>
   ) { }
 
   async addToCart(addToCartDto: AddToCartDto, req: Request) {
@@ -36,6 +38,11 @@ export class CartService {
         quantity,
         price: findVariant.price
       })
+
+      const user = await this.userModel.findById({ _id: userId });
+      user.cart.push(newCart._id.toString());
+      await user.save();
+
       return {
         msg: 'Đã thêm vào giỏ hàng.',
         status: true,
@@ -51,6 +58,11 @@ export class CartService {
     const userId = req['user']._id
     try {
       await this.cartModel.findOneAndDelete({ userId, _id: cartId })
+
+      const user = await this.userModel.findById({ _id: userId });
+      user.cart = user.cart.filter((item) => item !== cartId)
+      await user.save();
+
       return {
         status: true
       }

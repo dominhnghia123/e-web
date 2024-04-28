@@ -12,11 +12,7 @@ interface IVariants {
     color: string;
     image: string;
 }
-interface ICoupon {
-    name: string;
-    expiry: string;
-    discount: string
-}
+
 interface IRatings {
     star: number;
     comment: string;
@@ -31,7 +27,6 @@ interface IProduct {
     specifications: ISpecifications;
     variants: IVariants[];
     brand: string;
-    coupons: ICoupon[];
     seller: IUser;
     likes: number;
     dislikes: number;
