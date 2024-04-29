@@ -43,7 +43,7 @@ export default function Signup() {
         setIsLoading(true);
         toast.success(response.msg);
         Cookies.set("userActive", "1", {expires: 1});
-        router.replace("/buyer/home");
+        router.replace("/buyer");
       }
       if (response.status === false) {
         if (response.property === "username") {

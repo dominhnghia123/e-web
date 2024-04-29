@@ -145,7 +145,6 @@ export default function Cart() {
 
   //set up modal address
   const [openPickAddressModal, setOpenPickAddressModal] = useState(false);
-
   const [selectedAddressId, setSelectedAddressId] = useState<string>(
     "6623d1a0f71ddedf65579800"
   );
@@ -217,145 +216,155 @@ export default function Cart() {
         <div className={styles.main_container}>
           <div className={styles.cart}>
             <h1>Giỏ hàng</h1>
-            <div className={styles.cart_container}>
-              <div className={styles.cart_products_container}>
-                <Checkbox
-                  indeterminate={indeterminate}
-                  onChange={onCheckAllChange}
-                  checked={checkAll}
-                  className={styles.select_all_text}
-                >
-                  Chọn tất cả
-                </Checkbox>
-                <Divider />
-                <CheckboxGroup
-                  className={styles.options_container}
-                  value={checkedList}
-                  onChange={onChange}
-                >
-                  {plainOptions.map((option: any, index: number) => {
-                    return (
-                      <div className={styles.option_container} key={index}>
-                        <Checkbox value={option.value}></Checkbox>
-                        <div className={styles.option_container__content}>
-                          <div
-                            className={styles.option_container__content__main}
-                          >
-                            <div className={styles.image_title_container}>
-                              <Image
-                                src={option.image}
-                                alt=""
-                                className={styles.image}
+            {plainOptions.length ? (
+              <div className={styles.cart_container}>
+                <div className={styles.cart_products_container}>
+                  <Checkbox
+                    indeterminate={indeterminate}
+                    onChange={onCheckAllChange}
+                    checked={checkAll}
+                    className={styles.select_all_text}
+                  >
+                    Chọn tất cả
+                  </Checkbox>
+                  <Divider />
+                  <CheckboxGroup
+                    className={styles.options_container}
+                    value={checkedList}
+                    onChange={onChange}
+                  >
+                    {plainOptions.map((option: any, index: number) => {
+                      return (
+                        <div className={styles.option_container} key={index}>
+                          <Checkbox value={option.value}></Checkbox>
+                          <div className={styles.option_container__content}>
+                            <div
+                              className={styles.option_container__content__main}
+                            >
+                              <div className={styles.image_title_container}>
+                                <Image
+                                  src={option.image}
+                                  alt=""
+                                  className={styles.image}
+                                />
+                                <div className={styles.title}>
+                                  {option.name} ({option.color})
+                                </div>
+                              </div>
+                              <div className={styles.unit_price}>
+                                {option.price} đ
+                              </div>
+                              <InputNumber
+                                min={1}
+                                max={option.inventory_quantity - option.sold}
+                                onChange={(value) =>
+                                  onChangeQuantity(option.cartId, value)
+                                }
+                                className={styles.quanity}
+                                value={option.quantity}
                               />
-                              <div className={styles.title}>
-                                {option.name} ({option.color})
+                              <div className={styles.total_price_for_item}>
+                                {option.price * option.quantity} đ
                               </div>
                             </div>
-                            <div className={styles.unit_price}>
-                              {option.price} đ
-                            </div>
-                            <InputNumber
-                              min={1}
-                              max={option.inventory_quantity - option.sold}
-                              onChange={(value) =>
-                                onChangeQuantity(option.cartId, value)
-                              }
-                              className={styles.quanity}
-                              value={option.quantity}
+                            <RiDeleteBin6Line
+                              className={styles.icon_delete}
+                              onClick={() => handleDeleteProduct(option.cartId)}
                             />
-                            <div className={styles.total_price_for_item}>
-                              {option.price * option.quantity} đ
-                            </div>
                           </div>
-                          <RiDeleteBin6Line
-                            className={styles.icon_delete}
-                            onClick={() => handleDeleteProduct(option.cartId)}
-                          />
                         </div>
+                      );
+                    })}
+                  </CheckboxGroup>
+                </div>
+                <div className={styles.cart_payment_container}>
+                  <div className={styles.payment_top}>
+                    <div className={styles.payment_top__text}>Giao tới</div>
+                    <a
+                      className={styles.payment_top__link}
+                      onClick={() => setOpenPickAddressModal(true)}
+                    >
+                      Chọn địa chỉ
+                    </a>
+                    <PickAddressModal
+                      openPickAddressModal={openPickAddressModal}
+                      setOpenPickAddressModal={setOpenPickAddressModal}
+                      selectedAddressId={selectedAddressId}
+                      setSelectedAddressId={setSelectedAddressId}
+                    />
+                  </div>
+                  {selectedAddress && (
+                    <div className={styles.payment_address}>
+                      <div className={styles.payment_address__name_phone}>
+                        {selectedAddress.username} {selectedAddress.phone}
                       </div>
-                    );
-                  })}
-                </CheckboxGroup>
-              </div>
-              <div className={styles.cart_payment_container}>
-                <div className={styles.payment_top}>
-                  <div className={styles.payment_top__text}>Giao tới</div>
-                  <a
-                    className={styles.payment_top__link}
-                    onClick={() => setOpenPickAddressModal(true)}
-                  >
-                    Chọn địa chỉ
-                  </a>
-                  <PickAddressModal
-                    openPickAddressModal={openPickAddressModal}
-                    setOpenPickAddressModal={setOpenPickAddressModal}
-                    selectedAddressId={selectedAddressId}
-                    setSelectedAddressId={setSelectedAddressId}
-                  />
-                </div>
-                {selectedAddress && (
-                  <div className={styles.payment_address}>
-                    <div className={styles.payment_address__name_phone}>
-                      {selectedAddress.username} {selectedAddress.phone}
-                    </div>
-                    <div className={styles.payment_address__detail}>
-                      {selectedAddress.address}
-                    </div>
-                  </div>
-                )}
-                <Divider />
-                <div className={styles.payment_voucher}>
-                  <a
-                    className={styles.payment_voucher__link}
-                    onClick={() => setOpenCouponModal(true)}
-                  >
-                    Chọn voucher khuyến mãi
-                  </a>
-                  <CouponModal
-                    openCouponModal={openCouponModal}
-                    setOpenCouponModal={setOpenCouponModal}
-                    selectedCouponId={selectedCouponId}
-                    setSelectedCouponId={setSelectedCouponId}
-                  />
-                  <div className={styles.payment_voucher__container}>
-                    <div className={styles.payment_voucher__detail}>
-                      {selectedCoupon?.name}
-                    </div>
-                  </div>
-                </div>
-                <Divider />
-                <div className={styles.calc_money_container}>
-                  <div className={styles.calc_money_temp}>
-                    <div className={styles.calc_money_text}>Tạm tính</div>
-                    <div className={styles.calc_money_temp__value}>
-                      {totalPriceBeforeApllyCoupon} đ
-                    </div>
-                  </div>
-                  {selectedCoupon && (
-                    <div className={styles.calc_money_voucher}>
-                      <div className={styles.calc_money_text}>Giảm giá</div>
-                      <div className={styles.calc_money_voucher__value}>
-                        {selectedCoupon?.discount}%
+                      <div className={styles.payment_address__detail}>
+                        {selectedAddress.address}
                       </div>
                     </div>
                   )}
-                  <div className={styles.calc_money_total}>
-                    <div className={styles.calc_money_text}>Thành tiền</div>
-                    <div className={styles.calc_money_total__value}>
-                      {selectedCoupon
-                        ? (totalPriceBeforeApllyCoupon *
-                            (100 - selectedCoupon?.discount)) /
-                          100
-                        : totalPriceBeforeApllyCoupon}
-                      đ
+                  <Divider />
+                  <div className={styles.payment_voucher}>
+                    <a
+                      className={styles.payment_voucher__link}
+                      onClick={() => setOpenCouponModal(true)}
+                    >
+                      Chọn voucher khuyến mãi
+                    </a>
+                    <CouponModal
+                      openCouponModal={openCouponModal}
+                      setOpenCouponModal={setOpenCouponModal}
+                      selectedCouponId={selectedCouponId}
+                      setSelectedCouponId={setSelectedCouponId}
+                    />
+                    <div className={styles.payment_voucher__container}>
+                      <div className={styles.payment_voucher__detail}>
+                        {selectedCoupon?.name}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className={styles.button_container}>
-                  <Button className={styles.button}>Mua hàng</Button>
+                  <Divider />
+                  <div className={styles.calc_money_container}>
+                    <div className={styles.calc_money_temp}>
+                      <div className={styles.calc_money_text}>Tạm tính</div>
+                      <div className={styles.calc_money_temp__value}>
+                        {totalPriceBeforeApllyCoupon} đ
+                      </div>
+                    </div>
+                    {selectedCoupon && (
+                      <div className={styles.calc_money_voucher}>
+                        <div className={styles.calc_money_text}>Giảm giá</div>
+                        <div className={styles.calc_money_voucher__value}>
+                          {selectedCoupon?.discount}%
+                        </div>
+                      </div>
+                    )}
+                    <div className={styles.calc_money_total}>
+                      <div className={styles.calc_money_text}>Phí ship</div>
+                      <div className={styles.calc_money_voucher__value}>
+                        Free
+                      </div>
+                    </div>
+                    <div className={styles.calc_money_total}>
+                      <div className={styles.calc_money_text}>Thành tiền</div>
+                      <div className={styles.calc_money_total__value}>
+                        {selectedCoupon
+                          ? (totalPriceBeforeApllyCoupon *
+                              (100 - selectedCoupon?.discount)) /
+                            100
+                          : totalPriceBeforeApllyCoupon}
+                        đ
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.button_container}>
+                    <Button className={styles.button}>Mua hàng</Button>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <h4>Không có sản phẩm nào trong giỏ hàng</h4>
+            )}
           </div>
         </div>
       </main>

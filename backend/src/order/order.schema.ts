@@ -14,11 +14,10 @@ export class Order {
   @Prop({
     type: {
       address: { type: String, required: true },
-      fee_transport: { type: Number, required: true },
     },
     required: true,
   })
-  shippingInfo: { address: string; fee_transport: number };
+  shippingInfo: { address: string; };
 
   @Prop({
     required: true,

@@ -1,0 +1,24 @@
+.container {
+  background-color: rgb(235, 225, 233);
+  width: 100%;
+  height: auto;
+  position: relative;
+}
+
+/* main */
+.main {
+  margin-top: 80px;
+  height: auto;
+  min-height: calc(100vh - 80px);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.children_container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  padding: 0 20px;
+}

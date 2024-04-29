@@ -1,4 +1,3 @@
-"use client";
 import styles from "./main.module.css";
 import AppFooter from "@/components/appFooter";
 import AppHeader from "@/components/appHeader";
@@ -8,7 +7,7 @@ export default function BuyerLayout({
   children,
 }: {
   children: React.ReactNode;
-  }) {
+}) {
   return (
     <div className={styles.container}>
       <AppHeader />

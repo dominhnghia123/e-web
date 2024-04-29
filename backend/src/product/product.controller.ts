@@ -7,6 +7,7 @@ import { ProductIdDto } from './dto/productId.dto';
 import { Request } from 'express';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { BrandDto } from './dto/brand.dto';
+import { CreateRatingDto } from './dto/create-rating.dto';
 
 @ApiTags('Product')
 @Controller('api/product')
@@ -29,8 +30,15 @@ export class ProductController {
   }
 
   @Post('/get-all-products')
-  getAllProducts() {
-    return this.productService.getAllProducts();
+  getAllProducts(@Req() req: Request) {
+    const keySearch: string = req.query?.s?.toString()
+    const currentPage: number = req.query.page as any
+    const itemsPerPage: number = req.query.limit as any
+    return this.productService.getAllProducts(
+      keySearch,
+      currentPage,
+      itemsPerPage,
+    );
   }
 
   @ApiBearerAuth()
@@ -64,5 +72,12 @@ export class ProductController {
   @Post('/get-product-by-brand')
   getProductByBrand(@Body() brandDto: BrandDto) {
     return this.productService.getProductByBrand(brandDto);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(UserGuard)
+  @Post('/create-rating')
+  createRating(@Body() createRatingDto: CreateRatingDto, @Req() req: Request) {
+    return this.productService.createRating(createRatingDto, req)
   }
 }

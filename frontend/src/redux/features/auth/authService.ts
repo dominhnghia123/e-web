@@ -1,6 +1,5 @@
 "use client";
 import axios, { AxiosError } from "axios";
-import { toast } from "react-toastify";
 
 //login user
 export const logInUser = async (dataLogin: any, setDataLoginError: any) => {

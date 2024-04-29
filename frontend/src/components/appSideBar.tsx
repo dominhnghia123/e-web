@@ -1,8 +1,9 @@
+"use client";
 import { usePathname } from "next/navigation";
 import styles from "../app/app.module.css";
 export default function AppSideBar() {
   const pathname = usePathname();
-  
+
   return (
     <div className={styles.sideBar}>
       <div className={styles.sideBar__container}>

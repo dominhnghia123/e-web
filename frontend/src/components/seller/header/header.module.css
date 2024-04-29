@@ -1,0 +1,74 @@
+/* header part */
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 80px;
+  background-color: rgb(241, 179, 33);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.header__content {
+  width: 80%;
+  height: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header__content__left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+  width: auto;
+  height: 100%;
+}
+.header__content__left__logo {
+  width: 35px;
+  height: 35px;
+  color: white;
+}
+.header__content__left__link {
+  text-decoration: none;
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+}
+.header__content__right {
+  width: auto;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.header__content__right__link {
+  cursor: pointer;
+  color: white;
+  font-size: 20px;
+  position: relative;
+}
+.options_menu_container {
+  position: absolute;
+  top: 55px;
+  right: 150px;
+  background-color: white;
+  width: 125px;
+  height: auto;
+  padding: 10px 0px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  border-radius: 10px;
+  gap: 15px;
+}
+.option_menu {
+  cursor: pointer;
+  font-size: 14px;
+  color: black;
+  text-decoration: none;
+}
+.option_menu:hover {
+  color: rgb(134, 134, 137);
+}

@@ -9,7 +9,7 @@ import { Request, Response } from 'express';
 import { UserGuard } from './user.guard';
 import { AdminGuard } from './admin.guard';
 import { ChangePasswordDto } from './dto/changePassword.dto';
-import { CreateRatingDto } from './dto/create-rating.dto';
+import { PhoneNumberDto } from './dto/phoneNumber.dto';
 
 @ApiTags('User')
 @Controller('api/user')
@@ -83,10 +83,8 @@ export class UserController {
     return this.userService.changePassword(changePasswordDto, req);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(UserGuard)
-  @Post('/create-rating')
-  createRating(@Body() createRatingDto: CreateRatingDto, @Req() req: Request) {
-    return this.userService.createRating(createRatingDto, req)
+  @Post('/check-already-phone-number')
+  checkAlreadyPhoneNumber(@Body() phoneNumberDto: PhoneNumberDto) {
+    return this.userService.checkAlreadyPhoneNumber(phoneNumberDto);
   }
 }

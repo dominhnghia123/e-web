@@ -65,6 +65,9 @@ export const UserSchema = SchemaFactory.createForClass(User);
 
 UserSchema.pre('save', function (next) {
   try {
+    if (!this.isModified("password")) {
+      return next();
+    }
     const salt = bcrypt.genSaltSync(10);
     const hashPassword = bcrypt.hashSync(this.password, salt);
     this.password = hashPassword;

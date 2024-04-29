@@ -35,4 +35,5 @@ interface IProduct {
     isDisliked: boolean;
     ratings: IRatings[];
     totalRatings: string;
+    createdAt: date;
 }

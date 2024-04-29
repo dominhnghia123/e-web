@@ -7,7 +7,6 @@
 .yarn/install-state.gz
 /package-lock.json
 /public
-/publicc
 
 # testing
 /coverage

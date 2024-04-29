@@ -10,6 +10,7 @@ import { User } from '../user/user.schema';
 import { BrandDto } from './dto/brand.dto';
 import { brandEnum } from '../utils/variableGlobal';
 import slugify from 'slugify';
+import { CreateRatingDto } from './dto/create-rating.dto';
 
 @Injectable()
 export class ProductService {
@@ -68,20 +69,37 @@ export class ProductService {
     }
   }
 
-  async getAllProducts() {
+  async getAllProducts(
+    keySearch?: string,
+    currentPage?: number,
+    itemsPerPage?: number,
+  ) {
     try {
-      const allProducts = await this.productModel.find().sort({ title: 'asc' });
-      if (allProducts.length > 0) {
-        return {
-          msg: 'Found all products successfully',
-          status: true,
-          allProducts: allProducts,
-        };
-      } else {
-        return {
-          msg: 'No products exist in the database',
-          status: true,
-        };
+      let options = {}
+      if (keySearch) {
+        options = {
+          $or: [
+            { name: new RegExp(keySearch.toString(), 'i') },
+            { brand: new RegExp(keySearch.toString(), 'i') },
+          ],
+        }
+      }
+
+      const products = await this.productModel.find(options)
+
+      const page: number = currentPage || 1
+      const limit: number = itemsPerPage || 100
+      const skip: number = (page - 1) * limit
+
+      const totalProducts = await this.productModel.countDocuments(options)
+      const data = products.slice(skip, skip + limit)
+
+      return {
+        status: true,
+        data,
+        totalProducts,
+        page,
+        limit,
       }
     } catch (error) {
       throw new BadRequestException(error);
@@ -221,6 +239,70 @@ export class ProductService {
           status: true,
           products: getAllProducts
         }
+      }
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
+  }
+
+  async createRating(createRatingDto: CreateRatingDto, req: Request) {
+    const { productId, star, comment } = createRatingDto;
+    const { _id } = req['user']
+    try {
+      const product = await this.productModel.findById(productId);
+      let alreadyRated = product.ratings.find(
+        (rating) => rating.posted.toString() === _id.toString()
+      );
+      if (alreadyRated) {
+        const updateRating = await this.productModel.updateOne(
+          {
+            ratings: { $elemMatch: alreadyRated },
+          },
+          {
+            $set: { "ratings.$.star": star, "ratings.$.comment": comment },
+          },
+          {
+            new: true,
+          }
+        );
+      } else {
+        const rateProduct = await this.productModel.findByIdAndUpdate(
+          productId,
+          {
+            $push: {
+              ratings: {
+                star: star,
+                comment: comment,
+                posted: _id,
+              },
+            },
+          },
+          {
+            new: true,
+          }
+        );
+      }
+
+      const getallratings = await this.productModel.findById(productId);
+      let totalRating = getallratings.ratings.length;
+
+      let ratingsum = getallratings.ratings
+        .map((item) => item.star)
+        .reduce((prev, curr) => prev + curr, 0);
+
+      let actualRatings = parseFloat((ratingsum / totalRating).toFixed(1));
+
+      let finalproduct = await this.productModel.findByIdAndUpdate(
+        productId,
+        {
+          totalRatings: actualRatings,
+        },
+        { new: true }
+      );
+      return {
+        msg: 'Cảm ơn vì đã góp ý và đánh giá sản phẩm của chúng tôi',
+        status: true,
+        finalproduct
       }
     } catch (error) {
       throw new BadRequestException(error)

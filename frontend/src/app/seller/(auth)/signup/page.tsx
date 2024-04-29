@@ -1,3 +1,4 @@
+"use client";
 import styles from "./signup.module.css";
 import { Button } from "react-bootstrap";
 import { IoLogoFacebook } from "react-icons/io5";
@@ -5,8 +6,44 @@ import { IoLogoGoogle } from "react-icons/io";
 import { SiHomeassistantcommunitystore } from "react-icons/si";
 import { FaGift } from "react-icons/fa";
 import { FaHandshake } from "react-icons/fa6";
+import { MouseEvent, useState } from "react";
+import axios, { AxiosError } from "axios";
+import AlreadyMobileModal from "@/components/modal/mobile/alreadyMobileModal/page";
+import NotAlreadyMobileModal from "@/components/modal/mobile/notAlreadyMobileModal/page";
 
 export default function Signup() {
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumberError, setPhoneNumberError] = useState("");
+  const [openPopupExistMobile, setOpenPopupExistMobile] = useState(false);
+  const [openPopupNotExistMobile, setOpenPopupNotExistMobile] = useState(false);
+  const handleNext = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      const { data } = await axios.post(
+        `${process.env.BASE_HOST}/user/check-already-phone-number`,
+        {
+          mobile: phoneNumber,
+        }
+      );
+      if (data.status === true) {
+        setOpenPopupExistMobile(true);
+      }
+      if (data.status === false) {
+        setOpenPopupNotExistMobile(true);
+      }
+    } catch (error: any) {
+      const err = error as AxiosError<{
+        message: { property: string; message: string }[];
+      }>;
+      if (err.response?.data?.message) {
+        err.response.data.message?.forEach((value) => {
+          if (value.property === "mobile") {
+            setPhoneNumberError(value.message);
+          }
+        });
+      }
+    }
+  };
   return (
     <div className={styles.main_container}>
       <title>Đăng ký tài khoản</title>
@@ -43,44 +80,33 @@ export default function Signup() {
             <div className={styles.input_container}>
               <input
                 type="text"
-                placeholder="Username"
+                placeholder="Số điện thoại"
                 className={styles.input}
+                value={phoneNumber}
+                onChange={(e) => {
+                  setPhoneNumber(e.target.value);
+                  setPhoneNumberError("");
+                }}
               />
-              <span className={styles.text_warning}>
-                Vui lòng điền vào mục này.
-              </span>
+              {phoneNumberError && (
+                <span className={styles.text_warning}>{phoneNumberError}</span>
+              )}
             </div>
-            <div className={styles.input_container}>
-              <input
-                type="email"
-                placeholder="Email"
-                className={styles.input}
-              />
-              <span className={styles.text_warning}>
-                Vui lòng điền vào mục này.
-              </span>
-            </div>
-            <div className={styles.input_container}>
-              <input
-                type="password"
-                placeholder="Password"
-                className={styles.input}
-              />
-              <span className={styles.text_warning}>
-                Vui lòng điền vào mục này.
-              </span>
-            </div>
-            <div className={styles.input_container}>
-              <input
-                type="text"
-                placeholder="Mobile phone"
-                className={styles.input}
-              />
-              <span className={styles.text_warning}>
-                Vui lòng điền vào mục này.
-              </span>
-            </div>
-            <Button className={styles.button}>Đăng ký</Button>
+            <Button
+              className={styles.button}
+              onClick={(e) => handleNext(e)}
+              type="submit"
+            >
+              Tiếp theo
+            </Button>
+            <AlreadyMobileModal
+              openModal={openPopupExistMobile}
+              setOpenModal={setOpenPopupExistMobile}
+            />
+            <NotAlreadyMobileModal
+              openModal={openPopupNotExistMobile}
+              setOpenModal={setOpenPopupNotExistMobile}
+            />
           </form>
           <div className={styles.other_method_signup}>
             <div className={styles.other_method_signup__header}>
@@ -108,6 +134,16 @@ export default function Signup() {
                 Google
               </Button>
             </div>
+          </div>
+          <div className={styles.policy_container}>
+            Bằng việc đăng kí, bạn đã đồng ý với Shopee về{" "}
+            <span className={styles.policy_container__text_red}>
+              Điều khoản dịch vụ
+            </span>{" "}
+            &{" "}
+            <span className={styles.policy_container__text_red}>
+              Chính sách bảo mật.
+            </span>
           </div>
         </div>
         <div className={styles.bottom_container}>

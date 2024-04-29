@@ -14,8 +14,8 @@ import { UserIdDto } from './dto/userId.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Request, Response } from 'express';
 import { ChangePasswordDto } from './dto/changePassword.dto';
-import { CreateRatingDto } from './dto/create-rating.dto';
 import { Product } from '../product/product.schema';
+import { PhoneNumberDto } from './dto/phoneNumber.dto';
 
 @Injectable()
 export class UserService {
@@ -118,8 +118,8 @@ export class UserService {
   }
 
   async login(loginUserDto: LoginUserDto, res: Response): Promise<any> {
+    const { email, password } = loginUserDto;
     try {
-      const { email, password } = loginUserDto;
       const findUser = await this.userModel.findOne({ email: email });
       if (!findUser) {
         return {
@@ -129,6 +129,7 @@ export class UserService {
       }
 
       if (findUser && !(await findUser.isMatchedPassword(password))) {
+        console.log("password sai!");
         return {
           msg: 'Thông tin đăng nhập không chính xác',
           status: false,
@@ -370,64 +371,17 @@ export class UserService {
     }
   }
 
-  async createRating(createRatingDto: CreateRatingDto, req: Request) {
-    const { productId, star, comment } = createRatingDto;
-    const { _id } = req['user']
+  async checkAlreadyPhoneNumber(phoneNumberDto: PhoneNumberDto) {
+    const { mobile } = phoneNumberDto
     try {
-      const product = await this.productModel.findById(productId);
-      let alreadyRated = product.ratings.find(
-        (rating) => rating.posted.toString() === _id.toString()
-      );
-      if (alreadyRated) {
-        const updateRating = await this.productModel.updateOne(
-          {
-            ratings: { $elemMatch: alreadyRated },
-          },
-          {
-            $set: { "ratings.$.star": star, "ratings.$.comment": comment },
-          },
-          {
-            new: true,
-          }
-        );
-      } else {
-        const rateProduct = await this.productModel.findByIdAndUpdate(
-          productId,
-          {
-            $push: {
-              ratings: {
-                star: star,
-                comment: comment,
-                posted: _id,
-              },
-            },
-          },
-          {
-            new: true,
-          }
-        );
+      const checkAlreadyPhoneNumber = await this.userModel.findOne({ mobile });
+      if (checkAlreadyPhoneNumber) {
+        return {
+          status: true,
+        }
       }
-
-      const getallratings = await this.productModel.findById(productId);
-      let totalRating = getallratings.ratings.length;
-
-      let ratingsum = getallratings.ratings
-        .map((item) => item.star)
-        .reduce((prev, curr) => prev + curr, 0);
-
-      let actualRatings = parseFloat((ratingsum / totalRating).toFixed(1));
-
-      let finalproduct = await this.productModel.findByIdAndUpdate(
-        productId,
-        {
-          totalRatings: actualRatings,
-        },
-        { new: true }
-      );
       return {
-        msg: 'Cảm ơn vì đã góp ý và đánh giá sản phẩm của chúng tôi',
-        status: true,
-        finalproduct
+        status: false
       }
     } catch (error) {
       throw new BadRequestException(error)

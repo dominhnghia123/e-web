@@ -15,6 +15,6 @@ export const removeStogare = (key: string) => {
 
 export const getToken = () => {
   const currentUserString = getStogare("currentUser");
-  const token = JSON.parse(currentUserString).token;
+  const token = currentUserString ? JSON.parse(currentUserString).token : "";
   return token;
 }

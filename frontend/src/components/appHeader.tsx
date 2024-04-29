@@ -10,8 +10,8 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 
 interface IProps {
-  changedCart: boolean;
-  setChangedCart: (value: boolean) => void;
+  changedCart?: boolean;
+  setChangedCart?: (value: boolean) => void;
 }
 export default function AppHeader(props: IProps) {
   const router = useRouter();
@@ -23,17 +23,17 @@ export default function AppHeader(props: IProps) {
     setUserActive(userActiveCookie || "");
   }, [router]);
 
-  let username: string = "";
+  let currentUser;
   const currentUserString = getStogare("currentUser")?.trim();
   if (currentUserString) {
-    const currentUser = JSON.parse(currentUserString);
-    username = currentUser?.username;
+    currentUser = JSON.parse(currentUserString);
   }
 
   const [openOptionsMenu, setOpenOptionsMenu] = useState(false);
   const handleLogout = () => {
     setIsLoading(true);
     Cookies.remove("userActive");
+    Cookies.remove("refreshToken");
     removeStogare("currentUser");
     router.replace("/");
   };
@@ -53,13 +53,15 @@ export default function AppHeader(props: IProps) {
         );
         if (data.status === true) {
           setGetCarts(data.variantDetail);
-          props.setChangedCart(false);
+          props.setChangedCart?.(false);
         }
       } catch (error) {
         console.error(error);
       }
     };
-    getCarts();
+    if (Cookies.get("userActive") === "1") {
+      getCarts();
+    }
   }, [props.changedCart]);
 
   return (
@@ -70,17 +72,27 @@ export default function AppHeader(props: IProps) {
           <nav className={styles.header__header_top__nav_container}>
             <div className={styles.header__header_top__nav_container__left}>
               <a
-                href="/seller/signin"
+                href={
+                  userActive === "1"
+                    ? currentUser?.isSeller
+                      ? "/seller"
+                      : "/register-seller"
+                    : "/seller/signin"
+                }
                 className={styles.header__header_top__nav_container__left__link}
               >
                 Kênh người bán
               </a>
-              <a
-                href="/seller/signup"
-                className={styles.header__header_top__nav_container__left__link}
-              >
-                Trở thành người bán Shopify
-              </a>
+              {userActive !== "1" && (
+                <a
+                  href="/seller/signup"
+                  className={
+                    styles.header__header_top__nav_container__left__link
+                  }
+                >
+                  Trở thành người bán Shopify
+                </a>
+              )}
             </div>
             <div className={styles.header__header_top__nav_container__right}>
               {userActive !== "1" ? (
@@ -113,7 +125,7 @@ export default function AppHeader(props: IProps) {
                       styles.header__header_top__nav_container__right__link
                     }
                     onClick={() => setOpenOptionsMenu(!openOptionsMenu)}
-                  >{`Hi, ${username}`}</a>
+                  >{`Hi, ${currentUser?.username}`}</a>
                   {openOptionsMenu && (
                     <div className={styles.options_menu_container}>
                       <a
@@ -198,7 +210,9 @@ export default function AppHeader(props: IProps) {
                 }
                 className={styles.iconCart}
               />
-              <span className={styles.number}>{getCarts.length}</span>
+              {userActive === "1" && (
+                <span className={styles.number}>{getCarts.length}</span>
+              )}
             </div>
           </div>
         </div>
