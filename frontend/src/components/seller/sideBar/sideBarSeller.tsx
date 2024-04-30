@@ -23,7 +23,9 @@ export default function SideBarSeller() {
           <a
             href="/seller/products"
             className={`${styles.options__link} ${
-              pathname === "/seller/products" ? styles.options__link_focus : ""
+              pathname.startsWith("/seller/products")
+                ? styles.options__link_focus
+                : ""
             }`}
           >
             Sản phẩm
@@ -33,7 +35,9 @@ export default function SideBarSeller() {
           <a
             href="/seller/orders"
             className={`${styles.options__link} ${
-              pathname === "/seller/orders" ? styles.options__link_focus : ""
+              pathname.startsWith("/seller/orders")
+                ? styles.options__link_focus
+                : ""
             }`}
           >
             Đơn hàng

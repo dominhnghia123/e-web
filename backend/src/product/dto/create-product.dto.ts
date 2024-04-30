@@ -13,29 +13,29 @@ export class CreateProductDto {
   description: string;
 
   @ApiProperty({
-    example: { screen_size: 123, memory: 128, pin: 100, ram: 64 },
+    example: { screen_size: "123", memory: "128", pin: "100", ram: "64" },
   })
   @IsNotEmpty({ message: 'Specifications cannot be empty' })
   specifications: {
-    screen_size: number;
-    memory: number;
-    pin: number;
-    ram: number;
+    screen_size: string;
+    memory: string;
+    pin: string;
+    ram: string;
   };
 
   @ApiProperty({
     example: [
       {
-        quantity: 20,
-        price: 28,
-        sold: 2,
+        quantity: "20",
+        price: "28",
+        sold: "2",
         color: 'black',
         image: 'http://localhost:8000/api/app/iphone.png',
       },
       {
-        quantity: 30,
-        price: 38,
-        sold: 3,
+        quantity: "30",
+        price: "38",
+        sold: "3",
         color: 'white',
         image: 'http://localhost:8000/api/app/iphone.png',
       },
@@ -43,9 +43,9 @@ export class CreateProductDto {
   })
   @IsNotEmpty({ message: 'Type_items cannot be empty' })
   variants: {
-    quantity: number;
-    price: number;
-    sold: number;
+    quantity: string;
+    price: string;
+    sold: string;
     color: string;
     image: string;
   }[];

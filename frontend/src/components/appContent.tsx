@@ -27,7 +27,7 @@ export default function AppContent(props: IProps) {
     const getProducts = async () => {
       try {
         const { data } = await axios.post(
-          `${process.env.BASE_HOST}/product/get-product-by-brand`,
+          `${process.env.BASE_HOST}/product/get-products-by-brand`,
           {
             brand: brand ? brand : "",
           }
@@ -57,10 +57,10 @@ export default function AppContent(props: IProps) {
                   sold: variant.sold,
                 }));
                 const totalSold = soldArr.reduce(
-                  (a: { sold: number }, b: { sold: number }) => ({
+                  (a: { sold: string }, b: { sold: string }) => ({
                     sold: a.sold + b.sold,
                   }),
-                  { sold: 0 }
+                  { sold: "0" }
                 ).sold;
                 return (
                   <a

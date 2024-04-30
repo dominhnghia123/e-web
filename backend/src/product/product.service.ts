@@ -40,7 +40,7 @@ export class ProductService {
       });
 
       return {
-        msg: 'Created product successfully',
+        msg: 'Bạn đã thêm mới sản phẩm thành công.',
         status: true,
         newProduct: newProduct,
       };
@@ -69,20 +69,81 @@ export class ProductService {
     }
   }
 
-  async getAllProducts(
-    keySearch?: string,
-    currentPage?: number,
-    itemsPerPage?: number,
-  ) {
+  async getProductsByBrand(brandDto: BrandDto, req: Request) {
+    const { brand } = brandDto
+    const keySearch: string = req.query?.s?.toString()
+    const currentPage: number = req.query.page as any
+    const itemsPerPage: number = req.query.limit as any
     try {
-      let options = {}
+      let options: any = {
+        brand: brand,
+      };
+
       if (keySearch) {
-        options = {
-          $or: [
-            { name: new RegExp(keySearch.toString(), 'i') },
-            { brand: new RegExp(keySearch.toString(), 'i') },
-          ],
+        options.$or = [
+          { name: new RegExp(keySearch, 'i') },
+          { brand: new RegExp(keySearch, 'i') },
+        ];
+      }
+      if (brand !== "") {
+        if (!(brand in brandEnum)) {
+          return {
+            msg: 'Không có hãng điện thoại này!',
+            status: false
+          }
         }
+        const getProductsByBrand = await this.productModel.find(options).sort({ createdAt: -1 })
+
+        const page: number = currentPage || 1
+        const limit: number = itemsPerPage || 100
+        const skip: number = (page - 1) * limit
+
+        const totalProducts = await this.productModel.countDocuments(options)
+        const data = getProductsByBrand.slice(skip, skip + limit)
+        return {
+          status: true,
+          products: data,
+          totalProducts,
+          page,
+          limit,
+        }
+      } else {
+        const getAllProducts = await this.productModel.find().sort({ createdAt: -1 })
+
+        const page: number = currentPage || 1
+        const limit: number = itemsPerPage || 100
+        const skip: number = (page - 1) * limit
+
+        const totalProducts = await this.productModel.countDocuments(options)
+        const data = getAllProducts.slice(skip, skip + limit)
+        return {
+          status: true,
+          products: data,
+          totalProducts,
+          page,
+          limit,
+        }
+      }
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
+  }
+
+  async getProductsByUser(req: Request) {
+    const userId = req['user']._id;
+    const keySearch: string = req.query?.s?.toString()
+    const currentPage: number = req.query.page as any
+    const itemsPerPage: number = req.query.limit as any
+    try {
+      let options: any = {
+        seller: userId,
+      };
+
+      if (keySearch) {
+        options.$or = [
+          { name: new RegExp(keySearch, 'i') },
+          { brand: new RegExp(keySearch, 'i') },
+        ];
       }
 
       const products = await this.productModel.find(options)
@@ -217,34 +278,6 @@ export class ProductService {
     }
   }
 
-  async getProductByBrand(brandDto: BrandDto) {
-    const { brand } = brandDto
-    try {
-      if (brand !== "") {
-        if (!(brand in brandEnum)) {
-          return {
-            msg: 'Không có hãng điện thoại này!',
-            status: false
-          }
-        }
-
-        const getProductByBrand = await this.productModel.find({ brand: brand }).sort({ createdAt: -1 })
-        return {
-          status: true,
-          products: getProductByBrand
-        }
-      } else {
-        const getAllProducts = await this.productModel.find().sort({ createdAt: -1 })
-        return {
-          status: true,
-          products: getAllProducts
-        }
-      }
-    } catch (error) {
-      throw new BadRequestException(error)
-    }
-  }
-
   async createRating(createRatingDto: CreateRatingDto, req: Request) {
     const { productId, star, comment } = createRatingDto;
     const { _id } = req['user']
@@ -288,7 +321,7 @@ export class ProductService {
 
       let ratingsum = getallratings.ratings
         .map((item) => item.star)
-        .reduce((prev, curr) => prev + curr, 0);
+        .reduce((prev, curr) => parseInt(prev.toString()) + parseInt(curr.toString()), 0);
 
       let actualRatings = parseFloat((ratingsum / totalRating).toFixed(1));
 

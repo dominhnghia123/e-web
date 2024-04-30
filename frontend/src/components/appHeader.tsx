@@ -64,6 +64,19 @@ export default function AppHeader(props: IProps) {
     }
   }, [props.changedCart]);
 
+  //handle search
+  const [keySearch, setKeySearch] = useState("");
+  const handleSearch = async () => {
+    const {data} = await axios.post(
+      `${process.env.BASE_HOST}/product/get-products-by-brand`,
+      {
+        brand: "",
+      }
+    );
+    console.log("55", data);
+    
+  };
+
   return (
     <>
       {isLoading && <div className={styles.loading}></div>}
@@ -188,11 +201,14 @@ export default function AppHeader(props: IProps) {
                     className={
                       styles.header__header_bottom__container__search_section__form__input_container__input
                     }
+                    value={keySearch}
+                    onChange={(e) => setKeySearch(e.target.value)}
                   />
                   <Button
                     className={
                       styles.header__header_bottom__container__search_section__form__input_container__button
                     }
+                    onClick={() => handleSearch()}
                   >
                     Search
                   </Button>

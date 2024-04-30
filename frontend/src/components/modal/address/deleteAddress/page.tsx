@@ -36,7 +36,7 @@ export default function DeleteAddressModal(props: IProps) {
         setOpenModalDeleteAddress(false);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

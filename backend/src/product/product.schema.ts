@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from '../user/user.schema';
-import { brandEnum } from '../utils/variableGlobal';
+import { brandEnum, colorEnum } from '../utils/variableGlobal';
 
 export type ProductDocument = HydratedDocument<Product>;
 
@@ -18,37 +18,37 @@ export class Product {
 
   @Prop({
     type: {
-      screen_size: { type: Number, required: true },
-      memory: { type: Number, required: true },
-      pin: { type: Number, required: true },
-      ram: { type: Number, required: true },
+      screen_size: { type: String },
+      memory: { type: String },
+      pin: { type: String },
+      ram: { type: String },
     },
     required: true,
   })
   specifications: {
-    screen_size: number;
-    memory: number;
-    pin: number;
-    ram: number;
+    screen_size: string;
+    memory: string;
+    pin: string;
+    ram: string;
   };
 
   @Prop({
     required: true,
     type: [
       {
-        quantity: { type: Number, required: true },
-        price: { type: Number, required: true },
-        sold: { type: Number, required: true },
-        color: { type: String, required: true },
-        image: { type: String, required: true },
+        quantity: { type: String },
+        price: { type: String },
+        sold: { type: String },
+        color: { type: String, enum: colorEnum },
+        image: { type: String },
       },
     ],
   })
   variants: {
     _id: any;
-    quantity: number;
-    price: number;
-    sold: number;
+    quantity: string;
+    price: string;
+    sold: string;
     color: string;
     image: string;
   }[];
@@ -60,13 +60,13 @@ export class Product {
   seller: User;
 
   @Prop({ default: 0 })
-  likes: number;
+  likes: string;
 
   @Prop({ default: 0 })
-  dislikes: number;
+  dislikes: string;
 
   @Prop({ default: 0 })
-  numViews: number;
+  numViews: string;
 
   @Prop({ default: false })
   isLiked: boolean;
@@ -77,18 +77,18 @@ export class Product {
   @Prop({
     type: [
       {
-        star: { type: Number },
+        star: { type: String },
         comment: { type: String },
         posted: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         createdAt: { type: Date, default: Date.now },
       },
     ],
   })
-  ratings: { star: number; comment: string; posted: User, createdAt: Date }[];
+  ratings: { star: string; comment: string; posted: User, createdAt: Date }[];
 
   @Prop({ default: 0 })
-  totalRatings: number;
-  _id: any;
+  totalRatings: string;
+  _id: string;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

@@ -45,7 +45,7 @@ export default function CreateAddressModal(props: IProps) {
         setOpenModalCreateAddress(false);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

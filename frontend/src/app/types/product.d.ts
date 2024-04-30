@@ -1,20 +1,20 @@
 interface ISpecifications {
-    screen_size: number;
-    memory: number;
-    pin: number;
-    ram: number;
+    screen_size: string;
+    memory: string;
+    pin: string;
+    ram: string;
 }
 interface IVariants {
     _id: string;
-    quantity: number;
-    price: number;
-    sold: number;
+    quantity: string;
+    price: string;
+    sold: string;
     color: string;
     image: string;
 }
 
 interface IRatings {
-    star: number;
+    star: string;
     comment: string;
     posted: User
 }
@@ -28,9 +28,9 @@ interface IProduct {
     variants: IVariants[];
     brand: string;
     seller: IUser;
-    likes: number;
-    dislikes: number;
-    numViews: number;
+    likes: string;
+    dislikes: string;
+    numViews: string;
     isLiked: boolean;
     isDisliked: boolean;
     ratings: IRatings[];

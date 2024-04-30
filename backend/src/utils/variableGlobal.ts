@@ -28,3 +28,11 @@ export enum brandEnum {
   oppo = 'oppo',
   mi = 'mi'
 }
+
+export enum colorEnum {
+  white = 'white',
+  black = 'black',
+  brown = 'brown',
+  blue = 'blue',
+  violet = 'violet',
+}

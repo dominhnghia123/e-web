@@ -29,10 +29,10 @@ export class UpdateProductDto {
   @IsNotEmpty()
   @ValidateNested()
   specifications: {
-    screen_size: number;
-    memory: number;
-    pin: number;
-    ram: number;
+    screen_size: string;
+    memory: string;
+    pin: string;
+    ram: string;
   };
 
   @ApiProperty({
@@ -50,9 +50,9 @@ export class UpdateProductDto {
   @IsArray()
   @ValidateNested({ each: true })
   variants: {
-    quantity: number;
-    price: number;
-    sold: number;
+    quantity: string;
+    price: string;
+    sold: string;
     color: string;
     image: string;
   }[];

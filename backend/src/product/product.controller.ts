@@ -29,16 +29,16 @@ export class ProductController {
     return this.productService.getAProduct(productIdDto);
   }
 
-  @Post('/get-all-products')
-  getAllProducts(@Req() req: Request) {
-    const keySearch: string = req.query?.s?.toString()
-    const currentPage: number = req.query.page as any
-    const itemsPerPage: number = req.query.limit as any
-    return this.productService.getAllProducts(
-      keySearch,
-      currentPage,
-      itemsPerPage,
-    );
+  @Post('/get-products-by-brand')
+  getProductsByBrand(@Body() brandDto: BrandDto, @Req() req: Request) {
+    return this.productService.getProductsByBrand(brandDto, req);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(UserGuard)
+  @Post('/get-products-by-user')
+  getProductsByUser(@Req() req: Request) {
+    return this.productService.getProductsByUser(req);
   }
 
   @ApiBearerAuth()
@@ -67,11 +67,6 @@ export class ProductController {
   @Post('/get-ratings')
   getRatings(@Body() productIdDto: ProductIdDto) {
     return this.productService.getRatings(productIdDto);
-  }
-
-  @Post('/get-product-by-brand')
-  getProductByBrand(@Body() brandDto: BrandDto) {
-    return this.productService.getProductByBrand(brandDto);
   }
 
   @ApiBearerAuth()

@@ -129,7 +129,6 @@ export class UserService {
       }
 
       if (findUser && !(await findUser.isMatchedPassword(password))) {
-        console.log("password sai!");
         return {
           msg: 'Thông tin đăng nhập không chính xác',
           status: false,

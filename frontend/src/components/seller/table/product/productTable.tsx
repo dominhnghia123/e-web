@@ -21,7 +21,13 @@ export default function ProductTable() {
   useEffect(() => {
     const getProducts = async () => {
       const { data } = await axios.post(
-        `${process.env.BASE_HOST}/product/get-all-products?s=${keySearch}&limit=${itemsPerPage}&page=${currentPage}`
+        `${process.env.BASE_HOST}/product/get-products-by-user?s=${keySearch}&limit=${itemsPerPage}&page=${currentPage}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setProducts(data.data);
       setTotalProducts(data.totalProducts);
