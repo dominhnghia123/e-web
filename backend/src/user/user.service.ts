@@ -16,6 +16,7 @@ import { Request, Response } from 'express';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { Product } from '../product/product.schema';
 import { PhoneNumberDto } from './dto/phoneNumber.dto';
+import { RegisterSellerDto } from '../requestSeller/dto/register-seller.dto';
 
 @Injectable()
 export class UserService {
@@ -64,53 +65,12 @@ export class UserService {
         password: password,
         mobile: mobile,
       });
+      const payload = { email: email, username: username };
 
       return {
         msg: 'Đăng ký thành công!',
         status: true,
-        newUser: newUser,
-      };
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  }
-
-  async registerSeller(registerUserDto: RegisterUserDto) {
-    const { username, email, password, mobile } = registerUserDto;
-    try {
-      const alreadyUser = await this.userModel.findOne({
-        $or: [{ username: username }, { email: email }, { mobile: mobile }],
-      });
-      if (alreadyUser) {
-        if (alreadyUser.isSeller === true) {
-          return {
-            msg: 'Người dùng này đã là người bán',
-            status: false,
-          };
-        }
-        alreadyUser.isSeller = true;
-        await alreadyUser.save();
-      } else {
-        if (mobile.length != 10) {
-          return {
-            property: 'mobile',
-            msg: 'Số điện thoại không hợp lệ.',
-            status: false,
-          };
-        }
-
-        await this.userModel.create({
-          username: username,
-          email: email,
-          password: password,
-          mobile: mobile,
-          isSeller: true,
-        });
-      }
-
-      return {
-        msg: 'Đăng ký trở thành người bán Shopify thành công.',
-        status: true,
+        newUser: { ...newUser, token: await this.jwtService.signAsync(payload), },
       };
     } catch (error) {
       throw new BadRequestException(error);
@@ -163,6 +123,7 @@ export class UserService {
           _id: findUser._id,
           username: findUser.username,
           email: findUser.email,
+          mobile: findUser.mobile,
           role: findUser.role,
           isSeller: findUser.isSeller,
           token: await this.jwtService.signAsync(payload),

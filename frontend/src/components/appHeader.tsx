@@ -9,6 +9,12 @@ import { MouseEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useAppDispatch } from "@/redux/store";
+import {
+  getProductsBySearchError,
+  getProductsBySearchStart,
+  getProductsBySearchSuccess,
+} from "@/redux/features/product/productSlice";
 
 interface IProps {
   changedCart?: boolean;
@@ -66,29 +72,28 @@ export default function AppHeader(props: IProps) {
   }, [props.changedCart]);
 
   //handle search
+  const dispatch = useAppDispatch();
   const [keySearch, setKeySearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [products, setProducts] = useState([]);
   const handleSearch = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    dispatch(getProductsBySearchStart());
     try {
       const { data } = await axios.post(
-        `${process.env.BASE_HOST}/product/get-products-by-brand?s=${keySearch}&page=${currentPage}&limit=${itemsPerPage}`,
+        `${process.env.BASE_HOST}/product/get-products-by-brand?s=${keySearch}&page=1&limit=10`,
         {
           brand: "",
         }
       );
       if (data.status === true) {
-        setCurrentPage(data.page);
-        setItemsPerPage(data.limit);
-        setProducts(data.products);
+        dispatch(getProductsBySearchSuccess({ ...data, keySearch }));
         router.replace("/search");
       }
       if (data.status === false) {
+        dispatch(getProductsBySearchError());
         toast.error(data.msg);
       }
     } catch (error) {
+      dispatch(getProductsBySearchError());
       console.error(error);
     }
   };

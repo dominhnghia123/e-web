@@ -10,6 +10,7 @@ import { UserGuard } from './user.guard';
 import { AdminGuard } from './admin.guard';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { PhoneNumberDto } from './dto/phoneNumber.dto';
+import { RegisterSellerDto } from '../requestSeller/dto/register-seller.dto';
 
 @ApiTags('User')
 @Controller('api/user')
@@ -19,11 +20,6 @@ export class UserController {
   @Post('/register')
   registerUser(@Body() registerUserDto: RegisterUserDto) {
     return this.userService.registerUser(registerUserDto);
-  }
-
-  @Post('/register-seller')
-  registerSeller(@Body() registerUserDto: RegisterUserDto) {
-    return this.userService.registerSeller(registerUserDto);
   }
 
   @Post('/login')

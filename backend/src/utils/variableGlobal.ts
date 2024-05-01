@@ -36,3 +36,9 @@ export enum colorEnum {
   blue = 'blue',
   violet = 'violet',
 }
+
+export enum statusRequestSellerEnum {
+  pending = 'pending',
+  accept = 'accept',
+  refuse = 'refuse'
+}

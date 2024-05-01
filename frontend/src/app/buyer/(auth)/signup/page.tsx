@@ -37,8 +37,11 @@ export default function Signup() {
     dispatch(registerStart());
     try {
       const response = await registerUser(dataSignup, setDataSignupError);
+      const currentUser = response?.newUser;
+      console.log("pp", currentUser);
+      
       if (response.status === true) {
-        dispatch(registerSuccess());
+        dispatch(registerSuccess(currentUser));
         setDataSignupError((prev) => ({ ...prev, loginError: "" }));
         setIsLoading(true);
         toast.success(response.msg);

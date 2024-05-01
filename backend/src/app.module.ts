@@ -12,6 +12,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AddressModule } from './address/address.module';
 import { CouponModule } from './coupon/coupon.module';
+import { RequestSellerModule } from './requestSeller/requestSeller.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { CouponModule } from './coupon/coupon.module';
     CartModule,
     OrderModule,
     AddressModule,
-    CouponModule
+    CouponModule,
+    RequestSellerModule
   ],
   controllers: [AppController],
   providers: [AppService],

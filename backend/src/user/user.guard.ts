@@ -45,6 +45,7 @@ export class UserGuard implements CanActivate {
         email: currentUser.email,
         birthday: currentUser.birthday,
         role: currentUser.role,
+        isSeller:currentUser.isSeller,
         mobile: currentUser.mobile,
         avatar: currentUser.avatar,
         followers: currentUser.followers,

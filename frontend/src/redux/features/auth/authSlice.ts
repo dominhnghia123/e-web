@@ -17,6 +17,7 @@ type RegisterState = {
   isLoading: boolean;
   isError: boolean;
   isSuccess: boolean;
+  currentUser: IUser | null;
 };
 
 const initialState = {
@@ -27,6 +28,7 @@ const initialState = {
     isSuccess: false,
   } as LoginState,
   register: {
+    currentUser: null,
     isLoading: false,
     isError: false,
     isSuccess: false,
@@ -67,10 +69,12 @@ export const authSlice = createSlice({
       state.register.isError = true;
       state.register.isSuccess = false;
     },
-    registerSuccess: (state) => {
+    registerSuccess: (state, action: PayloadAction<any>): any => {
       state.register.isLoading = false;
       state.register.isError = false;
       state.register.isSuccess = true;
+      state.register.currentUser = action.payload;
+      setStogare("currentUser", JSON.stringify(action.payload));
     },
   },
 });
