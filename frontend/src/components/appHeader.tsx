@@ -5,9 +5,10 @@ import { FaShopify } from "react-icons/fa6";
 import styles from "../app/app.module.css";
 import Cookies from "js-cookie";
 import { getStogare, getToken, removeStogare } from "@/app/helper/stogare";
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 interface IProps {
   changedCart?: boolean;
@@ -66,15 +67,30 @@ export default function AppHeader(props: IProps) {
 
   //handle search
   const [keySearch, setKeySearch] = useState("");
-  const handleSearch = async () => {
-    const {data} = await axios.post(
-      `${process.env.BASE_HOST}/product/get-products-by-brand`,
-      {
-        brand: "",
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [products, setProducts] = useState([]);
+  const handleSearch = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      const { data } = await axios.post(
+        `${process.env.BASE_HOST}/product/get-products-by-brand?s=${keySearch}&page=${currentPage}&limit=${itemsPerPage}`,
+        {
+          brand: "",
+        }
+      );
+      if (data.status === true) {
+        setCurrentPage(data.page);
+        setItemsPerPage(data.limit);
+        setProducts(data.products);
+        router.replace("/search");
       }
-    );
-    console.log("55", data);
-    
+      if (data.status === false) {
+        toast.error(data.msg);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -185,7 +201,7 @@ export default function AppHeader(props: IProps) {
               }
             >
               <form
-                action="#"
+                action=""
                 className={
                   styles.header__header_bottom__container__search_section__form
                 }
@@ -205,10 +221,11 @@ export default function AppHeader(props: IProps) {
                     onChange={(e) => setKeySearch(e.target.value)}
                   />
                   <Button
+                    type="submit"
                     className={
                       styles.header__header_bottom__container__search_section__form__input_container__button
                     }
-                    onClick={() => handleSearch()}
+                    onClick={(e) => handleSearch(e)}
                   >
                     Search
                   </Button>
