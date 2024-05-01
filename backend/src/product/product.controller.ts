@@ -44,8 +44,8 @@ export class ProductController {
   @ApiBearerAuth()
   @UseGuards(UserGuard)
   @Post('/update-product')
-  updateProduct(@Body() updateProductDto: UpdateProductDto) {
-    return this.productService.updateProduct(updateProductDto);
+  updateProduct(@Body() updateProductDto: UpdateProductDto, @Req() req: Request) {
+    return this.productService.updateProduct(updateProductDto, req);
   }
 
   @ApiBearerAuth()

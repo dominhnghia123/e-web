@@ -12,6 +12,10 @@ export class CreateProductDto {
   @ApiProperty({ example: 'Sản phẩm đẹp' })
   description: string;
 
+  @ApiProperty({ example: 'iphone' })
+  @IsNotEmpty({ message: 'Brand cannot be empty' })
+  brand: string;
+
   @ApiProperty({
     example: { screen_size: "123", memory: "128", pin: "100", ram: "64" },
   })
@@ -28,14 +32,12 @@ export class CreateProductDto {
       {
         quantity: "20",
         price: "28",
-        sold: "2",
         color: 'black',
         image: 'http://localhost:8000/api/app/iphone.png',
       },
       {
         quantity: "30",
         price: "38",
-        sold: "3",
         color: 'white',
         image: 'http://localhost:8000/api/app/iphone.png',
       },
@@ -45,12 +47,7 @@ export class CreateProductDto {
   variants: {
     quantity: string;
     price: string;
-    sold: string;
     color: string;
     image: string;
   }[];
-
-  @ApiProperty({ example: 'iphone' })
-  @IsNotEmpty({ message: 'Brand cannot be empty' })
-  brand: string;
 }

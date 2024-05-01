@@ -18,6 +18,10 @@ export class UpdateProductDto {
   @IsNotEmpty()
   description: string;
 
+  @ApiProperty({ example: 'Apple' })
+  @IsNotEmpty({ message: 'Brand cannot be empty' })
+  brand: string;
+
   @ApiProperty({
     example: {
       screen_size: 6.7,
@@ -40,7 +44,6 @@ export class UpdateProductDto {
       {
         quantity: 100,
         price: 999,
-        sold: 50,
         color: 'black',
         image: 'http://localhost:8000/image.jpg',
       },
@@ -52,12 +55,8 @@ export class UpdateProductDto {
   variants: {
     quantity: string;
     price: string;
-    sold: string;
     color: string;
     image: string;
   }[];
 
-  @ApiProperty({ example: 'Apple' })
-  @IsNotEmpty({ message: 'Brand cannot be empty' })
-  brand: string;
 }

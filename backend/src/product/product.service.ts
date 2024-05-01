@@ -55,12 +55,11 @@ export class ProductService {
       const product = await this.productModel.findById(_id);
       if (!product) {
         return {
-          msg: 'This product is not exists',
+          msg: 'Sản phẩm này không tồn tại',
           status: false,
         };
       }
       return {
-        msg: 'Found product successfully',
         status: true,
         product: product,
       };
@@ -75,9 +74,9 @@ export class ProductService {
     const currentPage: number = req.query.page as any
     const itemsPerPage: number = req.query.limit as any
     try {
-      let options: any = {
+      let options: any = brand !== "" ? {
         brand: brand,
-      };
+      } : {};
 
       if (keySearch) {
         options.$or = [
@@ -85,44 +84,27 @@ export class ProductService {
           { brand: new RegExp(keySearch, 'i') },
         ];
       }
-      if (brand !== "") {
-        if (!(brand in brandEnum)) {
-          return {
-            msg: 'Không có hãng điện thoại này!',
-            status: false
-          }
-        }
-        const getProductsByBrand = await this.productModel.find(options).sort({ createdAt: -1 })
-
-        const page: number = currentPage || 1
-        const limit: number = itemsPerPage || 100
-        const skip: number = (page - 1) * limit
-
-        const totalProducts = await this.productModel.countDocuments(options)
-        const data = getProductsByBrand.slice(skip, skip + limit)
+      if (brand !== "" && !(brand in brandEnum)) {
         return {
-          status: true,
-          products: data,
-          totalProducts,
-          page,
-          limit,
+          msg: 'Không có hãng điện thoại này!',
+          status: false
         }
-      } else {
-        const getAllProducts = await this.productModel.find().sort({ createdAt: -1 })
+      }
 
-        const page: number = currentPage || 1
-        const limit: number = itemsPerPage || 100
-        const skip: number = (page - 1) * limit
+      const getProductsByBrand = await this.productModel.find(options).sort({ createdAt: -1 })
 
-        const totalProducts = await this.productModel.countDocuments(options)
-        const data = getAllProducts.slice(skip, skip + limit)
-        return {
-          status: true,
-          products: data,
-          totalProducts,
-          page,
-          limit,
-        }
+      const page: number = currentPage || 1
+      const limit: number = itemsPerPage || 10
+      const skip: number = (page - 1) * limit
+
+      const totalProducts = await this.productModel.countDocuments(options)
+      const data = getProductsByBrand.slice(skip, parseInt(skip.toString()) + parseInt(limit.toString()))
+      return {
+        status: true,
+        products: data,
+        totalProducts,
+        page,
+        limit,
       }
     } catch (error) {
       throw new BadRequestException(error)
@@ -167,7 +149,7 @@ export class ProductService {
     }
   }
 
-  async updateProduct(updateProductDto: UpdateProductDto) {
+  async updateProduct(updateProductDto: UpdateProductDto, req: Request) {
     const {
       _id,
       name,
@@ -177,20 +159,45 @@ export class ProductService {
       variants,
       brand,
     } = updateProductDto;
+    const userId = req['user']._id
     try {
-      const findProduct = await this.productModel.findById(_id);
+      const findProduct = await this.productModel.findOne({ _id: _id, seller: userId });
       if (!findProduct) {
         return {
-          msg: 'This product not exists',
+          msg: 'Sản phẩm này không tồn tại',
           status: false,
         };
+      }
+
+      if (!slug) {
+        const alreadySlugMovie = await this.productModel.findOne({
+          slug: slugify(name),
+        })
+        if (alreadySlugMovie) {
+          return {
+            msg: 'Slug này đã tồn tại',
+            status: false,
+          }
+        }
+        updateProductDto.slug = slugify(name)
+      } else {
+        const alreadySlugMovie = await this.productModel.findOne({
+          slug: slugify(slug),
+        })
+        if (alreadySlugMovie) {
+          return {
+            msg: 'Slug này đã tồn tại',
+            status: false,
+          }
+        }
+        updateProductDto.slug = slugify(slug)
       }
 
       const updatedProduct = await this.productModel.findByIdAndUpdate(
         _id,
         {
           name: name,
-          slug: slug,
+          slug: updateProductDto.slug,
           description: description,
           specifications: specifications,
           variants: variants,
@@ -202,7 +209,7 @@ export class ProductService {
       );
 
       return {
-        msg: 'Updated product successfully',
+        msg: 'Cập nhật sản phẩm thành công!',
         status: true,
         updatedProduct: updatedProduct,
       };
