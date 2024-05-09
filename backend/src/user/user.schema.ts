@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import { Cart } from '../cart/cart.schema';
 import { Product } from '../product/product.schema';
 import { genderEnum } from '../utils/variableGlobal';
 
@@ -50,6 +49,9 @@ export class User {
 
   @Prop({ default: Array })
   cart: string[];
+
+  @Prop({ default: Array })
+  coupons: string[];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Product', default: null })
   wishlist: Product[];

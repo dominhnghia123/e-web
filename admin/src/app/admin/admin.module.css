@@ -1,0 +1,151 @@
+.sider_container {
+  height: auto;
+  min-height: 100vh;
+}
+.logo_text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+.header_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+.header_right_container {
+  display: flex;
+  height: 100%;
+  width: auto;
+  margin-right: 40px;
+  justify-content: center;
+  gap: 100px;
+  align-items: center;
+}
+.notifycation_container {
+  height: 100%;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.count_noti {
+  position: absolute;
+  bottom: 14px;
+  left: 25px;
+  color: black;
+  font-size: 16px;
+  font-weight: 600;
+}
+.icon_noti {
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+}
+.show_noti_container {
+  position: absolute;
+  top: 50px;
+  right: 15px;
+  background-color: rgb(239, 239, 238);
+  width: 500px;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+  border-radius: 5px;
+}
+.noti_content {
+  width: 95%;
+  height: 95%;
+  max-height: 500px;
+  overflow-y: auto;
+}
+.item_noti {
+  height: auto;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 20px;
+  cursor: pointer;
+}
+.image_noti {
+  height: 50px;
+  width: 50px;
+  border-radius: 50px;
+  margin-top: 10px;
+}
+.item_noti_right {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.username_noti {
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.info_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  gap: 15px;
+  width: 100%;
+  cursor: pointer;
+  position: relative;
+}
+.avatar {
+  height: 60px;
+  width: 60px;
+  border-radius: 50px;
+}
+.username_email_container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 100%;
+  width: auto;
+}
+.username {
+  font-size: 18px;
+  font-weight: 500;
+  width: 100%;
+  height: 20px;
+}
+.email {
+  font-size: 15px;
+  font-weight: 400;
+  width: 100%;
+  height: 20px;
+}
+.options_menu_container {
+  position: absolute;
+  top: 65px;
+  right: 0px;
+  background-color: rgb(239, 239, 238);
+  width: 170px;
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  gap: 15px;
+}
+.option_menu {
+  cursor: pointer;
+  font-size: 14px;
+  color: black;
+  text-decoration: none;
+}
+.option_menu:hover {
+  color: rgb(134, 134, 137);
+}

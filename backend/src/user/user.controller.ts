@@ -44,8 +44,8 @@ export class UserController {
   }
 
   @Post('/get-all-users')
-  getAllUsers() {
-    return this.userService.getAllUsers();
+  getAllUsers(@Req() req: Request) {
+    return this.userService.getAllUsers(req);
   }
 
   @ApiBearerAuth()

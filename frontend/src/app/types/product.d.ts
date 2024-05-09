@@ -36,4 +36,5 @@ interface IProduct {
     ratings: IRatings[];
     totalRatings: string;
     createdAt: date;
+    updatedAt: date;
 }

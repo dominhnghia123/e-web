@@ -6,6 +6,7 @@ import { RegisterSellerDto } from './dto/register-seller.dto';
 import { Request } from 'express';
 import { AdminGuard } from '../user/admin.guard';
 import { UserIdDto } from '../user/dto/userId.dto';
+import { RequestIdDto } from './dto/requestId.dto';
 
 @ApiTags('RequestSeller')
 @Controller('api/requestSeller')
@@ -22,14 +23,28 @@ export class RequestSellerController {
     @ApiBearerAuth()
     @UseGuards(AdminGuard)
     @Post('/accept-request-become-seller')
-    acceptRequestBecomeSeller(@Body() userIdDto: UserIdDto) {
-        return this.requestSellerService.acceptRequestBecomeSeller(userIdDto);
+    acceptRequestBecomeSeller(@Body() requestIdDto: RequestIdDto) {
+        return this.requestSellerService.acceptRequestBecomeSeller(requestIdDto);
     }
 
     @ApiBearerAuth()
     @UseGuards(AdminGuard)
     @Post('/refuse-request-become-seller')
-    refuseRequestBecomeSeller(@Body() userIdDto: UserIdDto) {
-        return this.requestSellerService.refuseRequestBecomeSeller(userIdDto);
+    refuseRequestBecomeSeller(@Body() requestIdDto: RequestIdDto) {
+        return this.requestSellerService.refuseRequestBecomeSeller(requestIdDto);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
+    @Post('/get-requests-become-seller')
+    getRequestsBecomeSeller() {
+        return this.requestSellerService.getRequestsBecomeSeller();
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
+    @Post('/get-detail-request')
+    getDetailRequest(@Body() requestDtoId: RequestIdDto) {
+        return this.requestSellerService.getDetailRequest(requestDtoId);
     }
 }

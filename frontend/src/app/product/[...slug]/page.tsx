@@ -71,12 +71,14 @@ export default function ViewDetailProduct({
   const [selectedVariant, setSelectedVariant] = useState<number | any>(0);
   const [selectedVariantId, setSelectedVariantId] = useState<string | any>("");
 
-  const quantityVariant: number | undefined =
+  const quantityVariant: string | undefined =
     product?.variants[selectedVariant]?.quantity;
-  const soldVariant: number | undefined =
+  const soldVariant: string | undefined =
     product?.variants[selectedVariant]?.sold;
   const inventoryVariant =
-    quantityVariant && soldVariant && quantityVariant - soldVariant;
+    quantityVariant &&
+    soldVariant &&
+    parseInt(quantityVariant) - parseInt(soldVariant);
 
   const [star, setStar] = useState<number>(0);
   const [comment, setComment] = useState<string>("");

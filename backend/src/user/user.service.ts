@@ -199,20 +199,34 @@ export class UserService {
     }
   }
 
-  async getAllUsers() {
+  async getAllUsers(req: Request) {
+    const keySearch: string = req.query?.s?.toString()
+    const currentPage: number = req.query.page as any
+    const itemsPerPage: number = req.query.limit as any
     try {
-      const allUsers = await this.userModel.find().sort({ username: 'asc' });
-      if (allUsers.length > 0) {
-        return {
-          msg: 'All users were found successfully',
-          status: true,
-          allUsers: allUsers,
-        };
-      } else {
-        return {
-          msg: 'No users exist in the database',
-          status: true,
-        };
+      let options: any = {
+        role: "user",
+      };
+
+      if (keySearch) {
+        options.$or = [
+          { name: new RegExp(keySearch, 'i') },
+          { email: new RegExp(keySearch, 'i') },
+        ];
+      }
+      const allUsers = await this.userModel.find(options).sort({ username: 'asc' })
+      const page: number = currentPage || 1
+      const limit: number = itemsPerPage || 10
+      const skip: number = (page - 1) * limit
+
+      const totalUsers = await this.userModel.countDocuments(options)
+      const data = allUsers.slice(skip, parseInt(skip.toString()) + parseInt(limit.toString()))
+      return {
+        status: true,
+        users: data,
+        totalUsers,
+        page,
+        limit,
       }
     } catch (error) {
       throw new BadRequestException(error);

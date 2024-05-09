@@ -8,6 +8,7 @@ import { RegisterSellerDto } from './dto/register-seller.dto';
 import { Request } from 'express';
 import { statusRequestSellerEnum } from '../utils/variableGlobal';
 import { UserIdDto } from '../user/dto/userId.dto';
+import { RequestIdDto } from './dto/requestId.dto';
 
 @Injectable()
 export class RequestSellerService {
@@ -54,20 +55,19 @@ export class RequestSellerService {
 
     }
 
-    async acceptRequestBecomeSeller(userIdDto: UserIdDto) {
-        const { _id } = userIdDto;
+    async acceptRequestBecomeSeller(requestIdDto: RequestIdDto) {
+        const { _id } = requestIdDto;
         try {
-            const findRequest = await this.requestSellerModel.findOne({ userId: _id });
+            const findRequest = await this.requestSellerModel.findById(_id);
             if (!findRequest) {
                 return {
                     msg: 'Yêu cầu này đã bị xóa hoặc không tồn tại',
                     status: false
                 }
             }
-            findRequest.status = statusRequestSellerEnum.accept;
-            await findRequest.save();
+            await findRequest.deleteOne();
             await this.userModel.findByIdAndUpdate(
-                _id,
+                findRequest.userId,
                 {
                     isSeller: true
                 },
@@ -84,20 +84,19 @@ export class RequestSellerService {
         }
     }
 
-    async refuseRequestBecomeSeller(userIdDto: UserIdDto) {
-        const { _id } = userIdDto;
+    async refuseRequestBecomeSeller(requestIdDto: RequestIdDto) {
+        const { _id } = requestIdDto;
         try {
-            const findRequest = await this.requestSellerModel.findOne({ userId: _id });
+            const findRequest = await this.requestSellerModel.findById(_id);
             if (!findRequest) {
                 return {
                     msg: 'Yêu cầu này đã bị xóa hoặc không tồn tại',
                     status: false
                 }
             }
-            findRequest.status = statusRequestSellerEnum.refuse;
-            await findRequest.save();
+            await findRequest.deleteOne();
             await this.userModel.findByIdAndUpdate(
-                _id,
+                findRequest.userId,
                 {
                     isSeller: false
                 },
@@ -108,6 +107,31 @@ export class RequestSellerService {
             return {
                 msg: 'Đã từ chối yêu cầu',
                 status: true
+            }
+        } catch (error) {
+            throw new BadRequestException(error);
+        }
+    }
+
+    async getRequestsBecomeSeller() {
+        try {
+            const getRequests = await this.requestSellerModel.find().sort({ createdAt: -1 }).populate("userId");
+            return {
+                status: true,
+                getRequests
+            }
+        } catch (error) {
+            throw new BadRequestException(error);
+        }
+    }
+
+    async getDetailRequest(requestDtoId: RequestIdDto) {
+        const { _id } = requestDtoId
+        try {
+            const request = await this.requestSellerModel.findById(_id).populate("userId");
+            return {
+                status: true,
+                request
             }
         } catch (error) {
             throw new BadRequestException(error);

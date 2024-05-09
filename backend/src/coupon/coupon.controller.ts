@@ -36,6 +36,13 @@ export class CouponController {
 
     @ApiBearerAuth()
     @UseGuards(AdminGuard)
+    @Post('/get-all-coupons')
+    getAllCoupons(@Req() req: Request) {
+        return this.couponService.getAllCoupons(req);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
     @Post('/update-coupon')
     updateCoupon(@Body() updateCouponDto: UpdateCouponDto) {
         return this.couponService.updateCoupon(updateCouponDto);

@@ -32,6 +32,10 @@ export class CouponService {
                 discount: discount,
             });
 
+            const user = await this.userModel.findById({ _id: userId });
+            user.coupons.push(newCoupon._id.toString());
+            await user.save();
+
             return {
                 msg: 'Tạo khuyến mãi thành công',
                 status: true,
@@ -44,9 +48,8 @@ export class CouponService {
 
     async getACoupon(couponIdDto: CouponIdDto, req: Request) {
         const { _id } = couponIdDto;
-        const userId = req['user']._id
         try {
-            const coupon = await this.couponModel.findOne({ _id, userId });
+            const coupon = await this.couponModel.findOne({ _id });
             if (!coupon) {
                 return {
                     msg: 'Gói khuyến mãi này không tồn tại',
@@ -70,6 +73,35 @@ export class CouponService {
                 status: true,
                 allCoupons: allCoupons,
             };
+        } catch (error) {
+            throw new BadRequestException(error);
+        }
+    }
+
+    async getAllCoupons(req: Request) {
+        const keySearch: string = req.query?.s?.toString()
+        const currentPage: number = req.query.page as any
+        const itemsPerPage: number = req.query.limit as any
+        try {
+            let options = {};
+
+            if (keySearch) {
+                options = { name: new RegExp(keySearch, 'i') }
+            }
+            const allCoupons = await this.couponModel.find(options).sort({ createdAt: -1 }).populate("userId")
+            const page: number = currentPage || 1
+            const limit: number = itemsPerPage || 10
+            const skip: number = (page - 1) * limit
+
+            const totalCoupons = await this.couponModel.countDocuments(options)
+            const data = allCoupons.slice(skip, parseInt(skip.toString()) + parseInt(limit.toString()))
+            return {
+                status: true,
+                coupons: data,
+                totalCoupons,
+                page,
+                limit,
+            }
         } catch (error) {
             throw new BadRequestException(error);
         }

@@ -52,6 +52,7 @@ export default function RegisterSellerPage() {
         );
         if (data.status === true) {
           toast.success(data.msg);
+          router.back();
         }
         if (data.status === false) {
           toast.error(data.msg);
