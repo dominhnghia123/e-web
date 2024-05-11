@@ -12,7 +12,7 @@ import { CreateRatingDto } from './dto/create-rating.dto';
 @ApiTags('Product')
 @Controller('api/product')
 export class ProductController {
-  constructor(private productService: ProductService) { }
+  constructor(private productService: ProductService) {}
 
   @ApiBearerAuth()
   @UseGuards(UserGuard)
@@ -44,7 +44,10 @@ export class ProductController {
   @ApiBearerAuth()
   @UseGuards(UserGuard)
   @Post('/update-product')
-  updateProduct(@Body() updateProductDto: UpdateProductDto, @Req() req: Request) {
+  updateProduct(
+    @Body() updateProductDto: UpdateProductDto,
+    @Req() req: Request,
+  ) {
     return this.productService.updateProduct(updateProductDto, req);
   }
 
@@ -73,6 +76,6 @@ export class ProductController {
   @UseGuards(UserGuard)
   @Post('/create-rating')
   createRating(@Body() createRatingDto: CreateRatingDto, @Req() req: Request) {
-    return this.productService.createRating(createRatingDto, req)
+    return this.productService.createRating(createRatingDto, req);
   }
 }

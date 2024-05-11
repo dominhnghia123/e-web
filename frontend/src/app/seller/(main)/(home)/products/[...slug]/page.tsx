@@ -43,6 +43,7 @@ export default function ViewDetailProduct({
       setVariants(data.product.variants);
     };
     getProduct();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [isChangedInputSlug, setIsChangedInputSlug] = useState(false);
   const [specifications, setSpecifications] = useState({

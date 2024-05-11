@@ -6,11 +6,11 @@ import { AddressController } from './address.controler';
 import { AddressService } from './address.service';
 
 @Module({
-    imports: [
-        MongooseModule.forFeature([{ name: Address.name, schema: AddressSchema }]),
-        UserModule,
-    ],
-    controllers: [AddressController],
-    providers: [AddressService],
+  imports: [
+    MongooseModule.forFeature([{ name: Address.name, schema: AddressSchema }]),
+    UserModule,
+  ],
+  controllers: [AddressController],
+  providers: [AddressService],
 })
-export class AddressModule { }
+export class AddressModule {}

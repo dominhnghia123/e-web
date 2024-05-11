@@ -17,7 +17,7 @@ export class CreateProductDto {
   brand: string;
 
   @ApiProperty({
-    example: { screen_size: "123", memory: "128", pin: "100", ram: "64" },
+    example: { screen_size: '123', memory: '128', pin: '100', ram: '64' },
   })
   @IsNotEmpty({ message: 'Specifications cannot be empty' })
   specifications: {
@@ -30,14 +30,14 @@ export class CreateProductDto {
   @ApiProperty({
     example: [
       {
-        quantity: "20",
-        price: "28",
+        quantity: '20',
+        price: '28',
         color: 'black',
         image: 'http://localhost:8000/api/app/iphone.png',
       },
       {
-        quantity: "30",
-        price: "38",
+        quantity: '30',
+        price: '38',
         color: 'white',
         image: 'http://localhost:8000/api/app/iphone.png',
       },

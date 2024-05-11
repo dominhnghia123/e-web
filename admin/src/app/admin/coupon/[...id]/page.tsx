@@ -63,6 +63,7 @@ export default function ViewDetailCoupon({
     };
     getUsers();
     getCoupon();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleUpdateCoupon = async () => {

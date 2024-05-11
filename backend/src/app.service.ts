@@ -5,7 +5,7 @@ import { join } from 'path';
 
 @Injectable()
 export class AppService {
-  constructor() { }
+  constructor() {}
 
   async uploadFiles(file: Express.Multer.File, req: Request) {
     return {
@@ -24,7 +24,7 @@ export class AppService {
       return {
         msg: 'File không tồn tại',
         status: false,
-      }
-    })
+      };
+    });
   }
 }

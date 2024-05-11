@@ -26,7 +26,7 @@ export enum brandEnum {
   vivo = 'vivo',
   huawei = 'huawei',
   oppo = 'oppo',
-  mi = 'mi'
+  mi = 'mi',
 }
 
 export enum colorEnum {
@@ -40,5 +40,5 @@ export enum colorEnum {
 export enum statusRequestSellerEnum {
   pending = 'pending',
   accept = 'accept',
-  refuse = 'refuse'
+  refuse = 'refuse',
 }

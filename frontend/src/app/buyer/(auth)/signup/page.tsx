@@ -38,8 +38,6 @@ export default function Signup() {
     try {
       const response = await registerUser(dataSignup, setDataSignupError);
       const currentUser = response?.newUser;
-      console.log("pp", currentUser);
-      
       if (response.status === true) {
         dispatch(registerSuccess(currentUser));
         setDataSignupError((prev) => ({ ...prev, loginError: "" }));

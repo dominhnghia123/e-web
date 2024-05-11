@@ -17,16 +17,10 @@ export class ProductService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<Product>,
     @InjectModel(User.name) private userModel: Model<User>,
-  ) { }
+  ) {}
   async createProduct(createProductDto: CreateProductDto, req: Request) {
-    const {
-      name,
-      slug,
-      description,
-      specifications,
-      variants,
-      brand,
-    } = createProductDto;
+    const { name, slug, description, specifications, variants, brand } =
+      createProductDto;
     const currentUser = req['user'];
     try {
       const newProduct = await this.productModel.create({
@@ -69,14 +63,17 @@ export class ProductService {
   }
 
   async getProductsByBrand(brandDto: BrandDto, req: Request) {
-    const { brand } = brandDto
-    const keySearch: string = req.query?.s?.toString()
-    const currentPage: number = req.query.page as any
-    const itemsPerPage: number = req.query.limit as any
+    const { brand } = brandDto;
+    const keySearch: string = req.query?.s?.toString();
+    const currentPage: number = req.query.page as any;
+    const itemsPerPage: number = req.query.limit as any;
     try {
-      let options: any = brand !== "" ? {
-        brand: brand,
-      } : {};
+      const options: any =
+        brand !== ''
+          ? {
+              brand: brand,
+            }
+          : {};
 
       if (keySearch) {
         options.$or = [
@@ -84,40 +81,45 @@ export class ProductService {
           { brand: new RegExp(keySearch, 'i') },
         ];
       }
-      if (brand !== "" && !(brand in brandEnum)) {
+      if (brand !== '' && !(brand in brandEnum)) {
         return {
           msg: 'Không có hãng điện thoại này!',
-          status: false
-        }
+          status: false,
+        };
       }
 
-      const getProductsByBrand = await this.productModel.find(options).sort({ createdAt: -1 })
+      const getProductsByBrand = await this.productModel
+        .find(options)
+        .sort({ createdAt: -1 });
 
-      const page: number = currentPage || 1
-      const limit: number = itemsPerPage || 10
-      const skip: number = (page - 1) * limit
+      const page: number = currentPage || 1;
+      const limit: number = itemsPerPage || 10;
+      const skip: number = (page - 1) * limit;
 
-      const totalProducts = await this.productModel.countDocuments(options)
-      const data = getProductsByBrand.slice(skip, parseInt(skip.toString()) + parseInt(limit.toString()))
+      const totalProducts = await this.productModel.countDocuments(options);
+      const data = getProductsByBrand.slice(
+        skip,
+        parseInt(skip.toString()) + parseInt(limit.toString()),
+      );
       return {
         status: true,
         products: data,
         totalProducts,
         page,
         limit,
-      }
+      };
     } catch (error) {
-      throw new BadRequestException(error)
+      throw new BadRequestException(error);
     }
   }
 
   async getProductsByUser(req: Request) {
     const userId = req['user']._id;
-    const keySearch: string = req.query?.s?.toString()
-    const currentPage: number = req.query.page as any
-    const itemsPerPage: number = req.query.limit as any
+    const keySearch: string = req.query?.s?.toString();
+    const currentPage: number = req.query.page as any;
+    const itemsPerPage: number = req.query.limit as any;
     try {
-      let options: any = {
+      const options: any = {
         seller: userId,
       };
 
@@ -128,14 +130,14 @@ export class ProductService {
         ];
       }
 
-      const products = await this.productModel.find(options)
+      const products = await this.productModel.find(options);
 
-      const page: number = currentPage || 1
-      const limit: number = itemsPerPage || 100
-      const skip: number = (page - 1) * limit
+      const page: number = currentPage || 1;
+      const limit: number = itemsPerPage || 100;
+      const skip: number = (page - 1) * limit;
 
-      const totalProducts = await this.productModel.countDocuments(options)
-      const data = products.slice(skip, skip + limit)
+      const totalProducts = await this.productModel.countDocuments(options);
+      const data = products.slice(skip, skip + limit);
 
       return {
         status: true,
@@ -143,25 +145,21 @@ export class ProductService {
         totalProducts,
         page,
         limit,
-      }
+      };
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
 
   async updateProduct(updateProductDto: UpdateProductDto, req: Request) {
-    const {
-      _id,
-      name,
-      slug,
-      description,
-      specifications,
-      variants,
-      brand,
-    } = updateProductDto;
-    const userId = req['user']._id
+    const { _id, name, slug, description, specifications, variants, brand } =
+      updateProductDto;
+    const userId = req['user']._id;
     try {
-      const findProduct = await this.productModel.findOne({ _id: _id, seller: userId });
+      const findProduct = await this.productModel.findOne({
+        _id: _id,
+        seller: userId,
+      });
       if (!findProduct) {
         return {
           msg: 'Sản phẩm này không tồn tại',
@@ -172,25 +170,25 @@ export class ProductService {
       if (!slug) {
         const alreadySlugMovie = await this.productModel.findOne({
           slug: slugify(name),
-        })
+        });
         if (alreadySlugMovie) {
           return {
             msg: 'Slug này đã tồn tại',
             status: false,
-          }
+          };
         }
-        updateProductDto.slug = slugify(name)
+        updateProductDto.slug = slugify(name);
       } else {
         const alreadySlugMovie = await this.productModel.findOne({
           slug: slugify(slug),
-        })
+        });
         if (alreadySlugMovie) {
           return {
             msg: 'Slug này đã tồn tại',
             status: false,
-          }
+          };
         }
-        updateProductDto.slug = slugify(slug)
+        updateProductDto.slug = slugify(slug);
       }
 
       const updatedProduct = await this.productModel.findByIdAndUpdate(
@@ -277,9 +275,9 @@ export class ProductService {
           comment: rating.comment,
           posted: poster,
           createdAt: rating.createdAt,
-        }
-      })
-      return detailRatings
+        };
+      });
+      return detailRatings;
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -287,26 +285,26 @@ export class ProductService {
 
   async createRating(createRatingDto: CreateRatingDto, req: Request) {
     const { productId, star, comment } = createRatingDto;
-    const { _id } = req['user']
+    const { _id } = req['user'];
     try {
       const product = await this.productModel.findById(productId);
-      let alreadyRated = product.ratings.find(
-        (rating) => rating.posted.toString() === _id.toString()
+      const alreadyRated = product.ratings.find(
+        (rating) => rating.posted.toString() === _id.toString(),
       );
       if (alreadyRated) {
-        const updateRating = await this.productModel.updateOne(
+        await this.productModel.updateOne(
           {
             ratings: { $elemMatch: alreadyRated },
           },
           {
-            $set: { "ratings.$.star": star, "ratings.$.comment": comment },
+            $set: { 'ratings.$.star': star, 'ratings.$.comment': comment },
           },
           {
             new: true,
-          }
+          },
         );
       } else {
-        const rateProduct = await this.productModel.findByIdAndUpdate(
+        await this.productModel.findByIdAndUpdate(
           productId,
           {
             $push: {
@@ -319,34 +317,36 @@ export class ProductService {
           },
           {
             new: true,
-          }
+          },
         );
       }
 
       const getallratings = await this.productModel.findById(productId);
-      let totalRating = getallratings.ratings.length;
+      const totalRating = getallratings.ratings.length;
 
-      let ratingsum = getallratings.ratings
+      const ratingsum = getallratings.ratings
         .map((item) => item.star)
-        .reduce((prev, curr) => parseInt(prev.toString()) + parseInt(curr.toString()), 0);
+        .reduce(
+          (prev, curr) => parseInt(prev.toString()) + parseInt(curr.toString()),
+          0,
+        );
 
-      let actualRatings = parseFloat((ratingsum / totalRating).toFixed(1));
+      const actualRatings = parseFloat((ratingsum / totalRating).toFixed(1));
 
-      let finalproduct = await this.productModel.findByIdAndUpdate(
+      const finalproduct = await this.productModel.findByIdAndUpdate(
         productId,
         {
           totalRatings: actualRatings,
         },
-        { new: true }
+        { new: true },
       );
       return {
         msg: 'Cảm ơn vì đã góp ý và đánh giá sản phẩm của chúng tôi',
         status: true,
-        finalproduct
-      }
+        finalproduct,
+      };
     } catch (error) {
-      throw new BadRequestException(error)
+      throw new BadRequestException(error);
     }
   }
-
 }

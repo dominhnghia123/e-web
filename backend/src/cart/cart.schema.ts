@@ -10,10 +10,14 @@ export class Cart {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   userId: User;
 
-  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Product' })
+  @Prop({
+    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product',
+  })
   productId: Product;
 
-  @Prop({ required: true})
+  @Prop({ required: true })
   variantId: string;
 
   @Prop({ required: true })

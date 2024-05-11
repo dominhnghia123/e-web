@@ -17,15 +17,19 @@ import { getToken } from "../helper/stogare";
 import { toast } from "react-toastify";
 import AppHeader from "@/components/appHeader";
 import AppFooter from "@/components/appFooter";
+import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/redux/store";
+import { getProductsCheckout } from "@/redux/features/checkout/checkoutSlice";
 
 type CheckboxValueType = GetProp<typeof Checkbox.Group, "value">[number];
 const CheckboxGroup = Checkbox.Group;
 
 export default function Cart() {
   const token = getToken();
-
+  const router = useRouter();
   //handle change quantity product
   const [changeQuantity, setChangeQuantity] = useState(false);
+  const [quantityPurchase, setQuantityPurchase] = useState();
   const onChangeQuantity: InputNumberProps["onChange"] | any = async (
     id: any,
     value: any
@@ -51,6 +55,7 @@ export default function Cart() {
     );
     if (data.status === true) {
       setChangeQuantity(!changeQuantity);
+      setQuantityPurchase(value);
     }
   };
 
@@ -109,6 +114,7 @@ export default function Cart() {
       }
     };
     getCarts();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleted]);
 
   const [checkedList, setCheckedList] = useState<CheckboxValueType[]>([]);
@@ -141,6 +147,7 @@ export default function Cart() {
       totalPrice += item.price * item.quantity;
     });
     setTotalPriceBeforeApplyCoupon(totalPrice);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkedList, changeQuantity]);
 
   //set up modal address
@@ -174,6 +181,7 @@ export default function Cart() {
       }
     };
     getAnAddress();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedAddressId]);
 
   //set up modal coupon
@@ -207,7 +215,22 @@ export default function Cart() {
       }
     };
     getACoupon();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCouponId]);
+
+  const dispatch = useAppDispatch();
+  const handlePurchase = () => {
+    dispatch(
+      getProductsCheckout({
+        checkedList,
+        quantityPurchase,
+        selectedAddressId,
+        selectedCouponId,
+        totalPriceBeforeApllyCoupon,
+      })
+    );
+    router.replace(`/checkout`);
+  };
 
   return (
     <div className={styles.container}>
@@ -358,7 +381,12 @@ export default function Cart() {
                     </div>
                   </div>
                   <div className={styles.button_container}>
-                    <Button className={styles.button}>Mua hàng</Button>
+                    <Button
+                      className={styles.button}
+                      onClick={() => handlePurchase()}
+                    >
+                      Mua hàng
+                    </Button>
                   </div>
                 </div>
               </div>

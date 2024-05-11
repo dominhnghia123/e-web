@@ -31,9 +31,9 @@ import { RequestSellerModule } from './requestSeller/requestSeller.module';
     OrderModule,
     AddressModule,
     CouponModule,
-    RequestSellerModule
+    RequestSellerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

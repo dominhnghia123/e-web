@@ -7,12 +7,12 @@ import { CouponService } from './coupon.service';
 import { User, UserSchema } from '../user/user.schema';
 
 @Module({
-    imports: [
-        MongooseModule.forFeature([{ name: Coupon.name, schema: CouponSchema }]),
-        MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-        UserModule,
-    ],
-    controllers: [CouponController],
-    providers: [CouponService],
+  imports: [
+    MongooseModule.forFeature([{ name: Coupon.name, schema: CouponSchema }]),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    UserModule,
+  ],
+  controllers: [CouponController],
+  providers: [CouponService],
 })
-export class CouponModule { }
+export class CouponModule {}

@@ -38,7 +38,7 @@ export class Product {
       {
         quantity: { type: String },
         price: { type: String },
-        sold: { type: String, default: "0" },
+        sold: { type: String, default: '0' },
         color: { type: String, enum: colorEnum },
         image: { type: String },
       },
@@ -59,13 +59,13 @@ export class Product {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   seller: User;
 
-  @Prop({ default: "0" })
+  @Prop({ default: '0' })
   likes: string;
 
-  @Prop({ default: "0" })
+  @Prop({ default: '0' })
   dislikes: string;
 
-  @Prop({ default: "0" })
+  @Prop({ default: '0' })
   numViews: string;
 
   @Prop({ default: false })
@@ -84,9 +84,9 @@ export class Product {
       },
     ],
   })
-  ratings: { star: string; comment: string; posted: User, createdAt: Date }[];
+  ratings: { star: string; comment: string; posted: User; createdAt: Date }[];
 
-  @Prop({ default: "0" })
+  @Prop({ default: '0' })
   totalRatings: string;
   _id: string;
 }

@@ -86,7 +86,7 @@ export default function ViewDetailProduct({
   const handleSubmitComment = async () => {
     try {
       const { data } = await axios.post(
-        `${process.env.BASE_HOST}/user/create-rating`,
+        `${process.env.BASE_HOST}/product/create-rating`,
         {
           productId: params.slug[1],
           star: star,

@@ -52,11 +52,13 @@ export default function AccountLayout({
   };
   useEffect(() => {
     getProfile();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [isChangeProfile, setIsChangeProfile] = useState<boolean | any>(false);
   useEffect(() => {
     getProfile();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isChangeProfile]);
 
   return (

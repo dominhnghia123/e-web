@@ -33,6 +33,7 @@ export default function UserTable() {
       setTotalUsers(data.totalUsers);
     };
     getUsers();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keySearch, itemsPerPage, currentPage, deleted]);
 
   const handlePerRowsChange = async (perPage: number, page: number) => {

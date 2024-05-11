@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import ReactPaginate from "react-paginate";
 
 interface IProps {
-  brand: string;
+  brand?: string;
 }
 
 export default function AppContent(props: IProps) {
@@ -52,6 +52,7 @@ export default function AppContent(props: IProps) {
       }
     };
     getProducts();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, itemsPerPage]);
 
   const handlePageClick = ({ selected }: { selected: number }) => {

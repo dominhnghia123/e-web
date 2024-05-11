@@ -58,5 +58,4 @@ export class UpdateProductDto {
     color: string;
     image: string;
   }[];
-
 }

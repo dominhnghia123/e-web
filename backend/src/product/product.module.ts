@@ -14,4 +14,4 @@ import { User, UserSchema } from '../user/user.schema';
   providers: [ProductService],
   exports: [MongooseModule],
 })
-export class ProductModule { }
+export class ProductModule {}

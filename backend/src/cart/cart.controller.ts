@@ -5,13 +5,12 @@ import { AddToCartDto } from './dto/addToCart.dto';
 import { UserGuard } from '../user/user.guard';
 import { Request } from 'express';
 import { RemoveProductDto } from './dto/removeProduct.dto';
-import { UserIdDto } from '../user/dto/userId.dto';
 import { ChangeQuantityProductDto } from './dto/changeQuantityProduct.dto';
 
 @ApiTags('Cart')
 @Controller('api/cart')
 export class CartController {
-  constructor(private cartService: CartService) { }
+  constructor(private cartService: CartService) {}
 
   @ApiBearerAuth()
   @UseGuards(UserGuard)
@@ -23,7 +22,10 @@ export class CartController {
   @ApiBearerAuth()
   @UseGuards(UserGuard)
   @Post('/remove-product')
-  removeProductFromCart(@Body() removeProductDto: RemoveProductDto, @Req() req: Request) {
+  removeProductFromCart(
+    @Body() removeProductDto: RemoveProductDto,
+    @Req() req: Request,
+  ) {
     return this.cartService.removeProductFromCart(removeProductDto, req);
   }
 
@@ -36,8 +38,21 @@ export class CartController {
 
   @ApiBearerAuth()
   @UseGuards(UserGuard)
+  @Post('/get-carts-by-id')
+  getCartsById(@Req() req: Request) {
+    return this.cartService.getCartsById(req);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(UserGuard)
   @Post('/change-quantity-product')
-  changeQuantityProductInCart(@Body() changeQuantityProductDto: ChangeQuantityProductDto, @Req() req: Request) {
-    return this.cartService.changeQuantityProductInCart(changeQuantityProductDto, req);
+  changeQuantityProductInCart(
+    @Body() changeQuantityProductDto: ChangeQuantityProductDto,
+    @Req() req: Request,
+  ) {
+    return this.cartService.changeQuantityProductInCart(
+      changeQuantityProductDto,
+      req,
+    );
   }
 }

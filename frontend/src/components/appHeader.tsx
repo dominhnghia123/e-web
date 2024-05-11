@@ -69,6 +69,7 @@ export default function AppHeader(props: IProps) {
     if (Cookies.get("userActive") === "1") {
       getCarts();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.changedCart]);
 
   //handle search

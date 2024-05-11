@@ -35,7 +35,7 @@ export default function AddNewCoupon() {
       const { data } = await axios.post(
         `${process.env.BASE_HOST}/user/get-all-users`
       );
-      setUserArray(data.allUsers);
+      setUserArray(data.users);
     };
     getUsers();
   }, []);
@@ -140,7 +140,7 @@ export default function AddNewCoupon() {
                   <TextField {...params} label="Chọn user" />
                 )}
                 value={
-                  userArray.find((user) => user._id === dataInput.userId)
+                  userArray?.find((user) => user._id === dataInput.userId)
                     ?.username || null
                 }
                 onChange={(event: any, newValue: any) => {

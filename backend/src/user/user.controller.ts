@@ -10,12 +10,11 @@ import { UserGuard } from './user.guard';
 import { AdminGuard } from './admin.guard';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { PhoneNumberDto } from './dto/phoneNumber.dto';
-import { RegisterSellerDto } from '../requestSeller/dto/register-seller.dto';
 
 @ApiTags('User')
 @Controller('api/user')
 export class UserController {
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService) {}
 
   @Post('/register')
   registerUser(@Body() registerUserDto: RegisterUserDto) {

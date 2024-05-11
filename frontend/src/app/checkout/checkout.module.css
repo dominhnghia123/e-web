@@ -1,0 +1,235 @@
+.container {
+  background-color: rgb(246, 246, 246);
+  width: 100%;
+  height: auto;
+  position: relative;
+}
+
+/* main */
+.main {
+  margin-top: 120px;
+  height: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 600px;
+}
+.main_container {
+  margin-bottom: 50px;
+  width: 80%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px 20px;
+}
+.cart {
+  width: 100%;
+  height: 100%;
+}
+.cart_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
+}
+.cart_products_container {
+  height: 100%;
+  width: 880px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.title_head{
+  display: flex;
+  align-items: center;
+}
+.text_title_head{
+  font-size: 18px;
+  color: red;
+}
+.text_title_head.name{
+  min-width: 500px;
+  margin-left: 25px;
+  display: flex;
+  justify-content: flex-start;
+}
+.text_title_head.unit_price{
+  min-width: 120px;
+  display: flex;
+  justify-content: center;
+}
+.text_title_head.quantity{
+  width: 120px;
+  display: flex;
+  justify-content: center;
+}
+.text_title_head.total_money{
+  width: 120px;
+  display: flex;
+  justify-content: center;
+}
+.options_container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.option_container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border: 1px solid rgb(215, 213, 213);
+  padding: 0 5px;
+  border-radius: 5px;
+}
+.option_container__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  width: 100%;
+}
+.option_container__content__main {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 30px;
+  margin-left: 20px;
+}
+.image_title_container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
+  min-width: 500px;
+  height: 120px;
+}
+.image {
+  height: 100px;
+  width: 100px;
+}
+.title {
+  font-size: 18px;
+}
+.unit_price{
+  width: 60px;
+  color: red;
+  display: flex;
+  justify-content: center;
+}
+.quantity{
+  width: 120px;
+  color: red;
+  display: flex;
+  justify-content: center;
+}
+.total_money{
+  width: 60px;
+  color: red;
+  display: flex;
+  justify-content: center;
+}
+
+.cart_payment_container {
+  margin-left: 20px;
+  height: 100%;
+  flex: 1;
+}
+.payment_top {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+}
+.payment_top__text {
+  font-size: 18px;
+  color: rgb(68, 68, 68);
+}
+.payment_top__link {
+  font-size: 16px;
+  text-decoration: none;
+  cursor: pointer;
+  color: blue;
+}
+.payment_address {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+.payment_address__name_phone {
+  font-size: 16px;
+  font-weight: 500;
+}
+.payment_address__detail {
+  font-size: 14px;
+}
+.payment_voucher {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.payment_voucher__link {
+  text-decoration: none;
+  cursor: pointer;
+  color: blue;
+}
+.payment_voucher__container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.calc_money_container {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.calc_money_temp,
+.calc_money_voucher,
+.calc_money_total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.calc_money_text {
+  font-size: 18px;
+}
+.calc_money_temp__value,
+.calc_money_total__value {
+  font-size: 20px;
+  color: red;
+}
+.calc_money_voucher__value {
+  font-size: 16px;
+  font-weight: bold;
+}
+.button_container {
+  width: 100%;
+  height: 60px;
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.button {
+  width: 100%;
+  height: 80%;
+  border-radius: 10px;
+  border: none;
+  background-color: orange;
+  cursor: pointer;
+  font-size: 20px;
+  color: white;
+}
+.button:hover {
+  background-color: rgb(233, 153, 6);
+}

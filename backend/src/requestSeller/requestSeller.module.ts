@@ -7,12 +7,14 @@ import { RequestSellerController } from './requestSeller.controller';
 import { RequestSellerService } from './requestSeller.service';
 
 @Module({
-    imports: [
-        MongooseModule.forFeature([{ name: RequestSeller.name, schema: RequestSellerSchema }]),
-        MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-        UserModule,
-    ],
-    controllers: [RequestSellerController],
-    providers: [RequestSellerService],
+  imports: [
+    MongooseModule.forFeature([
+      { name: RequestSeller.name, schema: RequestSellerSchema },
+    ]),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    UserModule,
+  ],
+  controllers: [RequestSellerController],
+  providers: [RequestSellerService],
 })
-export class RequestSellerModule { }
+export class RequestSellerModule {}

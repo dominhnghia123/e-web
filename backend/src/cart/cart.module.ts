@@ -12,9 +12,9 @@ import { User, UserSchema } from '../user/user.schema';
     MongooseModule.forFeature([{ name: Cart.name, schema: CartSchema }]),
     MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }]),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    UserModule
+    UserModule,
   ],
   controllers: [CartController],
   providers: [CartService],
 })
-export class CartModule { }
+export class CartModule {}

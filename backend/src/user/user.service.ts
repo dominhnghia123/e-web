@@ -16,7 +16,6 @@ import { Request, Response } from 'express';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { Product } from '../product/product.schema';
 import { PhoneNumberDto } from './dto/phoneNumber.dto';
-import { RegisterSellerDto } from '../requestSeller/dto/register-seller.dto';
 
 @Injectable()
 export class UserService {
@@ -24,7 +23,7 @@ export class UserService {
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Product.name) private productModel: Model<Product>,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async registerUser(registerUserDto: RegisterUserDto) {
     const { username, email, password, mobile } = registerUserDto;
@@ -70,7 +69,10 @@ export class UserService {
       return {
         msg: 'Đăng ký thành công!',
         status: true,
-        newUser: { ...newUser, token: await this.jwtService.signAsync(payload), },
+        newUser: {
+          ...newUser,
+          token: await this.jwtService.signAsync(payload),
+        },
       };
     } catch (error) {
       throw new BadRequestException(error);
@@ -200,12 +202,12 @@ export class UserService {
   }
 
   async getAllUsers(req: Request) {
-    const keySearch: string = req.query?.s?.toString()
-    const currentPage: number = req.query.page as any
-    const itemsPerPage: number = req.query.limit as any
+    const keySearch: string = req.query?.s?.toString();
+    const currentPage: number = req.query.page as any;
+    const itemsPerPage: number = req.query.limit as any;
     try {
-      let options: any = {
-        role: "user",
+      const options: any = {
+        role: 'user',
       };
 
       if (keySearch) {
@@ -214,20 +216,25 @@ export class UserService {
           { email: new RegExp(keySearch, 'i') },
         ];
       }
-      const allUsers = await this.userModel.find(options).sort({ username: 'asc' })
-      const page: number = currentPage || 1
-      const limit: number = itemsPerPage || 10
-      const skip: number = (page - 1) * limit
+      const allUsers = await this.userModel
+        .find(options)
+        .sort({ username: 'asc' });
+      const page: number = currentPage || 1;
+      const limit: number = itemsPerPage || 10;
+      const skip: number = (page - 1) * limit;
 
-      const totalUsers = await this.userModel.countDocuments(options)
-      const data = allUsers.slice(skip, parseInt(skip.toString()) + parseInt(limit.toString()))
+      const totalUsers = await this.userModel.countDocuments(options);
+      const data = allUsers.slice(
+        skip,
+        parseInt(skip.toString()) + parseInt(limit.toString()),
+      );
       return {
         status: true,
         users: data,
         totalUsers,
         page,
         limit,
-      }
+      };
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -346,19 +353,19 @@ export class UserService {
   }
 
   async checkAlreadyPhoneNumber(phoneNumberDto: PhoneNumberDto) {
-    const { mobile } = phoneNumberDto
+    const { mobile } = phoneNumberDto;
     try {
       const checkAlreadyPhoneNumber = await this.userModel.findOne({ mobile });
       if (checkAlreadyPhoneNumber) {
         return {
           status: true,
-        }
+        };
       }
       return {
-        status: false
-      }
+        status: false,
+      };
     } catch (error) {
-      throw new BadRequestException(error)
+      throw new BadRequestException(error);
     }
   }
 }

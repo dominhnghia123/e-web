@@ -33,6 +33,7 @@ export default function ViewDetailUser({ params }: { params: { id: string } }) {
       }
     };
     getProfile();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

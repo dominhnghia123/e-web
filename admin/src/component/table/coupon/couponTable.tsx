@@ -33,6 +33,7 @@ export default function CouponTable() {
       setTotalCoupons(data.totalCoupons);
     };
     getCoupons();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keySearch, itemsPerPage, currentPage, deleted]);
 
   const handlePerRowsChange = async (perPage: number, page: number) => {

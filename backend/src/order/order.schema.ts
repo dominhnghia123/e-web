@@ -17,7 +17,7 @@ export class Order {
     },
     required: true,
   })
-  shippingInfo: { address: string; };
+  shippingInfo: { address: string };
 
   @Prop({
     required: true,
@@ -31,7 +31,7 @@ export class Order {
       price: { type: Number, required: true },
     },
   })
-  orderItems: { productId: Product; quantity: number; price: number; }[];
+  orderItems: { productId: Product; quantity: number; price: number }[];
 
   @Prop({ required: true })
   totalPrice: number;

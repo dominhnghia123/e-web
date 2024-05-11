@@ -24,10 +24,12 @@ export default function Address() {
 
   useEffect(() => {
     getAllAddress();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   useEffect(() => {
     getAllAddress();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openModalCreateAddress, openModalUpdateAddress, openModalDeleteAddress]);
   
   const getAllAddress = async () => {

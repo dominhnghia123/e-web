@@ -4,7 +4,6 @@ import {
   Post,
   Req,
   Res,
-  StreamableFile,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -13,13 +12,11 @@ import { AppService } from './app.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Request, Response } from 'express';
-import { createReadStream } from 'fs';
-import { join } from 'path';
 
 @ApiTags('App')
 @Controller('api/app')
 export class AppController {
-  constructor(private appService: AppService) { }
+  constructor(private appService: AppService) {}
 
   @Post('/uploadFiles')
   @UseInterceptors(
@@ -36,7 +33,7 @@ export class AppController {
     return this.appService.uploadFiles(file, req);
   }
 
-  @Get("/:fileName")
+  @Get('/:fileName')
   getFile(@Req() req: Request, @Res() res: Response) {
     return this.appService.getFile(req, res);
   }

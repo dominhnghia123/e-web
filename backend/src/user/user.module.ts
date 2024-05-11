@@ -15,4 +15,4 @@ import { Product, ProductSchema } from '../product/product.schema';
   providers: [UserService, ProductService],
   exports: [MongooseModule],
 })
-export class UserModule { }
+export class UserModule {}

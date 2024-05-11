@@ -32,6 +32,7 @@ export default function PickAddressModal(props: IProps) {
 
   useEffect(() => {
     getAllAddress();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openModalUpdateAddress]);
 
   const getAllAddress = async () => {
@@ -65,6 +66,7 @@ export default function PickAddressModal(props: IProps) {
   };
   useEffect(() => {
     setSelectAddressTemporary(selectedAddressId);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openPickAddressModal]);
   
   return (
