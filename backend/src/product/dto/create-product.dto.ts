@@ -43,7 +43,7 @@ export class CreateProductDto {
       },
     ],
   })
-  @IsNotEmpty({ message: 'Type_items cannot be empty' })
+  @IsNotEmpty({ message: 'Variants cannot be empty' })
   variants: {
     quantity: string;
     price: string;

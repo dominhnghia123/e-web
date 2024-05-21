@@ -146,6 +146,7 @@ export default function ViewDetailProduct({
     };
     getAProduct();
     getDetailRatings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkSubmitComment]);
 
   return (

@@ -31,6 +31,13 @@ export class CartController {
 
   @ApiBearerAuth()
   @UseGuards(UserGuard)
+  @Post('/remove-many-products')
+  removeManyProductsFromCart(@Req() req: Request) {
+    return this.cartService.removeManyProductsFromCart(req);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(UserGuard)
   @Post('/get-cart')
   getCart(@Req() req: Request) {
     return this.cartService.getCart(req);

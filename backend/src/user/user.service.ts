@@ -14,14 +14,12 @@ import { UserIdDto } from './dto/userId.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Request, Response } from 'express';
 import { ChangePasswordDto } from './dto/changePassword.dto';
-import { Product } from '../product/product.schema';
 import { PhoneNumberDto } from './dto/phoneNumber.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
-    @InjectModel(Product.name) private productModel: Model<Product>,
     private jwtService: JwtService,
   ) {}
 

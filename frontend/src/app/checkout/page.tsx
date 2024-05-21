@@ -1,5 +1,5 @@
 "use client";
-import { Checkbox, Divider, InputNumber } from "antd";
+import { Checkbox, Divider, InputNumber, Radio } from "antd";
 import { useEffect, useState } from "react";
 import styles from "./checkout.module.css";
 import { Button, Image } from "react-bootstrap";
@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import AppHeader from "@/components/appHeader";
 import AppFooter from "@/components/appFooter";
 import { RootState, useAppSelector } from "@/redux/store";
+import { loadStripe } from "@stripe/stripe-js";
 
 export default function Checkout() {
   const token = getToken();
@@ -59,7 +60,7 @@ export default function Checkout() {
       }
     };
     getAnAddress();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedAddressId]);
 
   //set up modal coupon
@@ -94,7 +95,7 @@ export default function Checkout() {
       }
     };
     getACoupon();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCouponId]);
 
   const [products, setProducts] = useState<any>([]);
@@ -116,8 +117,67 @@ export default function Checkout() {
       }
     };
     getCarts();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartIdsRedux]);
+
+  const handlePayment = async () => {
+    //add product to Stripe to prepare payment online
+    const stripeWithSecretKey = require("stripe")(
+      process.env.STRIPE_SECRET_KEY ?? ""
+    );
+    let lineItems: any = [];
+    let promises = products.map(async (item: any) => {
+      const product = await stripeWithSecretKey.products.create({
+        name: item.name,
+      });
+      const price = await stripeWithSecretKey.prices.create({
+        product: product.id,
+        unit_amount: item.price,
+        currency: "vnd",
+        recurring: {
+          interval: "month",
+        },
+      });
+      lineItems.push({
+        price: price.id,
+        quantity: item.quantity,
+      });
+    });
+    await Promise.all(promises);
+
+    //update cart
+    try {
+      await axios.post(
+        `${process.env.BASE_HOST}/cart/remove-many-products`,
+        {
+          cartIds: products.map((product: any) => product.cartId),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    }
+
+    //payment online
+    let stripePromise: any = null;
+    const getStripe = () => {
+      if (!stripePromise) {
+        stripePromise = loadStripe(process.env.STRIPE_PUBLIC_KEY ?? "");
+      }
+      return stripePromise;
+    };
+    const stripeWithPublicKey = await getStripe();
+    await stripeWithPublicKey.redirectToCheckout({
+      mode: "subscription",
+      lineItems,
+      successUrl: `${window.location.origin}?session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl: `${window.location.origin}`,
+    });
+  };
 
   return (
     <div className={styles.container}>
@@ -129,10 +189,24 @@ export default function Checkout() {
             <div className={styles.cart_container}>
               <div className={styles.cart_products_container}>
                 <div className={styles.title_head}>
-                  <div className={`${styles.text_title_head} ${styles.name}`}>Sản phẩm</div>
-                  <div className={`${styles.text_title_head} ${styles.unit_price}`}>Đơn giá</div>
-                  <div className={`${styles.text_title_head} ${styles.quantity}`}>Số lượng</div>
-                  <div className={`${styles.text_title_head} ${styles.total_money}`}>Thành tiền</div>
+                  <div className={`${styles.text_title_head} ${styles.name}`}>
+                    Sản phẩm
+                  </div>
+                  <div
+                    className={`${styles.text_title_head} ${styles.unit_price}`}
+                  >
+                    Đơn giá
+                  </div>
+                  <div
+                    className={`${styles.text_title_head} ${styles.quantity}`}
+                  >
+                    Số lượng
+                  </div>
+                  <div
+                    className={`${styles.text_title_head} ${styles.total_money}`}
+                  >
+                    Thành tiền
+                  </div>
                 </div>
                 {products.map((option: any, index: number) => {
                   return (
@@ -153,7 +227,7 @@ export default function Checkout() {
                             {option.price} đ
                           </div>
                           <div className={`${styles.quantity}`}>
-                            {option.quantity} đ
+                            {option.quantity}
                           </div>
                           <div className={`${styles.total_money}`}>
                             {option.price * option.quantity} đ
@@ -163,6 +237,7 @@ export default function Checkout() {
                     </div>
                   );
                 })}
+                <Radio value="">Thanh toán qua Stripe</Radio>
               </div>
               <div className={styles.cart_payment_container}>
                 <div className={styles.payment_top}>
@@ -243,7 +318,12 @@ export default function Checkout() {
                   </div>
                 </div>
                 <div className={styles.button_container}>
-                  <Button className={styles.button}>Đặt hàng</Button>
+                  <Button
+                    className={styles.button}
+                    onClick={() => handlePayment()}
+                  >
+                    Đặt hàng
+                  </Button>
                 </div>
               </div>
             </div>

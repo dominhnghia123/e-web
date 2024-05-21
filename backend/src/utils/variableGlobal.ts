@@ -3,11 +3,6 @@ export enum roleUserEnum {
   user = 'user',
 }
 
-export enum paymentsEnum {
-  online = 'online',
-  offline = 'offline',
-}
-
 export enum statusEnum {
   pending = 'pending',
   processing = 'processing',
@@ -35,6 +30,7 @@ export enum colorEnum {
   brown = 'brown',
   blue = 'blue',
   violet = 'violet',
+  pink = 'pink',
 }
 
 export enum statusRequestSellerEnum {

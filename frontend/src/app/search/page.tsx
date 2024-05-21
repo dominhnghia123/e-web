@@ -73,8 +73,10 @@ export default function SearchPage() {
       <div className={styles.main_content}>
         <div className={styles.main_content__container}>
           <div className={styles.text}>
-            Kết quả tìm kiếm cho từ khóa{" "} &quot
-            <span style={{ fontStyle: "italic" }}>{keySearchRedux}</span> &quot{" "}
+            Kết quả tìm kiếm cho từ khóa &quot;
+            <span style={{ fontStyle: "italic" }}>
+              {keySearchRedux}
+            </span> &quot;{" "}
           </div>
           <div className={styles.products_pagination}>
             <div className={styles.products}>

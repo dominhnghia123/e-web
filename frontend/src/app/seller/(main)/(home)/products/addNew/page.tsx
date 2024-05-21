@@ -319,6 +319,7 @@ export default function AddNewProduct() {
                           <option value="blue">Xanh da trời</option>
                           <option value="violet">Tím</option>
                           <option value="brown">Nâu</option>
+                          <option value="pink">Hồng</option>
                         </select>
                       </li>
                       <li className={styles.input_unit}>

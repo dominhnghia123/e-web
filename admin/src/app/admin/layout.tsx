@@ -74,6 +74,7 @@ export default function AdminLayout({
       }
     };
     getRequests();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateNoti]);
 
   const calculateTimeAgo = (timestamp: any) => {
@@ -213,7 +214,7 @@ export default function AdminLayout({
                 )}
               </div>
               <div className={styles.info_container}>
-                <Image src="/images/avatar.jpg" className={styles.avatar} />
+                <Image src="/images/avatar.jpg" alt="" className={styles.avatar} />
                 <div
                   className={styles.username_email_container}
                   onClick={() => setOpenOptionsMenu(!openOptionsMenu)}

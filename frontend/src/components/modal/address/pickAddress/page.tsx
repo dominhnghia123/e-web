@@ -28,11 +28,12 @@ export default function PickAddressModal(props: IProps) {
 
   useEffect(() => {
     getAllAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     getAllAddress();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openModalUpdateAddress]);
 
   const getAllAddress = async () => {
@@ -66,9 +67,9 @@ export default function PickAddressModal(props: IProps) {
   };
   useEffect(() => {
     setSelectAddressTemporary(selectedAddressId);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openPickAddressModal]);
-  
+
   return (
     <Modal
       title="Chọn địa chỉ"
@@ -76,7 +77,10 @@ export default function PickAddressModal(props: IProps) {
       onOk={() => handleOk(selectAddressTemporary)}
       onCancel={handleCancel}
     >
-      <Radio.Group onChange={handleChangeAddress} value={selectAddressTemporary}>
+      <Radio.Group
+        onChange={handleChangeAddress}
+        value={selectAddressTemporary}
+      >
         {addresses?.length > 0 ? (
           addresses.map((address, index) => {
             return (

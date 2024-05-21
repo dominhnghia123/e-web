@@ -24,27 +24,33 @@ export default function Address() {
 
   useEffect(() => {
     getAllAddress();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   useEffect(() => {
     getAllAddress();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openModalCreateAddress, openModalUpdateAddress, openModalDeleteAddress]);
-  
-  const getAllAddress = async () => {
-    const { data } = await axios.post(
-      `${process.env.BASE_HOST}/address/get-all-address`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
 
-    if (data.status === true) {
-      setAddresses(data?.allAddresses);
+  const getAllAddress = async () => {
+    try {
+      const { data } = await axios.post(
+        `${process.env.BASE_HOST}/address/get-all-address`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (data.status === true && data.allAddresses) {
+        setAddresses(data.allAddresses);
+      } else {
+        setAddresses([]);
+      }
+    } catch (error) {
+      setAddresses([]);
     }
   };
 

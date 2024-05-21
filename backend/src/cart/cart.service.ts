@@ -66,10 +66,46 @@ export class CartService {
     const { cartId } = removeProductDto;
     const userId = req['user']._id;
     try {
-      await this.cartModel.findOneAndDelete({ userId, _id: cartId });
+      const deletedProduct = await this.cartModel.findOneAndDelete({
+        userId,
+        _id: cartId,
+      });
+      if (!deletedProduct) {
+        return {
+          msg: 'Không tồn tại sản phẩm này',
+          status: false,
+        };
+      }
 
       const user = await this.userModel.findById({ _id: userId });
       user.cart = user.cart.filter((item) => item !== cartId);
+      await user.save();
+
+      return {
+        status: true,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async removeManyProductsFromCart(req: Request) {
+    const { cartIds } = req.body;
+    const userId = req['user']._id;
+    try {
+      const deletedProducts = await this.cartModel.deleteMany({
+        userId,
+        _id: { $in: cartIds },
+      });
+      if (!deletedProducts) {
+        return {
+          msg: 'Không tồn tại những sản phẩm này',
+          status: false,
+        };
+      }
+
+      const user = await this.userModel.findById({ _id: userId });
+      user.cart = user.cart.filter((item) => !cartIds.includes(item));
       await user.save();
 
       return {

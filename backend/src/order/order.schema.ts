@@ -1,8 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from '../user/user.schema';
-import { Product } from '../product/product.schema';
-import { paymentsEnum, statusEnum } from '../utils/variableGlobal';
+import { statusEnum } from '../utils/variableGlobal';
 
 export type OrderDocument = HydratedDocument<Order>;
 
@@ -13,7 +12,7 @@ export class Order {
 
   @Prop({
     type: {
-      address: { type: String, required: true },
+      address: { type: String },
     },
     required: true,
   })
@@ -21,26 +20,27 @@ export class Order {
 
   @Prop({
     required: true,
-    type: {
-      productId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
-        required: true,
+    type: [
+      {
+        productId: { type: String },
+        variantId: { type: String },
+        quantity: { type: String },
+        price: { type: String },
       },
-      quantity: { type: Number, required: true },
-      price: { type: Number, required: true },
-    },
+    ],
   })
-  orderItems: { productId: Product; quantity: number; price: number }[];
+  orderItems: {
+    productId: string;
+    variantId: string;
+    quantity: string;
+    price: string;
+  }[];
 
   @Prop({ required: true })
-  totalPrice: number;
-
-  @Prop({ required: true, enum: paymentsEnum })
-  payment: string;
+  totalPrice: string;
 
   @Prop({ required: true })
-  paidAt: Date;
+  paidAt: string;
 
   @Prop({ required: true, enum: statusEnum })
   status: string;

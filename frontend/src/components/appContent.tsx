@@ -52,7 +52,7 @@ export default function AppContent(props: IProps) {
       }
     };
     getProducts();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, itemsPerPage]);
 
   const handlePageClick = ({ selected }: { selected: number }) => {

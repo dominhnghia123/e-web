@@ -24,6 +24,7 @@ export default function CouponModal(props: IProps) {
   const [coupons, setCoupons] = useState<ICoupon[]>([]);
   useEffect(() => {
     getCoupons();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getCoupons = async () => {
@@ -56,6 +57,7 @@ export default function CouponModal(props: IProps) {
   };
   useEffect(() => {
     setSelectCouponTemporary(selectedCouponId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openCouponModal]);
 
   return (
