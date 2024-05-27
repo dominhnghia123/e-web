@@ -123,7 +123,12 @@ export default function AccountLayout({
               </div>
               <div className={styles.order_container}>
                 <FaShoppingBag className={styles.icon} />
-                <a className={styles.order} href="/user/account/profile">
+                <a className={
+                  pathname.startsWith("/user/account/order")
+                    ? `${styles.order} ${styles.focused}`
+                    : `${styles.order}`}
+                  href="/user/account/order"
+                >
                   Đơn mua
                 </a>
               </div>

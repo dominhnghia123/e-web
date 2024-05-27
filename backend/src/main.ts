@@ -6,6 +6,7 @@ import * as path from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import cors from 'cors';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import rawBodyMiddleware from './utils/stripe/rawBody.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -24,6 +25,9 @@ async function bootstrap() {
   app.useStaticAssets(path.join(__dirname, './uploads'));
   app.use(cors());
 
+  // config để có thể connect với stripe thông qua webhook
+  app.use(rawBodyMiddleware());
+
   //config để sử dụng class-validator
   app.useGlobalPipes(
     new ValidationPipe({
@@ -37,6 +41,7 @@ async function bootstrap() {
       stopAtFirstError: true,
     }),
   );
+
   await app.listen(8000);
 }
 bootstrap();

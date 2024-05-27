@@ -13,10 +13,17 @@ import { AppService } from './app.service';
 import { AddressModule } from './address/address.module';
 import { CouponModule } from './coupon/coupon.module';
 import { RequestSellerModule } from './requestSeller/requestSeller.module';
+import * as Joi from '@hapi/joi';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+      validationSchema: Joi.object({
+        STRIPE_WEBHOOK_SECRET: Joi.string(),
+      }),
+    }),
     MongooseModule.forRoot(process.env.MONGO_URL),
     JwtModule.register({
       global: true,

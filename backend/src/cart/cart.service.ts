@@ -97,6 +97,7 @@ export class CartService {
         userId,
         _id: { $in: cartIds },
       });
+
       if (!deletedProducts) {
         return {
           msg: 'Không tồn tại những sản phẩm này',

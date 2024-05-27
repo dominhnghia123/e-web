@@ -5,8 +5,14 @@ export enum roleUserEnum {
 
 export enum statusEnum {
   pending = 'pending',
-  processing = 'processing',
   done = 'done',
+  cancel = 'cancel',
+}
+
+export enum statusDeliveryEnum {
+  notShippedYet = 'notShippedYet',
+  shipping = 'shipping',
+  shipped = 'shipped',
 }
 
 export enum genderEnum {

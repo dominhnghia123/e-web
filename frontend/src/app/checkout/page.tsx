@@ -1,5 +1,5 @@
 "use client";
-import { Checkbox, Divider, InputNumber, Radio } from "antd";
+import { Divider, Radio } from "antd";
 import { useEffect, useState } from "react";
 import styles from "./checkout.module.css";
 import { Button, Image } from "react-bootstrap";
@@ -11,9 +11,10 @@ import { toast } from "react-toastify";
 import AppHeader from "@/components/appHeader";
 import AppFooter from "@/components/appFooter";
 import { RootState, useAppSelector } from "@/redux/store";
-import { loadStripe } from "@stripe/stripe-js";
+import { useRouter } from "next/navigation";
 
 export default function Checkout() {
+  const router = useRouter();
   const token = getToken();
   const cartIdsRedux: string[] | any = useAppSelector((state: RootState) => {
     return state.checkoutReducer?.getProductsCheckout?.checkedList;
@@ -24,16 +25,9 @@ export default function Checkout() {
   const addressIdRedux: string | any = useAppSelector((state: RootState) => {
     return state.checkoutReducer?.getProductsCheckout?.addressId;
   });
-  const totalPriceBeforeApllyCouponRedux: string | any = useAppSelector(
-    (state: RootState) => {
-      return state.checkoutReducer?.getProductsCheckout
-        ?.totalPriceBeforeApllyCoupon;
-    }
-  );
   //set up modal address
   const [openPickAddressModal, setOpenPickAddressModal] = useState(false);
-  const [selectedAddressId, setSelectedAddressId] =
-    useState<string>(addressIdRedux);
+  const [selectedAddressId, setSelectedAddressId] = useState<string>(addressIdRedux);
   const [selectedAddress, setSelectedAddress] = useState<IAddress | any>();
   useEffect(() => {
     const getAnAddress = async () => {
@@ -65,11 +59,8 @@ export default function Checkout() {
 
   //set up modal coupon
   const [openCouponModal, setOpenCouponModal] = useState(false);
-  const [selectedCouponId, setSelectedCouponId] =
-    useState<string>(voucherIdRedux);
-  const [selectedCoupon, setSelectedCoupon] = useState<ICoupon | any>(
-    undefined
-  );
+  const [selectedCouponId, setSelectedCouponId] = useState<string>(voucherIdRedux);
+  const [selectedCoupon, setSelectedCoupon] = useState<ICoupon | any>(undefined);
   useEffect(() => {
     const getACoupon = async () => {
       try {
@@ -120,32 +111,28 @@ export default function Checkout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartIdsRedux]);
 
-  const handlePayment = async () => {
-    //add product to Stripe to prepare payment online
-    const stripeWithSecretKey = require("stripe")(
-      process.env.STRIPE_SECRET_KEY ?? ""
-    );
-    let lineItems: any = [];
-    let promises = products.map(async (item: any) => {
-      const product = await stripeWithSecretKey.products.create({
-        name: item.name,
-      });
-      const price = await stripeWithSecretKey.prices.create({
-        product: product.id,
-        unit_amount: item.price,
-        currency: "vnd",
-        recurring: {
-          interval: "month",
-        },
-      });
-      lineItems.push({
-        price: price.id,
-        quantity: item.quantity,
-      });
-    });
-    await Promise.all(promises);
+  const [totalPriceBeforeApllyCoupon, setTotalPriceBeforeApplyCoupon] = useState<string|any>()
 
-    //update cart
+  useEffect(() => {
+    const getOrderPending = async () => {
+      const { data } = await axios.post(`${process.env.BASE_HOST}/order/get-user-order-pending`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      })
+      if (data.status === true) {
+        setProducts(data.order.orderItems);
+        setSelectedCoupon(data.order.coupon);
+        setSelectedAddressId(data.order.address);
+        setTotalPriceBeforeApplyCoupon(data.order.totalPrice);
+      }
+    }
+    getOrderPending();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const handlePayment = async () => {
+    //update cart: Remove products to be purchased from the shopping cart
     try {
       await axios.post(
         `${process.env.BASE_HOST}/cart/remove-many-products`,
@@ -162,21 +149,21 @@ export default function Checkout() {
       console.error(error);
     }
 
-    //payment online
-    let stripePromise: any = null;
-    const getStripe = () => {
-      if (!stripePromise) {
-        stripePromise = loadStripe(process.env.STRIPE_PUBLIC_KEY ?? "");
-      }
-      return stripePromise;
-    };
-    const stripeWithPublicKey = await getStripe();
-    await stripeWithPublicKey.redirectToCheckout({
-      mode: "subscription",
-      lineItems,
-      successUrl: `${window.location.origin}?session_id={CHECKOUT_SESSION_ID}`,
-      cancelUrl: `${window.location.origin}`,
-    });
+    // thanh toán đơn hàng
+    try {
+      const { data } = await axios.post(
+        `${process.env.BASE_HOST}/order/payment-order`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      router.replace(data.url);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -208,7 +195,7 @@ export default function Checkout() {
                     Thành tiền
                   </div>
                 </div>
-                {products.map((option: any, index: number) => {
+                {products?.map((option: any, index: number) => {
                   return (
                     <div className={styles.option_container} key={index}>
                       <div className={styles.option_container__content}>
@@ -290,7 +277,7 @@ export default function Checkout() {
                   <div className={styles.calc_money_temp}>
                     <div className={styles.calc_money_text}>Tạm tính</div>
                     <div className={styles.calc_money_temp__value}>
-                      {totalPriceBeforeApllyCouponRedux} đ
+                      {totalPriceBeforeApllyCoupon} đ
                     </div>
                   </div>
                   {selectedCoupon && (
@@ -309,10 +296,10 @@ export default function Checkout() {
                     <div className={styles.calc_money_text}>Thành tiền</div>
                     <div className={styles.calc_money_total__value}>
                       {selectedCoupon
-                        ? (totalPriceBeforeApllyCouponRedux *
+                        ? (parseFloat(totalPriceBeforeApllyCoupon) *
                             (100 - selectedCoupon?.discount)) /
                           100
-                        : totalPriceBeforeApllyCouponRedux}
+                        : parseFloat(totalPriceBeforeApllyCoupon)}
                       đ
                     </div>
                   </div>

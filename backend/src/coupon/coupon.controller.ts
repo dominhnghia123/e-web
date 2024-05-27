@@ -23,8 +23,8 @@ export class CouponController {
   @ApiBearerAuth()
   @UseGuards(UserGuard)
   @Post('/get-a-coupon')
-  getACoupon(@Body() couponIdDto: CouponIdDto, @Req() req: Request) {
-    return this.couponService.getACoupon(couponIdDto, req);
+  getACoupon(@Body() couponIdDto: CouponIdDto) {
+    return this.couponService.getACoupon(couponIdDto);
   }
 
   @ApiBearerAuth()

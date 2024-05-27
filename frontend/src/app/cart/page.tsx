@@ -13,7 +13,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import CouponModal from "@/components/modal/couponModal/page";
 import PickAddressModal from "@/components/modal/address/pickAddress/page";
 import axios from "axios";
-import { getToken } from "../helper/stogare";
+import { getStogare, getToken } from "../helper/stogare";
 import { toast } from "react-toastify";
 import AppHeader from "@/components/appHeader";
 import AppFooter from "@/components/appFooter";
@@ -26,6 +26,11 @@ const CheckboxGroup = Checkbox.Group;
 
 export default function Cart() {
   const token = getToken();
+  const currentUserString = getStogare('currentUser');
+  let currentUser: any = null;
+  if (currentUserString) {
+    currentUser = JSON.parse(currentUserString);
+  }
   const router = useRouter();
   //handle change quantity product
   const [changeQuantity, setChangeQuantity] = useState(false);
@@ -219,7 +224,7 @@ export default function Cart() {
   }, [selectedCouponId]);
 
   const dispatch = useAppDispatch();
-  const handlePurchase = () => {
+  const handlePurchase = async() => {
     dispatch(
       getProductsCheckout({
         checkedList,
@@ -229,8 +234,44 @@ export default function Cart() {
         totalPriceBeforeApllyCoupon,
       })
     );
+
+    const { data } = await axios.post(
+      `${process.env.BASE_HOST}/cart/get-carts-by-id`,
+      {
+        cartIds: checkedList,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const orderItems = data.products.map((item: any) => {
+      return {
+        cartId: item.cartId,
+        productId: item.productId,
+        variantId: item.variantId,
+        quantity: item.quantity,
+        price: item.price,
+      }
+    })
+    
+    await axios.post(`${process.env.BASE_HOST}/order/create-order`,
+      {
+        user: currentUser._id,
+        addressId: selectedAddressId,
+        couponId: selectedCouponId,
+        orderItems,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
     router.replace(`/checkout`);
   };
+  
 
   return (
     <div className={styles.container}>
