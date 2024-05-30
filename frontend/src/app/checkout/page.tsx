@@ -135,7 +135,7 @@ export default function Checkout() {
     //update cart: Remove products to be purchased from the shopping cart
     try {
       await axios.post(
-        `${process.env.BASE_HOST}/cart/remove-many-products`,
+        `${process.env.BASE_HOST}/cart/update-status-delivery-many-products`,
         {
           cartIds: products.map((product: any) => product.cartId),
         },

@@ -6,6 +6,7 @@ import { UserGuard } from '../user/user.guard';
 import { Request } from 'express';
 import { RemoveProductDto } from './dto/removeProduct.dto';
 import { ChangeQuantityProductDto } from './dto/changeQuantityProduct.dto';
+import { CartIdDto } from './dto/cartId.dto';
 
 @ApiTags('Cart')
 @Controller('api/cart')
@@ -31,9 +32,9 @@ export class CartController {
 
   @ApiBearerAuth()
   @UseGuards(UserGuard)
-  @Post('/remove-many-products')
-  removeManyProductsFromCart(@Req() req: Request) {
-    return this.cartService.removeManyProductsFromCart(req);
+  @Post('/update-status-delivery-many-products')
+  updateStatusDeliveryManyProductsFromCart(@Req() req: Request) {
+    return this.cartService.updateStatusDeliveryManyProductsFromCart(req);
   }
 
   @ApiBearerAuth()
@@ -61,5 +62,12 @@ export class CartController {
       changeQuantityProductDto,
       req,
     );
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(UserGuard)
+  @Post('/update-status-delivery-cart')
+  updateStatusDeliveryCart(@Body() cartIdDto: CartIdDto, @Req() req: Request) {
+    return this.cartService.updateStatusDeliveryCart(cartIdDto, req);
   }
 }

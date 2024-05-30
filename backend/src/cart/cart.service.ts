@@ -8,6 +8,8 @@ import { Product } from '../product/product.schema';
 import { RemoveProductDto } from './dto/removeProduct.dto';
 import { ChangeQuantityProductDto } from './dto/changeQuantityProduct.dto';
 import { User } from '../user/user.schema';
+import { CartIdDto } from './dto/cartId.dto';
+import { statusDeliveryEnum } from '../utils/variableGlobal';
 
 @Injectable()
 export class CartService {
@@ -89,16 +91,25 @@ export class CartService {
     }
   }
 
-  async removeManyProductsFromCart(req: Request) {
+  async updateStatusDeliveryManyProductsFromCart(req: Request) {
     const { cartIds } = req.body;
     const userId = req['user']._id;
     try {
-      const deletedProducts = await this.cartModel.deleteMany({
-        userId,
-        _id: { $in: cartIds },
-      });
-
-      if (!deletedProducts) {
+      const updatedProducts = await this.cartModel.updateMany(
+        {
+          userId,
+          _id: { $in: cartIds },
+        },
+        {
+          $set: {
+            status_delivery: statusDeliveryEnum.notPaymentDone,
+          },
+        },
+        {
+          new: true,
+        },
+      );
+      if (!updatedProducts) {
         return {
           msg: 'Không tồn tại những sản phẩm này',
           status: false,
@@ -121,7 +132,7 @@ export class CartService {
     const userId = req['user']._id;
     try {
       const getUserCart = await this.cartModel
-        .find({ userId })
+        .find({ userId, status_delivery: statusDeliveryEnum.notOrderedYet })
         .populate('productId');
       const getVariants = getUserCart.flatMap((item) => {
         return item.productId.variants.map((variant) => {
@@ -206,6 +217,17 @@ export class CartService {
         status: true,
         updateQuantity,
       };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async updateStatusDeliveryCart(cartIdDto: CartIdDto, req: Request) {
+    const { cartId } = cartIdDto;
+    const user = req['user'];
+    try {
+      const cart = await this.cartModel.findById(cartId);
+      console.log('1111111111111111', cart, user);
     } catch (error) {
       throw new BadRequestException(error);
     }

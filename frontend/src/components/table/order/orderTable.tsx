@@ -96,29 +96,52 @@ export default function OrderTable() {
         return `${formattedTime} ${formattedDate}`;
       },
     },
-    {
-      name: "Note",
-      cell: (row: IOrder): JSX.Element => {
-        return (
-          <div className={styles.actions_column}>
-            {row.status_delivery === "notShippedYet" ? (
-              <Button
-                className={`${styles.button} ${styles.button_cancel}`}
-                onClick={() => handleCancelOrder(row._id)}
-              >
-                Hủy đơn hàng
-              </Button>
-            ) : (
-              <Button className={`${styles.button} ${styles.button_delivery}`}>
-                {row.status_delivery === "shipping"
-                  ? "Đang vận chuyển"
-                  : "Đã giao hàng"}
-              </Button>
-            )}
-          </div>
-        );
-      },
-    },
+    // {
+    //   name: "Note",
+    //   cell: (row: IOrder): JSX.Element => {
+    //     let btnAction;
+    //     if (row.status === "pending") {
+    //       btnAction = (
+    //         <Button
+    //           className={`${styles.button} ${styles.button_delivery}`}
+    //           onClick={() => {
+    //             router.replace("/checkout");
+    //           }}
+    //         >
+    //           Thanh toán
+    //         </Button>
+    //       );
+    //     }
+    //     if (row.status === "done" && row.status_delivery === "notShippedYet") {
+    //       btnAction = (
+    //         <Button
+    //           className={`${styles.button} ${styles.button_cancel}`}
+    //           onClick={() => handleCancelOrder(row._id)}
+    //         >
+    //           Hủy đơn hàng
+    //         </Button>
+    //       );
+    //     }
+    //     if (row.status === "cancel") {
+    //       btnAction = "";
+    //     }
+    //     if (row.status_delivery === "shipping") {
+    //       btnAction = (
+    //         <Button className={`${styles.button} ${styles.button_delivery}`}>
+    //           Đang vận chuyển
+    //         </Button>
+    //       );
+    //     }
+    //     if (row.status_delivery === "shipped") {
+    //       btnAction = (
+    //         <Button className={`${styles.button} ${styles.button_delivery}`}>
+    //           Đã giao hàng
+    //         </Button>
+    //       );
+    //     }
+    //     return <div className={styles.actions_column}>{btnAction}</div>;
+    //   },
+    // },
   ];
   const tableCustomStyles: TableStyles | undefined = {
     headCells: {

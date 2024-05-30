@@ -15,7 +15,6 @@ interface IOrder {
   totalPrice: string;
   status: string;
   session_id: string;
-  status_delivery: string;
   createdAt: date;
   updatedAt: date;
 }

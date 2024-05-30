@@ -3,16 +3,19 @@ export enum roleUserEnum {
   user = 'user',
 }
 
-export enum statusEnum {
+export enum statusOrderEnum {
   pending = 'pending',
   done = 'done',
   cancel = 'cancel',
 }
 
 export enum statusDeliveryEnum {
+  notOrderedYet = 'notOrderedYet',
+  notPaymentDone = 'notPaymentDone',
   notShippedYet = 'notShippedYet',
   shipping = 'shipping',
   shipped = 'shipped',
+  cancel = 'cancel',
 }
 
 export enum genderEnum {

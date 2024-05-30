@@ -65,9 +65,6 @@ export class Product {
   @Prop({ default: '0' })
   dislikes: string;
 
-  @Prop({ default: '0' })
-  numViews: string;
-
   @Prop({ default: false })
   isLiked: boolean;
 
@@ -88,6 +85,7 @@ export class Product {
 
   @Prop({ default: '0' })
   totalRatings: string;
+
   _id: string;
 }
 

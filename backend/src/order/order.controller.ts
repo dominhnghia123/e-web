@@ -6,7 +6,7 @@ import { CreateOrderDto } from './dto/createOrder.dto';
 import { Request } from 'express';
 import { UpdateOrderStatusDto } from './dto/updateOrderStatus.dto';
 import RequestWithRawBody from '../utils/stripe/requestWithRawBody.interface';
-import { OrderIdDto } from './dto/orderId.dto';
+import { CartIdDto } from '../cart/dto/cartId.dto';
 
 @ApiTags('Order')
 @Controller('api/order')
@@ -56,7 +56,7 @@ export class OrderController {
   @ApiBearerAuth()
   @UseGuards(UserGuard)
   @Post('/cancel-order')
-  cancelOrder(@Body() orderIdDto: OrderIdDto) {
-    return this.orderService.cancelOrder(orderIdDto);
+  cancelOrder(@Body() cartIdDto: CartIdDto) {
+    return this.orderService.cancelOrder(cartIdDto);
   }
 }

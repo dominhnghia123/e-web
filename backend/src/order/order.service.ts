@@ -6,15 +6,17 @@ import { CreateOrderDto } from './dto/createOrder.dto';
 import { Request } from 'express';
 import { Product } from '../product/product.schema';
 import { UpdateOrderStatusDto } from './dto/updateOrderStatus.dto';
-import { statusDeliveryEnum, statusEnum } from '../utils/variableGlobal';
+import { statusDeliveryEnum, statusOrderEnum } from '../utils/variableGlobal';
 import RequestWithRawBody from '../utils/stripe/requestWithRawBody.interface';
-import { OrderIdDto } from './dto/orderId.dto';
+import { Cart } from '../cart/cart.schema';
+import { CartIdDto } from '../cart/dto/cartId.dto';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectModel(Order.name) private orderModel: Model<Order>,
     @InjectModel(Product.name) private productModel: Model<Product>,
+    @InjectModel(Cart.name) private cartModel: Model<Cart>,
   ) {}
 
   async createOrder(createOrderDto: CreateOrderDto, req: Request) {
@@ -28,7 +30,7 @@ export class OrderService {
       //delete các order đang ở trạng thái chờ của user để cập nhật cái order pending mới
       await this.orderModel.deleteMany({
         user: userId,
-        status: statusEnum.pending,
+        status: statusOrderEnum.pending,
       });
       const createOrder = await this.orderModel.create({
         user: userId,
@@ -38,7 +40,17 @@ export class OrderService {
         totalPrice: totalPrice.toString(),
       });
       for (const item of orderItems) {
-        const { productId, variantId, quantity } = item;
+        const { productId, variantId, quantity, cartId } = item;
+        // Tìm và cập nhật orderId cho các carts
+        await this.cartModel.findByIdAndUpdate(
+          cartId,
+          {
+            orderId: createOrder._id,
+          },
+          {
+            new: true,
+          },
+        );
 
         // Tìm và cập nhật thông tin sản phẩm
         const findProduct = await this.productModel.findById(productId);
@@ -114,7 +126,7 @@ export class OrderService {
     try {
       let order: any = await this.orderModel.findOne({
         user: userId,
-        status: statusEnum.pending,
+        status: statusOrderEnum.pending,
       });
       if (!order) {
         return {
@@ -190,7 +202,8 @@ export class OrderService {
         orderId,
         {
           status,
-          paidAt: status === statusEnum.done ? new Date().toISOString() : '',
+          paidAt:
+            status === statusOrderEnum.done ? new Date().toISOString() : '',
         },
         {
           new: true,
@@ -278,9 +291,26 @@ export class OrderService {
           const currentOrder = await this.orderModel.findOne({
             session_id: invoice.id,
           });
-          currentOrder.status = statusEnum.done;
+          currentOrder.status = statusOrderEnum.done;
           currentOrder.payment_intent_id = invoice.payment_intent;
+          currentOrder.order_code = new Date().toISOString();
           await currentOrder.save();
+
+          const cartIds = currentOrder.orderItems.map((item) => item.cartId);
+          await this.cartModel.updateMany(
+            {
+              _id: { $in: cartIds },
+            },
+            {
+              $set: {
+                status_delivery: statusDeliveryEnum.notShippedYet,
+                order_code: new Date().toISOString(),
+              },
+            },
+            {
+              new: true,
+            },
+          );
           break;
         case 'checkout.session.expired':
           console.log('Phiên giao dịch đã hết hạn.');
@@ -292,19 +322,21 @@ export class OrderService {
     }
   }
 
-  async cancelOrder(orderIdDto: OrderIdDto) {
-    const { orderId } = orderIdDto;
+  async cancelOrder(cartIdDto: CartIdDto) {
+    const { cartId } = cartIdDto;
     try {
-      const order = await this.orderModel.findById(orderId);
-      if (
-        order.status_delivery === statusDeliveryEnum.shipping ||
-        order.status_delivery === statusDeliveryEnum.shipped
-      ) {
+      const cart = await this.cartModel.findById(cartId);
+
+      if (cart.status_delivery !== statusDeliveryEnum.notShippedYet) {
         return {
-          msg: 'Đơn hàng đang trong trạng thái vận chuyển không thể hủy.',
+          msg: 'Đơn hàng này không thể hủy.',
           status: false,
         };
       }
+      cart.status_delivery = statusDeliveryEnum.cancel;
+      await cart.save();
+      const orderId = cart.orderId;
+      const order = await this.orderModel.findById(orderId);
 
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const stripeWithSecretKey = require('stripe')(
@@ -315,7 +347,7 @@ export class OrderService {
         payment_intent: order.payment_intent_id,
       });
       if (refund.status === 'succeeded') {
-        order.status = statusEnum.cancel;
+        order.status = statusOrderEnum.cancel;
         await order.save();
         return {
           msg: 'Hủy đơn hàng thành công.',
