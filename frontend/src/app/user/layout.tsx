@@ -1,7 +1,7 @@
 "use client";
 import AppFooter from "@/components/appFooter";
 import AppHeader from "@/components/appHeader";
-import styles from "./account.module.css";
+import styles from "./user.module.css";
 import { Image } from "react-bootstrap";
 import { RiAccountCircleLine } from "react-icons/ri";
 import { FaShoppingBag } from "react-icons/fa";
@@ -124,10 +124,10 @@ export default function AccountLayout({
               <div className={styles.order_container}>
                 <FaShoppingBag className={styles.icon} />
                 <a className={
-                  pathname.startsWith("/user/account/order")
+                  pathname.startsWith("/user/purchase")
                     ? `${styles.order} ${styles.focused}`
                     : `${styles.order}`}
-                  href="/user/account/order"
+                  href="/user/purchase"
                 >
                   Đơn mua
                 </a>

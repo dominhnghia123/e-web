@@ -46,6 +46,7 @@ export class OrderService {
           cartId,
           {
             orderId: createOrder._id,
+            status_delivery: statusDeliveryEnum.notPaymentDone,
           },
           {
             new: true,
@@ -225,6 +226,32 @@ export class OrderService {
       const order = (await this.getUserOrderPending(req)).order;
       const products = order.orderItems;
 
+      for (const item of products) {
+        const { productId, variantId, quantity } = item;
+        // Tìm và cập nhật thông tin sản phẩm
+        const findProduct = await this.productModel.findById(productId);
+        if (!findProduct) {
+          throw new BadRequestException(
+            `Product with ID ${productId} not found`,
+          );
+        }
+        const findVariant = findProduct.variants.find(
+          (variant) => variant._id.toString() === variantId.toString(),
+        );
+        if (!findVariant) {
+          throw new BadRequestException(
+            `Variant with ID ${variantId} not found`,
+          );
+        }
+        findVariant.quantity = (
+          parseInt(findVariant.quantity) - parseInt(quantity)
+        ).toString();
+        findVariant.sold = (
+          parseInt(findVariant.sold) + parseInt(quantity)
+        ).toString();
+        await findProduct.save();
+      }
+
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const stripeWithSecretKey = require('stripe')(
         process.env.STRIPE_SECRET_KEY ?? '',
@@ -333,10 +360,46 @@ export class OrderService {
           status: false,
         };
       }
-      cart.status_delivery = statusDeliveryEnum.cancel;
-      await cart.save();
       const orderId = cart.orderId;
+      await this.cartModel.updateMany(
+        { orderId },
+        {
+          $set: {
+            status_delivery: statusDeliveryEnum.cancel,
+          },
+        },
+        {
+          new: true,
+        },
+      );
       const order = await this.orderModel.findById(orderId);
+      const orderItems = order.orderItems;
+
+      for (const item of orderItems) {
+        const { productId, variantId, quantity } = item;
+        // Tìm và cập nhật thông tin sản phẩm
+        const findProduct = await this.productModel.findById(productId);
+        if (!findProduct) {
+          throw new BadRequestException(
+            `Product with ID ${productId} not found`,
+          );
+        }
+        const findVariant = findProduct.variants.find(
+          (variant) => variant._id.toString() === variantId.toString(),
+        );
+        if (!findVariant) {
+          throw new BadRequestException(
+            `Variant with ID ${variantId} not found`,
+          );
+        }
+        findVariant.quantity = (
+          parseInt(findVariant.quantity) + parseInt(quantity)
+        ).toString();
+        findVariant.sold = (
+          parseInt(findVariant.sold) - parseInt(quantity)
+        ).toString();
+        await findProduct.save();
+      }
 
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const stripeWithSecretKey = require('stripe')(

@@ -99,7 +99,7 @@ export default function Cart() {
     const getCarts = async () => {
       try {
         const { data } = await axios.post(
-          `${process.env.BASE_HOST}/cart/get-cart`,
+          `${process.env.BASE_HOST}/cart/get-cart-not-ordered-yet`,
           {},
           {
             headers: {

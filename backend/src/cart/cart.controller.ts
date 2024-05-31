@@ -6,7 +6,8 @@ import { UserGuard } from '../user/user.guard';
 import { Request } from 'express';
 import { RemoveProductDto } from './dto/removeProduct.dto';
 import { ChangeQuantityProductDto } from './dto/changeQuantityProduct.dto';
-import { CartIdDto } from './dto/cartId.dto';
+import { UpdateStatusDeliveryCartDto } from './dto/updateStatusDeliveryCart.dto';
+import { StatusCartDto } from './dto/statusCart.dto';
 
 @ApiTags('Cart')
 @Controller('api/cart')
@@ -39,9 +40,9 @@ export class CartController {
 
   @ApiBearerAuth()
   @UseGuards(UserGuard)
-  @Post('/get-cart')
-  getCart(@Req() req: Request) {
-    return this.cartService.getCart(req);
+  @Post('/get-cart-not-ordered-yet')
+  getCartNotOrderedYet(@Req() req: Request) {
+    return this.cartService.getCartNotOrderedYet(req);
   }
 
   @ApiBearerAuth()
@@ -67,7 +68,20 @@ export class CartController {
   @ApiBearerAuth()
   @UseGuards(UserGuard)
   @Post('/update-status-delivery-cart')
-  updateStatusDeliveryCart(@Body() cartIdDto: CartIdDto, @Req() req: Request) {
-    return this.cartService.updateStatusDeliveryCart(cartIdDto, req);
+  updateStatusDeliveryCart(
+    @Body() updateStatusDeliveryCartDto: UpdateStatusDeliveryCartDto,
+    @Req() req: Request,
+  ) {
+    return this.cartService.updateStatusDeliveryCart(
+      updateStatusDeliveryCartDto,
+      req,
+    );
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(UserGuard)
+  @Post('/get-carts-by-status')
+  getCartsByStatus(@Body() statusCart: StatusCartDto, @Req() req: Request) {
+    return this.cartService.getCartsByStatus(statusCart, req);
   }
 }

@@ -8,8 +8,9 @@ import { Product } from '../product/product.schema';
 import { RemoveProductDto } from './dto/removeProduct.dto';
 import { ChangeQuantityProductDto } from './dto/changeQuantityProduct.dto';
 import { User } from '../user/user.schema';
-import { CartIdDto } from './dto/cartId.dto';
 import { statusDeliveryEnum } from '../utils/variableGlobal';
+import { UpdateStatusDeliveryCartDto } from './dto/updateStatusDeliveryCart.dto';
+import { StatusCartDto } from './dto/statusCart.dto';
 
 @Injectable()
 export class CartService {
@@ -33,9 +34,19 @@ export class CartService {
         productId,
         variantId,
       });
-      if (checkAlreadyCart) {
+      if (
+        checkAlreadyCart.status_delivery === statusDeliveryEnum.notOrderedYet
+      ) {
         return {
           msg: 'Sản phẩm này đã tồn tại trong giỏ hàng.',
+          status: false,
+        };
+      }
+      if (
+        checkAlreadyCart.status_delivery === statusDeliveryEnum.notPaymentDone
+      ) {
+        return {
+          msg: 'Sản phẩm này đã được chọn mua và được chờ thanh toán.',
           status: false,
         };
       }
@@ -128,7 +139,7 @@ export class CartService {
     }
   }
 
-  async getCart(req: Request) {
+  async getCartNotOrderedYet(req: Request) {
     const userId = req['user']._id;
     try {
       const getUserCart = await this.cartModel
@@ -222,12 +233,74 @@ export class CartService {
     }
   }
 
-  async updateStatusDeliveryCart(cartIdDto: CartIdDto, req: Request) {
-    const { cartId } = cartIdDto;
+  async updateStatusDeliveryCart(
+    updateStatusDeliveryCartDto: UpdateStatusDeliveryCartDto,
+    req: Request,
+  ) {
+    const { cartId, status } = updateStatusDeliveryCartDto;
     const user = req['user'];
     try {
-      const cart = await this.cartModel.findById(cartId);
-      console.log('1111111111111111', cart, user);
+      const cart = await this.cartModel.findById(cartId).populate('productId');
+      const seller = await this.userModel.findById(cart.productId.seller);
+      if (seller._id.toString() !== user._id.toString()) {
+        return {
+          msg: 'Bạn không có quyền cập nhật trạng thái của đơn hàng này.',
+          status: false,
+        };
+      }
+      cart.status_delivery = status;
+      await cart.save();
+      return {
+        msg: 'Cập nhật trạng thái đơn hàng thành công.',
+        status: true,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async getCartsByStatus(statusCart: StatusCartDto, req: Request) {
+    const { status } = statusCart;
+    const userId = req['user']._id;
+    try {
+      let carts = [];
+      if (status) {
+        carts = await this.cartModel
+          .find({ userId, status_delivery: status })
+          .populate('productId');
+      } else {
+        carts = await this.cartModel
+          .find({
+            userId,
+            status_delivery: { $ne: statusDeliveryEnum.notOrderedYet },
+          })
+          .populate('productId');
+      }
+      const getVariants = carts.flatMap((item) => {
+        return item.productId.variants.map((variant: any) => {
+          if (variant._id.toString() === item.variantId.toString()) {
+            return {
+              cartId: item._id,
+              productId: item.productId._id,
+              variantId: variant._id,
+              name: item.productId.name,
+              price: variant.price,
+              image: variant.image,
+              color: variant.color,
+              quantity: item.quantity,
+              sold: variant.sold,
+              inventory_quantity: variant.quantity,
+              status_delivery: item.status_delivery,
+            };
+          }
+        });
+      });
+      const variantDetail = getVariants.filter((item) => item);
+
+      return {
+        status: true,
+        variantDetail,
+      };
     } catch (error) {
       throw new BadRequestException(error);
     }

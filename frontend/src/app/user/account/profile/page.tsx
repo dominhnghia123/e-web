@@ -18,7 +18,7 @@ import { getStogare, getToken } from "@/app/helper/stogare";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ButtonReactBootStrap from "react-bootstrap/Button";
-import { PageContext } from "../layout";
+import { PageContext } from "../../layout";
 
 export default function ViewProfile() {
   const { setIsChangeProfile } = useContext(PageContext);
@@ -51,7 +51,7 @@ export default function ViewProfile() {
       }
     };
     getProfile();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Gender
