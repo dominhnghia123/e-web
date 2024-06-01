@@ -5,7 +5,6 @@ import { Order } from './order.schema';
 import { CreateOrderDto } from './dto/createOrder.dto';
 import { Request } from 'express';
 import { Product } from '../product/product.schema';
-import { UpdateOrderStatusDto } from './dto/updateOrderStatus.dto';
 import { statusDeliveryEnum, statusOrderEnum } from '../utils/variableGlobal';
 import RequestWithRawBody from '../utils/stripe/requestWithRawBody.interface';
 import { Cart } from '../cart/cart.schema';
@@ -41,18 +40,6 @@ export class OrderService {
       });
       for (const item of orderItems) {
         const { productId, variantId, quantity, cartId } = item;
-        // Tìm và cập nhật orderId cho các carts
-        await this.cartModel.findByIdAndUpdate(
-          cartId,
-          {
-            orderId: createOrder._id,
-            status_delivery: statusDeliveryEnum.notPaymentDone,
-          },
-          {
-            new: true,
-          },
-        );
-
         // Tìm và cập nhật thông tin sản phẩm
         const findProduct = await this.productModel.findById(productId);
         if (!findProduct) {
@@ -75,6 +62,19 @@ export class OrderService {
           parseInt(findVariant.sold) + parseInt(quantity)
         ).toString();
         await findProduct.save();
+
+        // Tìm và cập nhật orderId cho các carts
+        await this.cartModel.findByIdAndUpdate(
+          cartId,
+          {
+            orderId: createOrder._id,
+            status_delivery: statusDeliveryEnum.notPaymentDone,
+            sellerId: findProduct.seller,
+          },
+          {
+            new: true,
+          },
+        );
       }
       return {
         msg: 'Tạo đơn hàng thành công.',
@@ -196,29 +196,6 @@ export class OrderService {
     }
   }
 
-  async updateOrderStatus(updateOrderStatusDto: UpdateOrderStatusDto) {
-    const { orderId, status } = updateOrderStatusDto;
-    try {
-      const updateOrder = await this.orderModel.findByIdAndUpdate(
-        orderId,
-        {
-          status,
-          paidAt:
-            status === statusOrderEnum.done ? new Date().toISOString() : '',
-        },
-        {
-          new: true,
-        },
-      );
-      return {
-        status: true,
-        updateOrder,
-      };
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  }
-
   async paymentOrder(req: RequestWithRawBody) {
     //add product to Stripe to prepare payment online
     try {
@@ -320,7 +297,6 @@ export class OrderService {
           });
           currentOrder.status = statusOrderEnum.done;
           currentOrder.payment_intent_id = invoice.payment_intent;
-          currentOrder.order_code = new Date().toISOString();
           await currentOrder.save();
 
           const cartIds = currentOrder.orderItems.map((item) => item.cartId);
@@ -331,7 +307,6 @@ export class OrderService {
             {
               $set: {
                 status_delivery: statusDeliveryEnum.notShippedYet,
-                order_code: new Date().toISOString(),
               },
             },
             {
@@ -422,6 +397,72 @@ export class OrderService {
           status: false,
         };
       }
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async getAllOrdersBySeller(req: Request) {
+    const sellerId = req['user']._id;
+    const keySearch: string = req.query?.s?.toString();
+    const currentPage: number = req.query.page as any;
+    const itemsPerPage: number = req.query.limit as any;
+    try {
+      const options: any = {
+        sellerId: sellerId,
+        status_delivery: {
+          $in: [
+            statusDeliveryEnum.notShippedYet,
+            statusDeliveryEnum.shipping,
+            statusDeliveryEnum.shipped,
+            statusDeliveryEnum.cancel,
+          ],
+        },
+      };
+      if (keySearch) {
+        options.$or = [{ status_delivery: new RegExp(keySearch, 'i') }];
+      }
+      const orders: any = await this.cartModel
+        .find(options)
+        .populate('userId')
+        .populate('productId')
+        .sort({ createdAt: -1 });
+
+      const page: number = currentPage || 1;
+      const limit: number = itemsPerPage || 10;
+      const skip: number = (page - 1) * limit;
+
+      const totalOrders = await this.cartModel.countDocuments(options);
+      const data = orders.slice(
+        skip,
+        parseInt(skip.toString()) + parseInt(limit.toString()),
+      );
+
+      const findVariants = data.map((order: any) => {
+        const variant = order.productId.variants.find(
+          (item: any) => item._id.toString() === order.variantId.toString(),
+        );
+
+        return {
+          cartId: order._id,
+          image: variant.image,
+          sold: variant.sold,
+          color: variant.color,
+          price: variant.price,
+          quantity: order.quantity,
+          status_delivery: order.status_delivery,
+          buyername: order.userId.username,
+          createdAt: order.createdAt,
+          updatedAt: order.updatedAt,
+        };
+      });
+      return {
+        status: true,
+        orders: findVariants,
+        totalOrders,
+        page,
+        limit,
+      };
     } catch (error) {
       throw new BadRequestException(error);
     }

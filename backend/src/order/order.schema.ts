@@ -43,9 +43,6 @@ export class Order {
   @Prop()
   paidAt: string;
 
-  @Prop()
-  order_code: string;
-
   @Prop({
     required: true,
     enum: statusOrderEnum,

@@ -4,7 +4,6 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserGuard } from '../user/user.guard';
 import { CreateOrderDto } from './dto/createOrder.dto';
 import { Request } from 'express';
-import { UpdateOrderStatusDto } from './dto/updateOrderStatus.dto';
 import RequestWithRawBody from '../utils/stripe/requestWithRawBody.interface';
 import { CartIdDto } from '../cart/dto/cartId.dto';
 
@@ -36,13 +35,6 @@ export class OrderController {
 
   @ApiBearerAuth()
   @UseGuards(UserGuard)
-  @Post('/update-order-status')
-  updateOrderStatus(@Body() updateOrderStatusDto: UpdateOrderStatusDto) {
-    return this.orderService.updateOrderStatus(updateOrderStatusDto);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(UserGuard)
   @Post('/payment-order')
   paymentOrder(@Req() req: RequestWithRawBody) {
     return this.orderService.paymentOrder(req);
@@ -58,5 +50,12 @@ export class OrderController {
   @Post('/cancel-order')
   cancelOrder(@Body() cartIdDto: CartIdDto) {
     return this.orderService.cancelOrder(cartIdDto);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(UserGuard)
+  @Post('/get-all-orders-by-seller')
+  getAllOrdersBySeller(@Req() req: Request) {
+    return this.orderService.getAllOrdersBySeller(req);
   }
 }

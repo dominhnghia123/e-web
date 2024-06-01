@@ -1,0 +1,73 @@
+.table_container {
+  width: 100%;
+  height: auto;
+}
+.head {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+}
+.table_top {
+  display: flex;
+  margin-bottom: 20px;
+  width: 100%;
+  height: 50px;
+  justify-content: space-between;
+  align-items: center;
+}
+.button {
+  height: 80%;
+  min-width: 170px;
+  padding: 5px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+.button_delivery {
+  background-color: rgb(255, 189, 66);
+}
+.button_delivery:hover {
+  background-color: rgb(252, 178, 42);
+}
+.button_follow_delivery {
+  background-color: rgb(201, 131, 2);
+}
+.button_follow_delivery:hover {
+  background-color: rgb(177, 115, 0);
+}
+.button_view_detail {
+  background-color: rgb(255, 166, 0);
+}
+.button_view_detail:hover {
+  background-color: rgb(232, 151, 2);
+}
+.input_container {
+  height: 80%;
+  width: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.input {
+  height: 90%;
+  width: 95%;
+  padding: 0 12px;
+  border-radius: 5px;
+  border: none;
+}
+.input:focus {
+  outline: none;
+  background-color: rgb(252, 242, 243);
+}
+.input:hover {
+  background-color: rgb(252, 242, 243);
+}
+.image {
+  height: 50px;
+  width: 50px;
+  padding-right: 15px;
+}

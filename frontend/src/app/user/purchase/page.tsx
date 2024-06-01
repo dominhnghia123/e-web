@@ -1,19 +1,20 @@
 "use client";
-import { Divider, Modal, Tabs, TabsProps } from "antd";
+import { Divider, Modal, Rate, Tabs, TabsProps } from "antd";
 import styles from "./purchase.module.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { getToken } from "@/app/helper/stogare";
 import { Button, Image } from "react-bootstrap";
 import { useRouter } from "next/navigation";
+import { CartConstant } from "@/contants/CartConstant";
 
 const listStatusCart = [
   "",
-  "notPaymentDone",
-  "notShippedYet",
-  "shipping",
-  "shipped",
-  "cancel",
+  CartConstant.STATUS_DELIVERY.NOT_PAYMENT_DONE,
+  CartConstant.STATUS_DELIVERY.NOT_SHIPPED_YET,
+  CartConstant.STATUS_DELIVERY.SHIPPING,
+  CartConstant.STATUS_DELIVERY.SHIPPED,
+  CartConstant.STATUS_DELIVERY.CANCEL,
 ];
 export default function PurchasePage() {
   const token = getToken();
@@ -27,16 +28,9 @@ export default function PurchasePage() {
     setChangeTab(!changeTab);
   };
 
+  const [confirmLoading, setConfirmLoading] = useState(false);
   const [openModalConfirmCancelOrder, setOpenModalConfirmCancelOrder] =
     useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
-
-  const showModal = () => {
-    setOpenModalConfirmCancelOrder(true);
-  };
-  const handleCancel = () => {
-    setOpenModalConfirmCancelOrder(false);
-  };
 
   const handleCancelOrder = async (cartId: string) => {
     try {
@@ -134,6 +128,41 @@ export default function PurchasePage() {
     }
   };
 
+  const [star, setStar] = useState<number>(0);
+  const [comment, setComment] = useState<string>("");
+  const [openModalRatingShop, setOpenModalRatingShop] = useState(false);
+  const handleSubmitComment = async (productId: string) => {
+    try {
+      const { data } = await axios.post(
+        `${process.env.BASE_HOST}/product/create-rating`,
+        {
+          productId: productId,
+          star: star,
+          comment: comment,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (data.status === true) {
+        showModalCommentSuccess();
+        setOpenModalRatingShop(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const showModalCommentSuccess = () => {
+    Modal.success({
+      content:
+        "Cảm ơn sự đóng góp của bạn, chúng tôi sẽ xem xét và cải thiện nếu có bất kỳ vấn đề gì khách hàng gặp phải.",
+    });
+    setComment("");
+    setStar(0);
+  };
+
   const getDisplayBtn = (
     status: string,
     cartId: string,
@@ -167,7 +196,7 @@ export default function PurchasePage() {
           <div className={styles.one_button_container}>
             <Button
               className={`${styles.button} ${styles.button_cancel_order}`}
-              onClick={showModal}
+              onClick={() => setOpenModalConfirmCancelOrder(true)}
             >
               Hủy đơn
             </Button>
@@ -176,7 +205,7 @@ export default function PurchasePage() {
               open={openModalConfirmCancelOrder}
               onOk={() => handleCancelOrder(cartId)}
               confirmLoading={confirmLoading}
-              onCancel={handleCancel}
+              onCancel={() => setOpenModalConfirmCancelOrder(false)}
             >
               <p>
                 Nếu bạn đồng ý hủy không mua mặt hàng này sẽ đồng nghĩa với việc
@@ -202,7 +231,37 @@ export default function PurchasePage() {
             >
               Mua lại
             </Button>
-            <Button className={styles.button_rate}>Đánh giá shop</Button>
+            <Button
+              className={styles.button_rate}
+              onClick={() => setOpenModalRatingShop(true)}
+            >
+              Đánh giá shop
+            </Button>
+            <Modal
+              title="Đánh giá"
+              open={openModalRatingShop}
+              onOk={() => handleSubmitComment(productId)}
+              confirmLoading={confirmLoading}
+              onCancel={() => setOpenModalRatingShop(false)}
+            >
+              <div className={styles.writing_evaluate}>
+                <div className={styles.ratings_star_evaluate}>
+                  <Rate
+                    value={star}
+                    onChange={(value: number) => setStar(value)}
+                  />
+                </div>
+                <div className={styles.input_ratings_container}>
+                  <input
+                    type="text"
+                    placeholder="Viết đánh giá cho sản phẩm"
+                    className={styles.input_ratings}
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+                </div>
+              </div>
+            </Modal>
           </div>
         );
       case listStatusCart[5]:

@@ -32,6 +32,9 @@ export class Cart {
 
   @Prop()
   orderId: string;
+
+  @Prop()
+  sellerId: string;
 }
 
 export const CartSchema = SchemaFactory.createForClass(Cart);
