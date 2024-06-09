@@ -114,7 +114,7 @@ export default function Signin() {
           </Button>
         </form>
         <div className={styles.forgot_password}>
-          <a href="#" className={styles.forgot_password__link}>
+          <a href="/buyer/reset-password" className={styles.forgot_password__link}>
             Quên mật khẩu
           </a>
         </div>

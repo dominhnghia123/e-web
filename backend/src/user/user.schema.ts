@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { Product } from '../product/product.schema';
 import { genderEnum } from '../utils/variableGlobal';
 
@@ -59,8 +60,20 @@ export class User {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Product', default: null })
   warehouses: Product[];
 
+  @Prop()
+  passwordChangeAt: Date;
+
+  @Prop()
+  passwordResetToken: string;
+
+  @Prop()
+  passwordResetExquires: Date;
+
   // eslint-disable-next-line @typescript-eslint/ban-types
   isMatchedPassword: Function;
+
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  createPasswordResetToken: Function;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -81,4 +94,14 @@ UserSchema.pre('save', function (next) {
 
 UserSchema.methods.isMatchedPassword = async function (enterPassword: string) {
   return await bcrypt.compare(enterPassword, this.password);
+};
+
+UserSchema.methods.createPasswordResetToken = async function () {
+  const resettoken = crypto.randomBytes(32).toString('hex');
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resettoken)
+    .digest('hex');
+  this.passwordResetExquires = Date.now() + 30 * 60 * 1000; //10 minutes
+  return resettoken;
 };

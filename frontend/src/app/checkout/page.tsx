@@ -1,17 +1,17 @@
 "use client";
-import { Divider, Radio } from "antd";
-import { useEffect, useState } from "react";
+import {Divider, Radio} from "antd";
+import {useEffect, useState} from "react";
 import styles from "./checkout.module.css";
-import { Button, Image } from "react-bootstrap";
+import {Button, Image} from "react-bootstrap";
 import CouponModal from "@/components/modal/couponModal/page";
 import PickAddressModal from "@/components/modal/address/pickAddress/page";
 import axios from "axios";
-import { getToken } from "../helper/stogare";
-import { toast } from "react-toastify";
+import {getToken} from "../helper/stogare";
+import {toast} from "react-toastify";
 import AppHeader from "@/components/appHeader";
 import AppFooter from "@/components/appFooter";
-import { RootState, useAppSelector } from "@/redux/store";
-import { useRouter } from "next/navigation";
+import {RootState, useAppSelector} from "@/redux/store";
+import {useRouter} from "next/navigation";
 
 export default function Checkout() {
   const router = useRouter();
@@ -27,12 +27,13 @@ export default function Checkout() {
   });
   //set up modal address
   const [openPickAddressModal, setOpenPickAddressModal] = useState(false);
-  const [selectedAddressId, setSelectedAddressId] = useState<string>(addressIdRedux);
+  const [selectedAddressId, setSelectedAddressId] =
+    useState<string>(addressIdRedux);
   const [selectedAddress, setSelectedAddress] = useState<IAddress | any>();
   useEffect(() => {
     const getAnAddress = async () => {
       try {
-        const { data } = await axios.post(
+        const {data} = await axios.post(
           `${process.env.BASE_HOST}/address/get-an-address`,
           {
             _id: selectedAddressId,
@@ -58,13 +59,17 @@ export default function Checkout() {
   }, [selectedAddressId]);
 
   //set up modal coupon
+
   const [openCouponModal, setOpenCouponModal] = useState(false);
-  const [selectedCouponId, setSelectedCouponId] = useState<string>(voucherIdRedux);
-  const [selectedCoupon, setSelectedCoupon] = useState<ICoupon | any>(undefined);
+  const [selectedCouponId, setSelectedCouponId] =
+    useState<string>(voucherIdRedux);
+  const [selectedCoupon, setSelectedCoupon] = useState<ICoupon | any>(
+    undefined
+  );
   useEffect(() => {
     const getACoupon = async () => {
       try {
-        const { data } = await axios.post(
+        const {data} = await axios.post(
           `${process.env.BASE_HOST}/coupon/get-a-coupon`,
           {
             _id: selectedCouponId,
@@ -75,6 +80,7 @@ export default function Checkout() {
             },
           }
         );
+        console.log("222", data);
         if (data.status === true) {
           setSelectedCoupon(data.coupon);
         }
@@ -92,7 +98,7 @@ export default function Checkout() {
   const [products, setProducts] = useState<any>([]);
   useEffect(() => {
     const getCarts = async () => {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/cart/get-carts-by-id`,
         {
           cartIds: cartIdsRedux,
@@ -111,25 +117,30 @@ export default function Checkout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartIdsRedux]);
 
-  const [totalPriceBeforeApllyCoupon, setTotalPriceBeforeApplyCoupon] = useState<string|any>()
+  const [totalPriceBeforeApllyCoupon, setTotalPriceBeforeApplyCoupon] =
+    useState<string | any>();
 
   useEffect(() => {
     const getOrderPending = async () => {
-      const { data } = await axios.post(`${process.env.BASE_HOST}/order/get-user-order-pending`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const {data} = await axios.post(
+        `${process.env.BASE_HOST}/order/get-user-order-pending`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      })
+      );
       if (data.status === true) {
         setProducts(data.order.orderItems);
-        setSelectedCoupon(data.order.coupon);
+        setSelectedCouponId(data.order.coupon);
         setSelectedAddressId(data.order.address);
         setTotalPriceBeforeApplyCoupon(data.order.totalPrice);
       }
-    }
+    };
     getOrderPending();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handlePayment = async () => {
     //update cart: Remove products to be purchased from the shopping cart
@@ -151,7 +162,7 @@ export default function Checkout() {
 
     // thanh toán đơn hàng
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/order/payment-order`,
         {},
         {

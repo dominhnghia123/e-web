@@ -10,6 +10,9 @@ import { UserGuard } from './user.guard';
 import { AdminGuard } from './admin.guard';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { PhoneNumberDto } from './dto/phoneNumber.dto';
+import { ForgotPasswordDto } from './dto/forgotPassword.dto';
+import { ResetPasswordDto } from './dto/resetPassword.dto';
+import { PreResetPasswordDto } from './dto/preResetPassword';
 
 @ApiTags('User')
 @Controller('api/user')
@@ -81,5 +84,20 @@ export class UserController {
   @Post('/check-already-phone-number')
   checkAlreadyPhoneNumber(@Body() phoneNumberDto: PhoneNumberDto) {
     return this.userService.checkAlreadyPhoneNumber(phoneNumberDto);
+  }
+
+  @Post('/forgot-password')
+  forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.userService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Post('/pre-reset-password')
+  preResetPassword(@Body() preResetPasswordDto: PreResetPasswordDto) {
+    return this.userService.preResetPassword(preResetPasswordDto);
+  }
+
+  @Post('/reset-password')
+  resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.userService.resetPassword(resetPasswordDto);
   }
 }

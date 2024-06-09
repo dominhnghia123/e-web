@@ -1,32 +1,32 @@
 "use client";
-import { Checkbox, Divider, InputNumber } from "antd";
+import {Checkbox, Divider, InputNumber} from "antd";
 import type {
   CheckboxOptionType,
   CheckboxProps,
   GetProp,
   InputNumberProps,
 } from "antd";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import styles from "./cart.module.css";
-import { Button, Image } from "react-bootstrap";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import {Button, Image} from "react-bootstrap";
+import {RiDeleteBin6Line} from "react-icons/ri";
 import CouponModal from "@/components/modal/couponModal/page";
 import PickAddressModal from "@/components/modal/address/pickAddress/page";
 import axios from "axios";
-import { getStogare, getToken } from "../helper/stogare";
-import { toast } from "react-toastify";
+import {getStogare, getToken} from "../helper/stogare";
+import {toast} from "react-toastify";
 import AppHeader from "@/components/appHeader";
 import AppFooter from "@/components/appFooter";
-import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/redux/store";
-import { getProductsCheckout } from "@/redux/features/checkout/checkoutSlice";
+import {useRouter} from "next/navigation";
+import {useAppDispatch} from "@/redux/store";
+import {getProductsCheckout} from "@/redux/features/checkout/checkoutSlice";
 
 type CheckboxValueType = GetProp<typeof Checkbox.Group, "value">[number];
 const CheckboxGroup = Checkbox.Group;
 
 export default function Cart() {
   const token = getToken();
-  const currentUserString = getStogare('currentUser');
+  const currentUserString = getStogare("currentUser");
   let currentUser: any = null;
   if (currentUserString) {
     currentUser = JSON.parse(currentUserString);
@@ -41,12 +41,12 @@ export default function Cart() {
   ) => {
     const updateQuantity = plainOptions.map((option: any) => {
       if (option.cartId === id) {
-        return { ...option, quantity: value };
+        return {...option, quantity: value};
       }
       return option;
     });
     setPlainOptions(updateQuantity);
-    const { data } = await axios.post(
+    const {data} = await axios.post(
       `${process.env.BASE_HOST}/cart/change-quantity-product`,
       {
         cartId: id,
@@ -68,7 +68,7 @@ export default function Cart() {
   const [deleted, setDeleted] = useState(false);
   const handleDeleteProduct = async (cartId: string) => {
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/cart/remove-product`,
         {
           cartId,
@@ -98,7 +98,7 @@ export default function Cart() {
   useEffect(() => {
     const getCarts = async () => {
       try {
-        const { data } = await axios.post(
+        const {data} = await axios.post(
           `${process.env.BASE_HOST}/cart/get-cart-not-ordered-yet`,
           {},
           {
@@ -109,7 +109,7 @@ export default function Cart() {
         );
         if (data.status === true) {
           const cart = data.variantDetail.map((item: any) => {
-            return { ...item, value: item.cartId };
+            return {...item, value: item.cartId};
           });
           setPlainOptions(cart);
           setDeleted(false);
@@ -119,7 +119,7 @@ export default function Cart() {
       }
     };
     getCarts();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleted]);
 
   const [checkedList, setCheckedList] = useState<CheckboxValueType[]>([]);
@@ -152,7 +152,7 @@ export default function Cart() {
       totalPrice += item.price * item.quantity;
     });
     setTotalPriceBeforeApplyCoupon(totalPrice);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkedList, changeQuantity]);
 
   //set up modal address
@@ -164,7 +164,7 @@ export default function Cart() {
   useEffect(() => {
     const getAnAddress = async () => {
       try {
-        const { data } = await axios.post(
+        const {data} = await axios.post(
           `${process.env.BASE_HOST}/address/get-an-address`,
           {
             _id: selectedAddressId,
@@ -186,7 +186,7 @@ export default function Cart() {
       }
     };
     getAnAddress();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedAddressId]);
 
   //set up modal coupon
@@ -198,7 +198,7 @@ export default function Cart() {
   useEffect(() => {
     const getACoupon = async () => {
       try {
-        const { data } = await axios.post(
+        const {data} = await axios.post(
           `${process.env.BASE_HOST}/coupon/get-a-coupon`,
           {
             _id: selectedCouponId,
@@ -220,11 +220,11 @@ export default function Cart() {
       }
     };
     getACoupon();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCouponId]);
 
   const dispatch = useAppDispatch();
-  const handlePurchase = async() => {
+  const handlePurchase = async () => {
     dispatch(
       getProductsCheckout({
         checkedList,
@@ -235,7 +235,7 @@ export default function Cart() {
       })
     );
 
-    const { data } = await axios.post(
+    const {data} = await axios.post(
       `${process.env.BASE_HOST}/cart/get-carts-by-id`,
       {
         cartIds: checkedList,
@@ -253,10 +253,11 @@ export default function Cart() {
         variantId: item.variantId,
         quantity: item.quantity,
         price: item.price,
-      }
-    })
-    
-    await axios.post(`${process.env.BASE_HOST}/order/create-order`,
+      };
+    });
+
+    await axios.post(
+      `${process.env.BASE_HOST}/order/create-order`,
       {
         user: currentUser._id,
         addressId: selectedAddressId,
@@ -265,13 +266,12 @@ export default function Cart() {
       },
       {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
     router.replace(`/checkout`);
   };
-  
 
   return (
     <div className={styles.container}>

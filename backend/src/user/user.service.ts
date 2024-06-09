@@ -15,12 +15,18 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Request, Response } from 'express';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { PhoneNumberDto } from './dto/phoneNumber.dto';
+import { ForgotPasswordDto } from './dto/forgotPassword.dto';
+import { ResetPasswordDto } from './dto/resetPassword.dto';
+import { AppService } from '../app.service';
+import { PreResetPasswordDto } from './dto/preResetPassword';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     private jwtService: JwtService,
+    private appService: AppService,
   ) {}
 
   async registerUser(registerUserDto: RegisterUserDto) {
@@ -361,6 +367,87 @@ export class UserService {
       }
       return {
         status: false,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+    const { email } = forgotPasswordDto;
+    try {
+      const findUser = await this.userModel.findOne({ email });
+      if (!findUser) {
+        return {
+          msg: 'Email này chưa từng được sử dụng',
+          status: false,
+        };
+      }
+      const code = await findUser.createPasswordResetToken();
+
+      await findUser.save();
+
+      const message = `Hi guys, Please use the following code to reset your password.\nThis code is valid till 10 minutes from now.\nCode: ${code}`;
+
+      const dataPayload = {
+        to: email,
+        text: message,
+        subject: 'Forgot Password',
+      };
+      await this.appService.sendEmail(dataPayload);
+
+      return {
+        msg: 'Lấy mã thành công.',
+        status: true,
+        code,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async preResetPassword(preResetPasswordDto: PreResetPasswordDto) {
+    const { code } = preResetPasswordDto;
+    try {
+      const hashedToken = crypto
+        .createHash('sha256')
+        .update(code)
+        .digest('hex');
+      const user = await this.userModel.findOne({
+        passwordResetToken: hashedToken,
+        passwordResetExquires: { $gt: Date.now() },
+      });
+      if (!user) {
+        return {
+          msg: 'Mã code không chính xác hoặc đã hết hiệu lực. Vui lòng thử lại.',
+          status: false,
+        };
+      }
+      return {
+        status: true,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    const { email, newPassword } = resetPasswordDto;
+    try {
+      const user = await this.userModel.findOne({ email });
+      if (!user) {
+        return {
+          msg: 'Có lỗi xảy ra!',
+          status: false,
+        };
+      }
+      user.password = newPassword;
+      user.passwordResetToken = undefined;
+      user.passwordResetExquires = undefined;
+      await user.save();
+      return {
+        msg: 'Reset mật khẩu thành công.',
+        status: true,
       };
     } catch (error) {
       throw new BadRequestException(error);
