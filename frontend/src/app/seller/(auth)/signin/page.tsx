@@ -163,7 +163,7 @@ export default function Signin() {
             onCancel={handleCancel}
           />
           <div className={styles.forgot_password}>
-            <a href="#" className={styles.forgot_password__link}>
+            <a href="/reset-password" className={styles.forgot_password__link}>
               Quên mật khẩu
             </a>
           </div>
