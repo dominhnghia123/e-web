@@ -1,15 +1,15 @@
 "use client";
-import { Button } from "react-bootstrap";
-import { BsCart4 } from "react-icons/bs";
-import { FaShopify } from "react-icons/fa6";
+import {Button} from "react-bootstrap";
+import {BsCart4} from "react-icons/bs";
+import {FaShopify} from "react-icons/fa6";
 import styles from "../app/app.module.css";
 import Cookies from "js-cookie";
-import { getStogare, getToken, removeStogare } from "@/app/helper/stogare";
-import { MouseEvent, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import {getStogare, getToken, removeStogare} from "@/app/helper/stogare";
+import {MouseEvent, useEffect, useState} from "react";
+import {useRouter} from "next/navigation";
 import axios from "axios";
-import { toast } from "react-toastify";
-import { useAppDispatch } from "@/redux/store";
+import {toast} from "react-toastify";
+import {useAppDispatch} from "@/redux/store";
 import {
   getProductsBySearchError,
   getProductsBySearchStart,
@@ -49,7 +49,7 @@ export default function AppHeader(props: IProps) {
   useEffect(() => {
     const getCarts = async () => {
       try {
-        const { data } = await axios.post(
+        const {data} = await axios.post(
           `${process.env.BASE_HOST}/cart/get-cart-not-ordered-yet`,
           {},
           {
@@ -69,7 +69,7 @@ export default function AppHeader(props: IProps) {
     if (Cookies.get("userActive") === "1") {
       getCarts();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.changedCart]);
 
   //handle search
@@ -79,14 +79,14 @@ export default function AppHeader(props: IProps) {
     e.preventDefault();
     dispatch(getProductsBySearchStart());
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/product/get-products-by-brand?s=${keySearch}&page=1&limit=10`,
         {
           brand: "",
         }
       );
       if (data.status === true) {
-        dispatch(getProductsBySearchSuccess({ ...data, keySearch }));
+        dispatch(getProductsBySearchSuccess({...data, keySearch}));
         router.replace("/search");
       }
       if (data.status === false) {
@@ -219,7 +219,7 @@ export default function AppHeader(props: IProps) {
                 >
                   <input
                     type="text"
-                    placeholder="Search here..."
+                    placeholder="Tìm kiếm..."
                     className={
                       styles.header__header_bottom__container__search_section__form__input_container__input
                     }

@@ -158,7 +158,7 @@ export default function Cart() {
   //set up modal address
   const [openPickAddressModal, setOpenPickAddressModal] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState<string>(
-    "6623d1a0f71ddedf65579800"
+    "666b23f5980641f8c29182cf"
   );
   const [selectedAddress, setSelectedAddress] = useState<IAddress | any>();
   useEffect(() => {

@@ -5,6 +5,7 @@ import { Address } from './address.schema';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { AddressIdDto } from './dto/addressId.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
+import { Request } from 'express';
 
 @Injectable()
 export class AddressService {
@@ -12,10 +13,12 @@ export class AddressService {
     @InjectModel(Address.name) private addressModel: Model<Address>,
   ) {}
 
-  async createAddress(createAddressDto: CreateAddressDto) {
+  async createAddress(createAddressDto: CreateAddressDto, req: Request) {
     const { username, phone, address } = createAddressDto;
+    const userId = req['user']._id;
     try {
       const newAddress = await this.addressModel.create({
+        userId,
         username: username,
         phone: phone,
         address: address,
@@ -31,10 +34,11 @@ export class AddressService {
     }
   }
 
-  async getAnAddress(addressIdDto: AddressIdDto) {
+  async getAnAddress(addressIdDto: AddressIdDto, req: Request) {
     const { _id } = addressIdDto;
+    const userId = req['user']._id;
     try {
-      const address = await this.addressModel.findById(_id);
+      const address = await this.addressModel.findOne({ _id, userId });
       if (!address) {
         return {
           msg: 'This address does not exist',
@@ -51,10 +55,11 @@ export class AddressService {
     }
   }
 
-  async getAllAddress() {
+  async getAllAddress(req: Request) {
+    const userId = req['user']._id;
     try {
       const allAddresses = await this.addressModel
-        .find()
+        .find({ userId })
         .sort({ title: 'asc' });
       if (allAddresses.length > 0) {
         return {
@@ -73,10 +78,11 @@ export class AddressService {
     }
   }
 
-  async updateAddress(updateAddressDto: UpdateAddressDto) {
+  async updateAddress(updateAddressDto: UpdateAddressDto, req: Request) {
     const { _id, username, phone, address } = updateAddressDto;
+    const userId = req['user']._id;
     try {
-      const findAddress = await this.addressModel.findById(_id);
+      const findAddress = await this.addressModel.findOne({ _id, userId });
       if (!findAddress) {
         return {
           msg: 'This address does not exist',
@@ -106,10 +112,11 @@ export class AddressService {
     }
   }
 
-  async deleteAnAddress(addressIdDto: AddressIdDto) {
+  async deleteAnAddress(addressIdDto: AddressIdDto, req: Request) {
     const { _id } = addressIdDto;
+    const userId = req['user']._id;
     try {
-      const findAddress = await this.addressModel.findById(_id);
+      const findAddress = await this.addressModel.findOne({ _id, userId });
       if (!findAddress) {
         return {
           msg: 'This address does not exist',

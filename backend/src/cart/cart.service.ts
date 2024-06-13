@@ -29,12 +29,15 @@ export class CartService {
       const findVariant = findProduct.variants.find(
         (variant) => variant._id.toString() === variantId.toString(),
       );
+      console.log('addToCartDto', findProduct);
+
       const checkAlreadyCart = await this.cartModel.findOne({
         userId,
         productId,
         variantId,
       });
       if (
+        checkAlreadyCart &&
         checkAlreadyCart.status_delivery === statusDeliveryEnum.notOrderedYet
       ) {
         return {
@@ -43,6 +46,7 @@ export class CartService {
         };
       }
       if (
+        checkAlreadyCart &&
         checkAlreadyCart.status_delivery === statusDeliveryEnum.notPaymentDone
       ) {
         return {
@@ -50,6 +54,7 @@ export class CartService {
           status: false,
         };
       }
+
       const newCart = await this.cartModel.create({
         userId,
         productId,

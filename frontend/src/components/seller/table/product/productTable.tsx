@@ -1,11 +1,11 @@
-import DataTable, { TableStyles } from "react-data-table-component";
+import DataTable, {TableStyles} from "react-data-table-component";
 import styles from "./product.module.css";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
-import { Button } from "react-bootstrap";
-import { getToken } from "@/app/helper/stogare";
+import {Button} from "react-bootstrap";
+import {getToken} from "@/app/helper/stogare";
 import moment from "moment";
-import { useRouter } from "next/navigation";
+import {useRouter} from "next/navigation";
 
 export default function ProductTable() {
   const router = useRouter();
@@ -20,7 +20,7 @@ export default function ProductTable() {
 
   useEffect(() => {
     const getProducts = async () => {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/product/get-products-by-user?s=${keySearch}&limit=${itemsPerPage}&page=${currentPage}`,
         {},
         {
@@ -33,7 +33,7 @@ export default function ProductTable() {
       setTotalProducts(data.totalProducts);
     };
     getProducts();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keySearch, itemsPerPage, currentPage, deleted]);
 
   const handlePerRowsChange = async (perPage: number, page: number) => {
@@ -46,7 +46,7 @@ export default function ProductTable() {
 
   const handleDeleteMany = async () => {
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/product/delete-many-products`,
         {
           productIds: selectedRows,
@@ -67,7 +67,7 @@ export default function ProductTable() {
 
   const handleDeleteOneProduct = async (_id: string) => {
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/product/delete-a-product`,
         {
           _id: _id,
@@ -163,7 +163,7 @@ export default function ProductTable() {
           className={`${styles.button} ${styles.buttonAdd}`}
           onClick={() => router.replace("/seller/products/addNew")}
         >
-          Add product
+          Thêm sản phẩm
         </Button>
       </div>
       <div className={styles.table_top}>
@@ -171,13 +171,13 @@ export default function ProductTable() {
           className={`${styles.button} ${styles.buttonDeleteMany}`}
           onClick={() => handleDeleteMany()}
         >
-          Delete Many
+          Xóa nhiều
         </Button>
         <div className={styles.input_container}>
           <input
             type="text"
             className={styles.input}
-            placeholder="Search here..."
+            placeholder="Tìm kiếm..."
             value={keySearch}
             onChange={(e) => setKeySearch(e.target.value)}
           />
@@ -199,7 +199,7 @@ export default function ProductTable() {
           onChangePage={handleChangePage}
           paginationDefaultPage={currentPage}
           selectableRows
-          onSelectedRowsChange={({ selectedRows }) => {
+          onSelectedRowsChange={({selectedRows}) => {
             setSelectedRows(selectedRows.map((row: IProduct) => row._id));
           }}
           onRowClicked={(row, e) => {

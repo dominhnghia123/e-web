@@ -166,8 +166,7 @@ export default function AddNewProduct() {
               <label htmlFor="" className={styles.label}>
                 Mô tả sản phẩm
               </label>
-              <input
-                type="text"
+              <textarea
                 placeholder="Mô tả sản phẩm"
                 className={styles.input}
                 value={dataInput.description}

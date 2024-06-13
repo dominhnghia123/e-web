@@ -110,7 +110,7 @@ export default function PurchasePage() {
       const { data } = await axios.post(
         `${process.env.BASE_HOST}/order/create-order`,
         {
-          addressId: "6623d1a0f71ddedf65579800",
+          addressId: "666b23f5980641f8c29182cf",
           couponId: "",
           orderItems,
         },

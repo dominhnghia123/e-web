@@ -74,7 +74,7 @@ export class UserService {
         msg: 'Đăng ký thành công!',
         status: true,
         newUser: {
-          ...newUser,
+          ...JSON.parse(JSON.stringify(newUser)),
           token: await this.jwtService.signAsync(payload),
         },
       };

@@ -1,11 +1,11 @@
-import DataTable, { TableStyles } from "react-data-table-component";
+import DataTable, {TableStyles} from "react-data-table-component";
 import styles from "./coupon.module.css";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
-import { Button } from "react-bootstrap";
-import { getToken } from "@/app/helper/stogare";
+import {Button} from "react-bootstrap";
+import {getToken} from "@/app/helper/stogare";
 import moment from "moment";
-import { useRouter } from "next/navigation";
+import {useRouter} from "next/navigation";
 
 export default function CouponTable() {
   const router = useRouter();
@@ -20,7 +20,7 @@ export default function CouponTable() {
 
   useEffect(() => {
     const getCoupons = async () => {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/coupon/get-all-coupons?s=${keySearch}&limit=${itemsPerPage}&page=${currentPage}`,
         {},
         {
@@ -33,7 +33,7 @@ export default function CouponTable() {
       setTotalCoupons(data.totalCoupons);
     };
     getCoupons();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keySearch, itemsPerPage, currentPage, deleted]);
 
   const handlePerRowsChange = async (perPage: number, page: number) => {
@@ -46,7 +46,7 @@ export default function CouponTable() {
 
   const handleDeleteMany = async () => {
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/coupon/delete-many-coupons`,
         {
           couponIds: selectedRows,
@@ -67,7 +67,7 @@ export default function CouponTable() {
 
   const handleDeleteOneCoupon = async (_id: string) => {
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/coupon/delete-a-coupon`,
         {
           _id: _id,
@@ -181,7 +181,7 @@ export default function CouponTable() {
           <input
             type="text"
             className={styles.input}
-            placeholder="Search here..."
+            placeholder="Tìm kiếm..."
             value={keySearch}
             onChange={(e) => setKeySearch(e.target.value)}
           />
@@ -203,7 +203,7 @@ export default function CouponTable() {
           onChangePage={handleChangePage}
           paginationDefaultPage={currentPage}
           selectableRows
-          onSelectedRowsChange={({ selectedRows }) => {
+          onSelectedRowsChange={({selectedRows}) => {
             setSelectedRows(selectedRows.map((row: ICoupon) => row._id));
           }}
           onRowClicked={(row, e) => {

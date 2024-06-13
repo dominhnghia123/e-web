@@ -1,12 +1,12 @@
-import DataTable, { TableStyles } from "react-data-table-component";
+import DataTable, {TableStyles} from "react-data-table-component";
 import styles from "./order.module.css";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
-import { getToken } from "@/app/helper/stogare";
-import { Button, Image } from "react-bootstrap";
+import {getToken} from "@/app/helper/stogare";
+import {Button, Image} from "react-bootstrap";
 import moment from "moment";
-import { toast } from "react-toastify";
-import { CartConstant } from "@/contants/CartConstant";
+import {toast} from "react-toastify";
+import {CartConstant} from "@/contants/CartConstant";
 
 export default function OrderTable() {
   const token = getToken();
@@ -19,7 +19,7 @@ export default function OrderTable() {
 
   useEffect(() => {
     const getOrdersBySeller = async () => {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/order/get-all-orders-by-seller?s=${keySearch}&limit=${itemsPerPage}&page=${currentPage}`,
         {},
         {
@@ -47,7 +47,7 @@ export default function OrderTable() {
 
   const handleUpdateStatusOrder = async (cartId: string) => {
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/cart/update-status-delivery-cart`,
         {
           cartId,
@@ -169,7 +169,7 @@ export default function OrderTable() {
           <input
             type="text"
             className={styles.input}
-            placeholder="Search here..."
+            placeholder="Tìm kiếm..."
             value={keySearch}
             onChange={(e) => setKeySearch(e.target.value)}
           />

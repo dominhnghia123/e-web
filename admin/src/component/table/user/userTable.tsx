@@ -1,11 +1,11 @@
-import DataTable, { TableStyles } from "react-data-table-component";
+import DataTable, {TableStyles} from "react-data-table-component";
 import styles from "./user.module.css";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
-import { Button } from "react-bootstrap";
-import { getToken } from "@/app/helper/stogare";
+import {Button} from "react-bootstrap";
+import {getToken} from "@/app/helper/stogare";
 import moment from "moment";
-import { useRouter } from "next/navigation";
+import {useRouter} from "next/navigation";
 
 export default function UserTable() {
   const router = useRouter();
@@ -20,7 +20,7 @@ export default function UserTable() {
 
   useEffect(() => {
     const getUsers = async () => {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/user/get-all-users?s=${keySearch}&limit=${itemsPerPage}&page=${currentPage}`,
         {},
         {
@@ -33,7 +33,7 @@ export default function UserTable() {
       setTotalUsers(data.totalUsers);
     };
     getUsers();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keySearch, itemsPerPage, currentPage, deleted]);
 
   const handlePerRowsChange = async (perPage: number, page: number) => {
@@ -46,7 +46,7 @@ export default function UserTable() {
 
   const handleDeleteMany = async () => {
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/user/delete-many-users`,
         {
           userIds: selectedRows,
@@ -67,7 +67,7 @@ export default function UserTable() {
 
   const handleDeleteOneUser = async (_id: string) => {
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/user/delete-a-user`,
         {
           _id: _id,
@@ -169,7 +169,7 @@ export default function UserTable() {
           <input
             type="text"
             className={styles.input}
-            placeholder="Search here..."
+            placeholder="Tìm kiếm..."
             value={keySearch}
             onChange={(e) => setKeySearch(e.target.value)}
           />
@@ -191,7 +191,7 @@ export default function UserTable() {
           onChangePage={handleChangePage}
           paginationDefaultPage={currentPage}
           selectableRows
-          onSelectedRowsChange={({ selectedRows }) => {
+          onSelectedRowsChange={({selectedRows}) => {
             setSelectedRows(selectedRows.map((row: IUser) => row._id));
           }}
           onRowClicked={(row, e) => {
