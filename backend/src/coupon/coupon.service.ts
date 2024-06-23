@@ -65,11 +65,20 @@ export class CouponService {
     }
   }
 
+  dateToTimestamp(dateString: string) {
+    const [year, month, day] = dateString.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    return date.getTime();
+  }
+
   async getCouponsByUser(req: Request) {
     const userId = req['user']._id;
     try {
+      const dateNow = new Date();
+      const options = { userId: userId, expiry: { $gt: dateNow } };
+
       const allCoupons = await this.couponModel
-        .find({ userId })
+        .find(options)
         .sort({ createdAt: 1 });
       return {
         status: true,

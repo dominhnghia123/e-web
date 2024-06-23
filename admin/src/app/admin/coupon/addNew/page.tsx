@@ -67,8 +67,8 @@ export default function AddNewCoupon() {
 
   return (
     <div>
-      <title>Add new coupon</title>
-      <h2>Add new coupon</h2>
+      <title>Thêm mới khuyến mãi</title>
+      <h2>Thêm mới khuyến mãi</h2>
       <div className={styles.main}>
         <div className={styles.main_content}>
           <div className={styles.input_label_container}>

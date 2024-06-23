@@ -1,5 +1,5 @@
 "use client";
-import {Divider, Radio} from "antd";
+import {Divider, Radio, RadioChangeEvent} from "antd";
 import {useEffect, useState} from "react";
 import styles from "./checkout.module.css";
 import {Button, Image} from "react-bootstrap";
@@ -80,7 +80,6 @@ export default function Checkout() {
             },
           }
         );
-        console.log("222", data);
         if (data.status === true) {
           setSelectedCoupon(data.coupon);
         }
@@ -143,7 +142,7 @@ export default function Checkout() {
   }, []);
 
   const handlePayment = async () => {
-    //update cart: Remove products to be purchased from the shopping cart
+    // update cart: Remove products to be purchased from the shopping cart
     try {
       await axios.post(
         `${process.env.BASE_HOST}/cart/update-status-delivery-many-products`,
@@ -160,21 +159,33 @@ export default function Checkout() {
       console.error(error);
     }
 
-    // thanh toán đơn hàng
-    try {
-      const {data} = await axios.post(
-        `${process.env.BASE_HOST}/order/payment-order`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      router.replace(data.url);
-    } catch (error) {
-      console.error(error);
+    if (paymentMethod === "online") {
+      // thanh toán online đơn hàng
+      try {
+        const {data} = await axios.post(
+          `${process.env.BASE_HOST}/order/payment-order`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        router.replace(data.url);
+      } catch (error) {
+        console.error(error);
+      }
     }
+
+    if (paymentMethod === "offline") {
+      router.replace("/");
+      toast.success("Đã đặt hàng.");
+    }
+  };
+
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const handleChangePaymentMethod = (e: RadioChangeEvent) => {
+    setPaymentMethod(e.target.value);
   };
 
   return (
@@ -235,7 +246,13 @@ export default function Checkout() {
                     </div>
                   );
                 })}
-                <Radio value="">Thanh toán qua Stripe</Radio>
+                <Radio.Group
+                  onChange={handleChangePaymentMethod}
+                  value={paymentMethod}
+                >
+                  <Radio value="online">Thanh toán qua Stripe</Radio>
+                  <Radio value="offline">Thanh toán khi nhận hàng</Radio>
+                </Radio.Group>
               </div>
               <div className={styles.cart_payment_container}>
                 <div className={styles.payment_top}>

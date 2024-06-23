@@ -8,5 +8,5 @@ export class UpdateBrandDto {
 
   @ApiProperty({ example: 'Apple' })
   @IsNotEmpty()
-  title: string;
+  name: string;
 }

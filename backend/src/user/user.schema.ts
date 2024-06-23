@@ -1,8 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import { Product } from '../product/product.schema';
 import { genderEnum } from '../utils/variableGlobal';
 
 export type UserDocument = HydratedDocument<User>;
@@ -36,15 +35,6 @@ export class User {
   @Prop({ default: null, enum: genderEnum })
   gender: string;
 
-  @Prop({ default: 0 })
-  followers: number;
-
-  @Prop({ default: 0 })
-  numFollows: number;
-
-  @Prop({ default: false })
-  isFollowed: boolean;
-
   @Prop()
   refreshToken: string;
 
@@ -53,12 +43,6 @@ export class User {
 
   @Prop({ default: Array })
   coupons: string[];
-
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Product', default: null })
-  wishlist: Product[];
-
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Product', default: null })
-  warehouses: Product[];
 
   @Prop()
   passwordChangeAt: Date;

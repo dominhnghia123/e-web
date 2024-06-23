@@ -9,6 +9,11 @@ export enum statusOrderEnum {
   cancel = 'cancel',
 }
 
+export enum paymentMethodEnum {
+  online = 'online',
+  offline = 'offline',
+}
+
 export enum statusDeliveryEnum {
   notOrderedYet = 'notOrderedYet',
   notPaymentDone = 'notPaymentDone',

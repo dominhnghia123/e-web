@@ -192,12 +192,7 @@ export class UserService {
           isSeller: findUser?.isSeller,
           birthday: findUser?.birthday,
           gender: findUser?.gender,
-          followers: findUser?.followers,
-          numFollows: findUser?.numFollows,
-          isFollowed: findUser?.isFollowed,
           cart: findUser?.cart,
-          wishlist: findUser?.wishlist,
-          warehouses: findUser?.warehouses,
         },
       };
     } catch (error) {

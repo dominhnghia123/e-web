@@ -167,7 +167,7 @@ export default function ViewDetailCoupon({
                   <TextField {...params} label="Chọn user" />
                 )}
                 value={
-                  userArray.find((user) => user._id === dataInput.userId)
+                  userArray?.find((user) => user._id === dataInput.userId)
                     ?.username || null
                 }
                 onChange={(event: any, newValue: any) => {

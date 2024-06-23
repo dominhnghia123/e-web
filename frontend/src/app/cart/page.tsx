@@ -261,7 +261,7 @@ export default function Cart() {
       {
         user: currentUser._id,
         addressId: selectedAddressId,
-        couponId: selectedCouponId,
+        couponId: selectedCouponId || "",
         orderItems,
       },
       {

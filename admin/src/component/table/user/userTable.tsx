@@ -129,7 +129,7 @@ export default function UserTable() {
             className={`${styles.button} ${styles.buttonDeleteMany}`}
             onClick={() => handleDeleteOneUser(row._id)}
           >
-            Delete
+            Xóa
           </Button>
         </div>
       ),
@@ -163,7 +163,7 @@ export default function UserTable() {
           className={`${styles.button} ${styles.buttonDeleteMany}`}
           onClick={() => handleDeleteMany()}
         >
-          Delete Many
+          Xóa nhiều
         </Button>
         <div className={styles.input_container}>
           <input

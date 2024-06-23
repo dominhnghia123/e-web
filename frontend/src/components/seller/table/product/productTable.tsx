@@ -129,7 +129,7 @@ export default function ProductTable() {
             className={`${styles.button} ${styles.buttonDeleteMany}`}
             onClick={() => handleDeleteOneProduct(row._id)}
           >
-            Delete
+            Xóa
           </Button>
         </div>
       ),

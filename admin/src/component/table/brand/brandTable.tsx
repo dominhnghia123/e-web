@@ -1,5 +1,5 @@
 import DataTable, {TableStyles} from "react-data-table-component";
-import styles from "./coupon.module.css";
+import styles from "./brand.module.css";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {Button} from "react-bootstrap";
@@ -7,21 +7,21 @@ import {getToken} from "@/app/helper/stogare";
 import moment from "moment";
 import {useRouter} from "next/navigation";
 
-export default function CouponTable() {
+export default function BrandTable() {
   const router = useRouter();
   const token = getToken();
-  const [coupons, setCoupons] = useState<ICoupon[]>([]);
+  const [brands, setBrands] = useState<IBrand[]>([]);
   const [keySearch, setKeySearch] = useState<string>("");
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalCoupons, setTotalCoupons] = useState<number>(0);
+  const [totalBrands, setTotalBrands] = useState<number>(0);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [deleted, setDeleted] = useState<boolean>(false);
 
   useEffect(() => {
-    const getCoupons = async () => {
+    const getBrands = async () => {
       const {data} = await axios.post(
-        `${process.env.BASE_HOST}/coupon/get-all-coupons?s=${keySearch}&limit=${itemsPerPage}&page=${currentPage}`,
+        `${process.env.BASE_HOST}/brand/get-all-brands?s=${keySearch}&limit=${itemsPerPage}&page=${currentPage}`,
         {},
         {
           headers: {
@@ -29,10 +29,10 @@ export default function CouponTable() {
           },
         }
       );
-      setCoupons(data.coupons);
-      setTotalCoupons(data.totalCoupons);
+      setBrands(data.brands);
+      setTotalBrands(data.totalBrands);
     };
-    getCoupons();
+    getBrands();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keySearch, itemsPerPage, currentPage, deleted]);
 
@@ -47,9 +47,9 @@ export default function CouponTable() {
   const handleDeleteMany = async () => {
     try {
       const {data} = await axios.post(
-        `${process.env.BASE_HOST}/coupon/delete-many-coupons`,
+        `${process.env.BASE_HOST}/brand/delete-many-brands`,
         {
-          couponIds: selectedRows,
+          brandIds: selectedRows,
         },
         {
           headers: {
@@ -65,10 +65,10 @@ export default function CouponTable() {
     }
   };
 
-  const handleDeleteOneCoupon = async (_id: string) => {
+  const handleDeleteOneBrand = async (_id: string) => {
     try {
       const {data} = await axios.post(
-        `${process.env.BASE_HOST}/coupon/delete-a-coupon`,
+        `${process.env.BASE_HOST}/brand/delete-a-brand`,
         {
           _id: _id,
         },
@@ -89,23 +89,11 @@ export default function CouponTable() {
   const columns = [
     {
       name: "Tên",
-      selector: (row: ICoupon) => row.name,
-    },
-    {
-      name: "Thời hạn",
-      selector: (row: ICoupon) => row.expiry,
-    },
-    {
-      name: "Giảm giá",
-      selector: (row: ICoupon) => row.discount,
-    },
-    {
-      name: "Người sở hữu",
-      selector: (row: ICoupon) => row.userId.username,
+      selector: (row: IBrand) => row.name,
     },
     {
       name: "Created At",
-      selector: (row: ICoupon) => {
+      selector: (row: IBrand) => {
         const dateTimeString = row.createdAt.toString();
         const dateTime = moment(dateTimeString);
 
@@ -116,7 +104,7 @@ export default function CouponTable() {
     },
     {
       name: "Updated At",
-      selector: (row: ICoupon) => {
+      selector: (row: IBrand) => {
         const dateTimeString = row.updatedAt.toString();
         const dateTime = moment(dateTimeString);
 
@@ -127,11 +115,11 @@ export default function CouponTable() {
     },
     {
       name: "Actions",
-      cell: (row: ICoupon): JSX.Element => (
+      cell: (row: IBrand): JSX.Element => (
         <div className="d-flex">
           <Button
             className={`${styles.button} ${styles.buttonDeleteMany}`}
-            onClick={() => handleDeleteOneCoupon(row._id)}
+            onClick={() => handleDeleteOneBrand(row._id)}
           >
             Xóa
           </Button>
@@ -165,9 +153,9 @@ export default function CouponTable() {
       <div className={styles.head}>
         <Button
           className={`${styles.button} ${styles.buttonAdd}`}
-          onClick={() => router.replace("/admin/coupon/addNew")}
+          onClick={() => router.replace("/admin/brand/addNew")}
         >
-          Thêm khuyến mãi
+          Thêm thương hiệu
         </Button>
       </div>
       <div className={styles.table_top}>
@@ -189,25 +177,25 @@ export default function CouponTable() {
       </div>
       <div className="table-responsive">
         <DataTable
-          title="Danh sách khuyến mãi"
+          title="Danh sách nhãn hiệu"
           columns={columns}
-          data={coupons}
+          data={brands}
           customStyles={tableCustomStyles}
           fixedHeader
           fixedHeaderScrollHeight="400px"
           pagination
           paginationPerPage={itemsPerPage}
           paginationServer={true}
-          paginationTotalRows={totalCoupons}
+          paginationTotalRows={totalBrands}
           onChangeRowsPerPage={handlePerRowsChange}
           onChangePage={handleChangePage}
           paginationDefaultPage={currentPage}
           selectableRows
           onSelectedRowsChange={({selectedRows}) => {
-            setSelectedRows(selectedRows.map((row: ICoupon) => row._id));
+            setSelectedRows(selectedRows.map((row: IBrand) => row._id));
           }}
           onRowClicked={(row, e) => {
-            router.replace(`/admin/coupon/${row._id}`);
+            router.replace(`/admin/brand/${row._id}`);
           }}
         />
       </div>

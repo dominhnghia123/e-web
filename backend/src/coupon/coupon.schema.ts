@@ -12,8 +12,8 @@ export class Coupon {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ required: true })
-  expiry: string;
+  @Prop({ type: Date, required: true })
+  expiry: Date;
 
   @Prop({ required: true })
   discount: string;

@@ -1,8 +1,8 @@
 "use client";
-import { Divider, Modal, Radio, RadioChangeEvent } from "antd";
+import {Divider, Modal, Radio, RadioChangeEvent} from "antd";
 import styles from "./couponModal.module.css";
-import { useEffect, useState } from "react";
-import { getToken } from "@/app/helper/stogare";
+import {useEffect, useState} from "react";
+import {getToken} from "@/app/helper/stogare";
 import axios from "axios";
 
 interface IProps {
@@ -28,7 +28,7 @@ export default function CouponModal(props: IProps) {
   }, []);
 
   const getCoupons = async () => {
-    const { data } = await axios.post(
+    const {data} = await axios.post(
       `${process.env.BASE_HOST}/coupon/get-coupons-by-user`,
       {},
       {
@@ -60,6 +60,10 @@ export default function CouponModal(props: IProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openCouponModal]);
 
+  const formattedDate = (date: Date) => {
+    return new Date(date).toISOString().split("T")[0];
+  };
+
   return (
     <Modal
       title="Chọn voucher khuyến mãi"
@@ -86,7 +90,7 @@ export default function CouponModal(props: IProps) {
                       <div
                         className={styles.coupon_container__content__left__text}
                       >
-                        Ngày hết hạn: {coupon.expiry}
+                        Ngày hết hạn: {formattedDate(coupon.expiry)}
                       </div>
                       <div
                         className={styles.coupon_container__content__left__text}

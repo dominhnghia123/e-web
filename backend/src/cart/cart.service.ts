@@ -29,7 +29,6 @@ export class CartService {
       const findVariant = findProduct.variants.find(
         (variant) => variant._id.toString() === variantId.toString(),
       );
-      console.log('addToCartDto', findProduct);
 
       const checkAlreadyCart = await this.cartModel.findOne({
         userId,

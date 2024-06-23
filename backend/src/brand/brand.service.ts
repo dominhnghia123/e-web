@@ -12,9 +12,10 @@ export class BrandService {
   constructor(@InjectModel(Brand.name) private brandModel: Model<Brand>) {}
 
   async createBrand(createBrandDto: CreateBrandDto) {
-    const { title } = createBrandDto;
+    const { name } = createBrandDto;
+
     try {
-      const alreadyBrand = await this.brandModel.findOne({ title: title });
+      const alreadyBrand = await this.brandModel.findOne({ name: name });
       if (alreadyBrand) {
         return {
           msg: 'This brand already exists',
@@ -23,7 +24,7 @@ export class BrandService {
       }
 
       const newBrand = await this.brandModel.create({
-        title: title,
+        name: name,
       });
 
       return {
@@ -56,28 +57,42 @@ export class BrandService {
     }
   }
 
-  async getAllBrands() {
+  async getAllBrands(req: Request) {
+    const keySearch: string = req.query?.s?.toString();
+    const currentPage: number = req.query.page as any;
+    const itemsPerPage: number = req.query.limit as any;
     try {
-      const allBrands = await this.brandModel.find().sort({ title: 'asc' });
-      if (allBrands.length > 0) {
-        return {
-          msg: 'Found all brands successfully',
-          status: true,
-          allBrands: allBrands,
-        };
-      } else {
-        return {
-          msg: 'No brands exist in the database',
-          status: true,
-        };
+      let options = {};
+
+      if (keySearch) {
+        options = { name: new RegExp(keySearch, 'i') };
       }
+      const allBrands = await this.brandModel
+        .find(options)
+        .sort({ createdAt: -1 });
+      const page: number = currentPage || 1;
+      const limit: number = itemsPerPage || 10;
+      const skip: number = (page - 1) * limit;
+
+      const totalBrands = await this.brandModel.countDocuments(options);
+      const data = allBrands.slice(
+        skip,
+        parseInt(skip.toString()) + parseInt(limit.toString()),
+      );
+      return {
+        status: true,
+        brands: data,
+        totalBrands,
+        page,
+        limit,
+      };
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
 
   async updateBrand(updateBrandDto: UpdateBrandDto) {
-    const { _id, title } = updateBrandDto;
+    const { _id, name } = updateBrandDto;
     try {
       const findBrand = await this.brandModel.findById(_id);
       if (!findBrand) {
@@ -90,7 +105,7 @@ export class BrandService {
       const updatedBrand = await this.brandModel.findByIdAndUpdate(
         _id,
         {
-          title: title,
+          name: name,
         },
         {
           new: true,

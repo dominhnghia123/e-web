@@ -16,6 +16,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { getStogare, getToken, removeStogare } from "../helper/stogare";
+import { TbBrand4Chan } from "react-icons/tb";
 
 const { Header, Sider, Content } = Layout;
 
@@ -140,6 +141,14 @@ export default function AdminLayout({
               label: "Khuyến mãi",
               onClick: () => {
                 router.replace("/admin/coupon");
+              },
+            },
+            {
+              key: "4",
+              icon: <TbBrand4Chan />,
+              label: "Thương hiệu",
+              onClick: () => {
+                router.replace("/admin/brand");
               },
             },
           ]}

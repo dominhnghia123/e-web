@@ -9,6 +9,7 @@ import { statusDeliveryEnum, statusOrderEnum } from '../utils/variableGlobal';
 import RequestWithRawBody from '../utils/stripe/requestWithRawBody.interface';
 import { Cart } from '../cart/cart.schema';
 import { CartIdDto } from '../cart/dto/cartId.dto';
+import { Coupon } from '../coupon/coupon.schema';
 
 @Injectable()
 export class OrderService {
@@ -16,6 +17,7 @@ export class OrderService {
     @InjectModel(Order.name) private orderModel: Model<Order>,
     @InjectModel(Product.name) private productModel: Model<Product>,
     @InjectModel(Cart.name) private cartModel: Model<Cart>,
+    @InjectModel(Coupon.name) private couponModel: Model<Coupon>,
   ) {}
 
   async createOrder(createOrderDto: CreateOrderDto, req: Request) {
@@ -239,7 +241,7 @@ export class OrderService {
         });
         const price = await stripeWithSecretKey.prices.create({
           product: product.id,
-          unit_amount: parseFloat(item.price) * 1000,
+          unit_amount: parseFloat(item.price),
           currency: 'vnd',
         });
         lineItems.push({
@@ -264,6 +266,7 @@ export class OrderService {
           new: true,
         },
       );
+      await this.couponModel.findByIdAndDelete(order.coupon);
       return {
         url: session.url,
         session_id: session.id,

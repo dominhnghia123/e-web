@@ -233,7 +233,7 @@ export default function AppHeader(props: IProps) {
                     }
                     onClick={(e) => handleSearch(e)}
                   >
-                    Search
+                    Tìm kiếm
                   </Button>
                 </div>
               </form>
