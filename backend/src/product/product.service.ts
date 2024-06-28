@@ -349,4 +349,19 @@ export class ProductService {
       throw new BadRequestException(error);
     }
   }
+
+  async countProductsBySeller(req: Request) {
+    const userId = req['user']._id;
+    try {
+      const countProducts = await this.productModel.countDocuments({
+        seller: userId,
+      });
+      return {
+        status: true,
+        countProducts,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

@@ -1,0 +1,48 @@
+.homepage_container {
+  background-color: white;
+  border-radius: 10px;
+  width: 100%;
+  margin-top: 15px;
+  min-height: 100vh;
+  height: auto;
+}
+.overview_title{
+  margin-left: 20px;
+}
+.listdash_section {
+  margin: 20px;
+  width: 96%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dash_container {
+  height: 90px;
+  min-width: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 20px;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 10px 0 0 10px;
+}
+.dash_title {
+  color: black;
+  font-size: 20px;
+  font-weight: 500;
+}
+.dash_content {
+  color: black;
+}
+
+.column_chart_container, .line_graph_container {
+  width: 90%;
+  margin: auto;
+  margin-bottom: 30px;
+}
+.sales_container, .orders_container{
+  margin-top: 50px;
+}

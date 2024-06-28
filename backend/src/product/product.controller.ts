@@ -78,4 +78,11 @@ export class ProductController {
   createRating(@Body() createRatingDto: CreateRatingDto, @Req() req: Request) {
     return this.productService.createRating(createRatingDto, req);
   }
+
+  @ApiBearerAuth()
+  @UseGuards(UserGuard)
+  @Post('/count-products-by-seller')
+  countProductsBySeller(@Req() req: Request) {
+    return this.productService.countProductsBySeller(req);
+  }
 }

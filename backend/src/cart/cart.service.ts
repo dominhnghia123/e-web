@@ -309,4 +309,104 @@ export class CartService {
       throw new BadRequestException(error);
     }
   }
+
+  async countOrdersBySeller(req: Request) {
+    const userId = req['user']._id;
+    const currentYear = new Date().getFullYear();
+    try {
+      const countOrderInNotShippedYetStatus =
+        await this.cartModel.countDocuments({
+          sellerId: userId,
+          status_delivery: statusDeliveryEnum.notShippedYet,
+        });
+
+      const countOrderInShippingStatus = await this.cartModel.countDocuments({
+        sellerId: userId,
+        status_delivery: statusDeliveryEnum.shipping,
+      });
+
+      const countOrderInShippedStatus = await this.cartModel.countDocuments({
+        sellerId: userId,
+        status_delivery: statusDeliveryEnum.shipped,
+      });
+
+      const countOrderForEachMonth = await this.cartModel.aggregate([
+        {
+          $match: {
+            sellerId: userId.toString(),
+            createdAt: {
+              $gte: new Date(`${currentYear}-01-01`),
+              $lt: new Date(`${currentYear + 1}-01-01`),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: { month: { $month: '$createdAt' } },
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $sort: { '_id.month': 1 },
+        },
+      ]);
+
+      const resultCountOrderForEachMonth = countOrderForEachMonth.map(
+        ({ _id, count }) => ({
+          month: _id.month,
+          count,
+        }),
+      );
+
+      return {
+        status: true,
+        notShippedYet: countOrderInNotShippedYetStatus,
+        shipping: countOrderInShippingStatus,
+        shipped: countOrderInShippedStatus,
+        countOrderForEachMonth: resultCountOrderForEachMonth,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async calculateMonthlySales(req: Request) {
+    const userId = req['user']._id;
+    const currentYear = new Date().getFullYear();
+    try {
+      const totalSales = await this.cartModel.aggregate([
+        {
+          $match: {
+            sellerId: userId.toString(),
+            status_delivery: statusDeliveryEnum.shipped,
+            createdAt: {
+              $gte: new Date(`${currentYear}-01-01`),
+              $lt: new Date(`${currentYear + 1}-01-01`),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: { month: { $month: '$createdAt' } },
+            totalSales: { $sum: '$price' },
+          },
+        },
+        {
+          $sort: { '_id.month': 1 },
+        },
+      ]);
+
+      const resultTotalSales = totalSales.map(({ _id, totalSales }) => ({
+        month: _id.month,
+        totalSales,
+      }));
+
+      return {
+        status: true,
+        totalSales: resultTotalSales,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

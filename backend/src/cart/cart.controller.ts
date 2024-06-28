@@ -84,4 +84,18 @@ export class CartController {
   getCartsByStatus(@Body() statusCart: StatusCartDto, @Req() req: Request) {
     return this.cartService.getCartsByStatus(statusCart, req);
   }
+
+  @ApiBearerAuth()
+  @UseGuards(UserGuard)
+  @Post('/count-orders-by-seller')
+  countOrdersBySeller(@Req() req: Request) {
+    return this.cartService.countOrdersBySeller(req);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(UserGuard)
+  @Post('/calculate-monthly-sales')
+  calculateMonthlySales(@Req() req: Request) {
+    return this.cartService.calculateMonthlySales(req);
+  }
 }
