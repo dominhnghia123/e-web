@@ -364,4 +364,16 @@ export class ProductService {
       throw new BadRequestException(error);
     }
   }
+
+  async countAllProducts() {
+    try {
+      const countAllProducts = await this.productModel.countDocuments({});
+      return {
+        status: true,
+        countAllProducts,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

@@ -448,4 +448,18 @@ export class UserService {
       throw new BadRequestException(error);
     }
   }
+
+  async countUsers() {
+    try {
+      const countUsers = await this.userModel.countDocuments({
+        role: { $ne: 'admin' },
+      });
+      return {
+        status: true,
+        countUsers,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

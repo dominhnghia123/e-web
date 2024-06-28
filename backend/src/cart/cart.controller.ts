@@ -8,6 +8,7 @@ import { RemoveProductDto } from './dto/removeProduct.dto';
 import { ChangeQuantityProductDto } from './dto/changeQuantityProduct.dto';
 import { UpdateStatusDeliveryCartDto } from './dto/updateStatusDeliveryCart.dto';
 import { StatusCartDto } from './dto/statusCart.dto';
+import { AdminGuard } from '../user/admin.guard';
 
 @ApiTags('Cart')
 @Controller('api/cart')
@@ -94,8 +95,22 @@ export class CartController {
 
   @ApiBearerAuth()
   @UseGuards(UserGuard)
+  @Post('/calculate-monthly-sales-by-seller')
+  calculateMonthlySalesBySeller(@Req() req: Request) {
+    return this.cartService.calculateMonthlySalesBySeller(req);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AdminGuard)
+  @Post('/count-all-orders')
+  countAllOrders() {
+    return this.cartService.countAllOrders();
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(UserGuard)
   @Post('/calculate-monthly-sales')
-  calculateMonthlySales(@Req() req: Request) {
-    return this.cartService.calculateMonthlySales(req);
+  calculateMonthlySales() {
+    return this.cartService.calculateMonthlySales();
   }
 }

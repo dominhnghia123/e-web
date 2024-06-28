@@ -8,6 +8,7 @@ import { Request } from 'express';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { BrandDto } from './dto/brand.dto';
 import { CreateRatingDto } from './dto/create-rating.dto';
+import { AdminGuard } from '../user/admin.guard';
 
 @ApiTags('Product')
 @Controller('api/product')
@@ -84,5 +85,12 @@ export class ProductController {
   @Post('/count-products-by-seller')
   countProductsBySeller(@Req() req: Request) {
     return this.productService.countProductsBySeller(req);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AdminGuard)
+  @Post('/count-all-products')
+  countAllProducts() {
+    return this.productService.countAllProducts();
   }
 }

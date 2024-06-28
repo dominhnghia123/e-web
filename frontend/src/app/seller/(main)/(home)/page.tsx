@@ -13,7 +13,7 @@ export default function Seller() {
   const calculateMonthlySales = async () => {
     try {
       const {data} = await axios.post(
-        `${process.env.BASE_HOST}/cart/calculate-monthly-sales`,
+        `${process.env.BASE_HOST}/cart/calculate-monthly-sales-by-seller`,
         {},
         {
           headers: {

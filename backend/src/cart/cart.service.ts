@@ -370,7 +370,7 @@ export class CartService {
     }
   }
 
-  async calculateMonthlySales(req: Request) {
+  async calculateMonthlySalesBySeller(req: Request) {
     const userId = req['user']._id;
     const currentYear = new Date().getFullYear();
     try {
@@ -379,6 +379,107 @@ export class CartService {
           $match: {
             sellerId: userId.toString(),
             status_delivery: statusDeliveryEnum.shipped,
+            createdAt: {
+              $gte: new Date(`${currentYear}-01-01`),
+              $lt: new Date(`${currentYear + 1}-01-01`),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: { month: { $month: '$createdAt' } },
+            totalSales: { $sum: '$price' },
+          },
+        },
+        {
+          $sort: { '_id.month': 1 },
+        },
+      ]);
+
+      const resultTotalSales = totalSales.map(({ _id, totalSales }) => ({
+        month: _id.month,
+        totalSales,
+      }));
+
+      return {
+        status: true,
+        totalSales: resultTotalSales,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async countAllOrders() {
+    const currentYear = new Date().getFullYear();
+    try {
+      const countAllOrders = await this.cartModel.countDocuments({
+        status_delivery: {
+          $in: [
+            statusDeliveryEnum.notShippedYet,
+            statusDeliveryEnum.shipping,
+            statusDeliveryEnum.shipped,
+          ],
+        },
+      });
+
+      const countOrderForEachMonth = await this.cartModel.aggregate([
+        {
+          $match: {
+            status_delivery: {
+              $in: [
+                statusDeliveryEnum.notShippedYet,
+                statusDeliveryEnum.shipping,
+                statusDeliveryEnum.shipped,
+              ],
+            },
+            createdAt: {
+              $gte: new Date(`${currentYear}-01-01`),
+              $lt: new Date(`${currentYear + 1}-01-01`),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: { month: { $month: '$createdAt' } },
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $sort: { '_id.month': 1 },
+        },
+      ]);
+
+      const resultCountOrderForEachMonth = countOrderForEachMonth.map(
+        ({ _id, count }) => ({
+          month: _id.month,
+          count,
+        }),
+      );
+
+      return {
+        status: true,
+        countAllOrders,
+        countOrderForEachMonth: resultCountOrderForEachMonth,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async calculateMonthlySales() {
+    const currentYear = new Date().getFullYear();
+    try {
+      const totalSales = await this.cartModel.aggregate([
+        {
+          $match: {
+            status_delivery: {
+              $in: [
+                statusDeliveryEnum.notShippedYet,
+                statusDeliveryEnum.shipping,
+                statusDeliveryEnum.shipped,
+              ],
+            },
             createdAt: {
               $gte: new Date(`${currentYear}-01-01`),
               $lt: new Date(`${currentYear + 1}-01-01`),

@@ -100,4 +100,11 @@ export class UserController {
   resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.userService.resetPassword(resetPasswordDto);
   }
+
+  @ApiBearerAuth()
+  @UseGuards(AdminGuard)
+  @Post('/count-users')
+  countUsers() {
+    return this.userService.countUsers();
+  }
 }
