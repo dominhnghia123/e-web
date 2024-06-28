@@ -1,14 +1,15 @@
 "use client";
-import { Divider } from "antd";
-import { Button } from "react-bootstrap";
-import { GoPlus } from "react-icons/go";
+import {Divider} from "antd";
+import {Button} from "react-bootstrap";
+import {GoPlus} from "react-icons/go";
 import styles from "./address.module.css";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import CreateAddressModal from "@/components/modal/address/createAddress/page";
 import UpdateAddressModal from "@/components/modal/address/updateAddress/page";
 import axios from "axios";
-import { getToken } from "@/app/helper/stogare";
+import {getToken} from "@/app/helper/stogare";
 import DeleteAddressModal from "@/components/modal/address/deleteAddress/page";
+import {toast} from "react-toastify";
 
 export default function Address() {
   const [openModalCreateAddress, setOpenModalCreateAddress] =
@@ -34,7 +35,7 @@ export default function Address() {
 
   const getAllAddress = async () => {
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/address/get-all-address`,
         {},
         {
@@ -51,6 +52,28 @@ export default function Address() {
       }
     } catch (error) {
       setAddresses([]);
+    }
+  };
+
+  const handleSetDefaultAddress = async (addressId: string) => {
+    try {
+      const {data} = await axios.post(
+        `${process.env.BASE_HOST}/address/set-default-address`,
+        {
+          _id: addressId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (data.status === true) {
+        toast.success(data.msg);
+        getAllAddress();
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -92,11 +115,17 @@ export default function Address() {
                     >
                       {address.address}
                     </div>
-                    <div
-                      className={styles.address_detail_container__left__default}
-                    >
-                      Mặc định
-                    </div>
+                    {address.default_address ? (
+                      <div
+                        className={
+                          styles.address_detail_container__left__default
+                        }
+                      >
+                        Mặc định
+                      </div>
+                    ) : (
+                      <div></div>
+                    )}
                   </div>
                   <div className={styles.address_detail_container__right}>
                     <div
@@ -135,9 +164,16 @@ export default function Address() {
                         address={addressDetail}
                       />
                     </div>
-                    <Button className={styles.button_set_default}>
-                      Thiết lập mặc định
-                    </Button>
+                    {!address.default_address ? (
+                      <Button
+                        className={styles.button_set_default}
+                        onClick={() => handleSetDefaultAddress(address?._id)}
+                      >
+                        Thiết lập mặc định
+                      </Button>
+                    ) : (
+                      <div></div>
+                    )}
                   </div>
                 </div>
                 <Divider />

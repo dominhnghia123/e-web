@@ -6,6 +6,8 @@ import {Button} from "react-bootstrap";
 import {getToken} from "@/app/helper/stogare";
 import moment from "moment";
 import {useRouter} from "next/navigation";
+import {CiSettings} from "react-icons/ci";
+import {RiDeleteBin5Line} from "react-icons/ri";
 
 export default function UserTable() {
   const router = useRouter();
@@ -100,6 +102,10 @@ export default function UserTable() {
       selector: (row: IUser) => row.mobile,
     },
     {
+      name: "Vai trò",
+      selector: (row: IUser) => row.role,
+    },
+    {
       name: "Created At",
       selector: (row: IUser) => {
         const dateTimeString = row.createdAt.toString();
@@ -124,13 +130,11 @@ export default function UserTable() {
     {
       name: "Actions",
       cell: (row: IUser): JSX.Element => (
-        <div className="d-flex">
-          <Button
-            className={`${styles.button} ${styles.buttonDeleteMany}`}
+        <div className={styles.buttons_container}>
+          <RiDeleteBin5Line
+            className={`${styles.button}`}
             onClick={() => handleDeleteOneUser(row._id)}
-          >
-            Xóa
-          </Button>
+          />
         </div>
       ),
     },
@@ -159,12 +163,14 @@ export default function UserTable() {
   return (
     <div className={styles.table_container}>
       <div className={styles.table_top}>
-        <Button
-          className={`${styles.button} ${styles.buttonDeleteMany}`}
-          onClick={() => handleDeleteMany()}
-        >
-          Xóa nhiều
-        </Button>
+        {selectedRows.length ? (
+          <RiDeleteBin5Line
+            className={`${styles.button}`}
+            onClick={() => handleDeleteMany()}
+          />
+        ) : (
+          <div></div>
+        )}
         <div className={styles.input_container}>
           <input
             type="text"

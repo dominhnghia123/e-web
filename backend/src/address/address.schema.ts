@@ -9,14 +9,17 @@ export class Address {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   userId: User;
 
-  @Prop({ required: true, unique: false })
+  @Prop({ required: true })
   username: string;
 
-  @Prop({ required: true, unique: false })
+  @Prop({ required: true })
   phone: string;
 
-  @Prop({ required: true, unique: false })
+  @Prop({ required: true })
   address: string;
+
+  @Prop()
+  default_address: boolean;
 }
 
 export const AddressSchema = SchemaFactory.createForClass(Address);

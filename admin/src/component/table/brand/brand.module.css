@@ -1,64 +1,73 @@
 .table_container {
-    width: 100%;
-    height: auto;
-  }
-  .head {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    width: 100%;
-    height: 50px;
-  }
-  .table_top {
-    display: flex;
-    margin-bottom: 20px;
-    width: 100%;
-    height: 50px;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .button {
-    height: 80%;
-    width: auto;
-    padding: 5px 15px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    color: white;
-  }
-  .buttonAdd {
-    background-color: rgb(185, 164, 0);
-  }
-  .buttonAdd:hover {
-    background-color: rgb(154, 136, 0);
-  }
-  .buttonDeleteMany {
-    background-color: rgb(93, 61, 3);
-  }
-  .buttonDeleteMany:hover {
-    background-color: rgb(74, 49, 2);
-  }
-  .input_container {
-    height: 80%;
-    width: 300px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .input {
-    height: 90%;
-    width: 95%;
-    padding: 0 12px;
-    border-radius: 5px;
-    border: none;
-    background-color: rgb(236, 233, 233);
-  }
-  .input:focus {
-    outline: none;
-    background-color: rgb(221, 219, 219);
-  }
-  .input:hover {
-    background-color: rgb(221, 219, 219);
-  }
-  
+  width: 100%;
+  height: auto;
+}
+.head {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+}
+.table_top {
+  display: flex;
+  margin-bottom: 20px;
+  width: 100%;
+  height: 50px;
+  justify-content: space-between;
+  align-items: center;
+}
+.button {
+  height: 80%;
+  width: auto;
+  padding: 5px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+.buttonAdd {
+  background-color: rgb(185, 164, 0);
+}
+.buttonAdd:hover {
+  background-color: rgb(154, 136, 0);
+}
+.input_container {
+  height: 80%;
+  width: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.input {
+  height: 90%;
+  width: 95%;
+  padding: 0 12px;
+  border-radius: 5px;
+  border: none;
+  background-color: rgb(236, 233, 233);
+}
+.input:focus {
+  outline: none;
+  background-color: rgb(221, 219, 219);
+}
+.input:hover {
+  background-color: rgb(221, 219, 219);
+}
+
+.buttons_container {
+  display: flex;
+}
+
+.icon_delete {
+  height: 80%;
+  width: 60px;
+  min-height: 60px;
+  padding: 5px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  color: black;
+}

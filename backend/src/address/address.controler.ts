@@ -52,4 +52,18 @@ export class AddressController {
   deleteAnAddress(@Body() addressIdDto: AddressIdDto, @Req() req: Request) {
     return this.addressService.deleteAnAddress(addressIdDto, req);
   }
+
+  @ApiBearerAuth()
+  @UseGuards(UserGuard)
+  @Post('/set-default-address')
+  setDefaultAddress(@Body() addressIdDto: AddressIdDto, @Req() req: Request) {
+    return this.addressService.setDefaultAddress(addressIdDto, req);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(UserGuard)
+  @Post('/get-default-address')
+  getDefaultAddress(@Req() req: Request) {
+    return this.addressService.getDefaultAddress(req);
+  }
 }

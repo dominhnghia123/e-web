@@ -155,11 +155,31 @@ export default function Cart() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkedList, changeQuantity]);
 
+  useEffect(() => {
+    const getDefaultAddress = async () => {
+      try {
+        const {data} = await axios.post(
+          `${process.env.BASE_HOST}/address/get-default-address`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (data.status === true) {
+          setSelectedAddressId(data.address._id);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getDefaultAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   //set up modal address
   const [openPickAddressModal, setOpenPickAddressModal] = useState(false);
-  const [selectedAddressId, setSelectedAddressId] = useState<string>(
-    "666b23f5980641f8c29182cf"
-  );
+  const [selectedAddressId, setSelectedAddressId] = useState<string>();
   const [selectedAddress, setSelectedAddress] = useState<IAddress | any>();
   useEffect(() => {
     const getAnAddress = async () => {

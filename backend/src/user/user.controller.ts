@@ -13,6 +13,7 @@ import { PhoneNumberDto } from './dto/phoneNumber.dto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { PreResetPasswordDto } from './dto/preResetPassword';
+import { ChangeRoleDto } from './dto/changeRole.dto';
 
 @ApiTags('User')
 @Controller('api/user')
@@ -106,5 +107,12 @@ export class UserController {
   @Post('/count-users')
   countUsers() {
     return this.userService.countUsers();
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AdminGuard)
+  @Post('/change-role-for-user')
+  changeRoleForUser(@Body() changeRoleDto: ChangeRoleDto) {
+    return this.userService.changeRoleForUser(changeRoleDto);
   }
 }

@@ -1,7 +1,7 @@
-import { Divider, Modal, Radio, RadioChangeEvent } from "antd";
-import { useEffect, useState } from "react";
+import {Divider, Modal, Radio, RadioChangeEvent} from "antd";
+import {useEffect, useState} from "react";
 import styles from "./pickAddress.module.css";
-import { getToken } from "@/app/helper/stogare";
+import {getToken} from "@/app/helper/stogare";
 import axios from "axios";
 import UpdateAddressModal from "../updateAddress/page";
 
@@ -37,7 +37,7 @@ export default function PickAddressModal(props: IProps) {
   }, [openModalUpdateAddress]);
 
   const getAllAddress = async () => {
-    const { data } = await axios.post(
+    const {data} = await axios.post(
       `${process.env.BASE_HOST}/address/get-all-address`,
       {},
       {
@@ -103,13 +103,17 @@ export default function PickAddressModal(props: IProps) {
                       >
                         {address.address}
                       </div>
-                      <div
-                        className={
-                          styles.address_container__content__left__default
-                        }
-                      >
-                        Mặc định
-                      </div>
+                      {address.default_address ? (
+                        <div
+                          className={
+                            styles.address_container__content__left__default
+                          }
+                        >
+                          Mặc định
+                        </div>
+                      ) : (
+                        <div></div>
+                      )}
                     </div>
                     <a
                       href="#"

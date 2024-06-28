@@ -25,7 +25,7 @@ export class AddressService {
       });
 
       return {
-        msg: 'Created address successfully',
+        msg: 'Thêm địa chỉ thành công',
         status: true,
         newAddress: newAddress,
       };
@@ -85,7 +85,7 @@ export class AddressService {
       const findAddress = await this.addressModel.findOne({ _id, userId });
       if (!findAddress) {
         return {
-          msg: 'This address does not exist',
+          msg: 'Địa chỉ không tồn tại',
           status: false,
         };
       }
@@ -103,7 +103,7 @@ export class AddressService {
       );
 
       return {
-        msg: 'Updated address successfully',
+        msg: 'Cập nhật địa chỉ thành công',
         status: true,
         updatedAddress: updatedAddress,
       };
@@ -119,16 +119,59 @@ export class AddressService {
       const findAddress = await this.addressModel.findOne({ _id, userId });
       if (!findAddress) {
         return {
-          msg: 'This address does not exist',
+          msg: 'Địa chỉ không tồn tại',
           status: false,
         };
       }
 
       const deletedAddress = await this.addressModel.findByIdAndDelete(_id);
       return {
-        msg: 'Deleted address successfully',
+        msg: 'Xóa địa chỉ thành công',
         status: true,
         deletedAddress: deletedAddress,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async setDefaultAddress(addressIdDto: AddressIdDto, req: Request) {
+    const userId = req['user']._id;
+    const { _id } = addressIdDto;
+    try {
+      await this.addressModel.updateMany(
+        { userId },
+        { $set: { default_address: false } },
+      );
+      await this.addressModel.findOneAndUpdate(
+        { userId, _id },
+        {
+          default_address: true,
+        },
+        {
+          new: true,
+        },
+      );
+      return {
+        msg: 'Đặt địa chỉ mặc định thành công.',
+        status: true,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async getDefaultAddress(req: Request) {
+    const userId = req['user']._id;
+    try {
+      const address = await this.addressModel.findOne({
+        userId,
+        default_address: true,
+      });
+      return {
+        msg: 'Đặt địa chỉ mặc định thành công.',
+        status: true,
+        address,
       };
     } catch (error) {
       throw new BadRequestException(error);

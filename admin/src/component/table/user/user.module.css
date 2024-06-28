@@ -12,26 +12,15 @@
   align-items: center;
 }
 .button {
-  height: 80%;
-  width: auto;
+  height: 100%;
+  width: 60px;
+  min-height: 60px;
   padding: 5px 15px;
   font-size: 16px;
   border-radius: 5px;
   border: none;
   cursor: pointer;
-  color: white;
-}
-.buttonAdd {
-  background-color: rgb(38, 37, 37);
-}
-.buttonAdd:hover {
-  background-color: rgb(16, 15, 15);
-}
-.buttonDeleteMany {
-  background-color: rgb(93, 61, 3);
-}
-.buttonDeleteMany:hover {
-  background-color: rgb(74, 49, 2);
+  color: black;
 }
 .input_container {
   height: 80%;
@@ -54,4 +43,8 @@
 }
 .input:hover {
   background-color: rgb(221, 219, 219);
+}
+
+.buttons_container {
+  display: flex;
 }

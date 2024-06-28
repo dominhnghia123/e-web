@@ -33,12 +33,6 @@
 .buttonAdd:hover {
   background-color: rgb(154, 136, 0);
 }
-.buttonDeleteMany {
-  background-color: rgb(93, 61, 3);
-}
-.buttonDeleteMany:hover {
-  background-color: rgb(74, 49, 2);
-}
 .input_container {
   height: 80%;
   width: 300px;
@@ -60,4 +54,20 @@
 }
 .input:hover {
   background-color: rgb(221, 219, 219);
+}
+
+.buttons_container {
+  display: flex;
+}
+
+.icon_delete {
+  height: 80%;
+  width: 60px;
+  min-height: 60px;
+  padding: 5px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  color: black;
 }

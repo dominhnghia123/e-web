@@ -20,6 +20,7 @@ import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { AppService } from '../app.service';
 import { PreResetPasswordDto } from './dto/preResetPassword';
 import * as crypto from 'crypto';
+import { ChangeRoleDto } from './dto/changeRole.dto';
 
 @Injectable()
 export class UserService {
@@ -205,15 +206,15 @@ export class UserService {
     const currentPage: number = req.query.page as any;
     const itemsPerPage: number = req.query.limit as any;
     try {
-      const options: any = {
-        role: 'user',
-      };
+      let options = {};
 
       if (keySearch) {
-        options.$or = [
-          { name: new RegExp(keySearch, 'i') },
-          { email: new RegExp(keySearch, 'i') },
-        ];
+        options = {
+          $or: [
+            { name: new RegExp(keySearch, 'i') },
+            { email: new RegExp(keySearch, 'i') },
+          ],
+        };
       }
       const allUsers = await this.userModel
         .find(options)
@@ -457,6 +458,25 @@ export class UserService {
       return {
         status: true,
         countUsers,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async changeRoleForUser(changeRoleDto: ChangeRoleDto) {
+    const { userId, role } = changeRoleDto;
+    try {
+      await this.userModel.findByIdAndUpdate(
+        userId,
+        {
+          role,
+        },
+        { new: true },
+      );
+      return {
+        msg: 'Cập nhật vai trò người dùng thành công.',
+        status: true,
       };
     } catch (error) {
       throw new BadRequestException(error);

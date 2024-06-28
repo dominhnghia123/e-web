@@ -1,12 +1,12 @@
 "use client";
-import { Divider, Modal, Rate, Tabs, TabsProps } from "antd";
+import {Divider, Modal, Rate, Tabs, TabsProps} from "antd";
 import styles from "./purchase.module.css";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
-import { getToken } from "@/app/helper/stogare";
-import { Button, Image } from "react-bootstrap";
-import { useRouter } from "next/navigation";
-import { CartConstant } from "@/contants/CartConstant";
+import {getToken} from "@/app/helper/stogare";
+import {Button, Image} from "react-bootstrap";
+import {useRouter} from "next/navigation";
+import {CartConstant} from "@/contants/CartConstant";
 
 const listStatusCart = [
   "",
@@ -35,7 +35,7 @@ export default function PurchasePage() {
   const handleCancelOrder = async (cartId: string) => {
     try {
       setConfirmLoading(true);
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/order/cancel-order`,
         {
           cartId,
@@ -58,7 +58,7 @@ export default function PurchasePage() {
 
   useEffect(() => {
     const getCartsByStatus = async () => {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/cart/get-carts-by-status`,
         {
           status: statusCarts,
@@ -77,9 +77,33 @@ export default function PurchasePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [changeTab]);
 
+  const [selectedAddressId, setSelectedAddressId] = useState<string>();
+  useEffect(() => {
+    const getDefaultAddress = async () => {
+      try {
+        const {data} = await axios.post(
+          `${process.env.BASE_HOST}/address/get-default-address`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (data.status === true) {
+          setSelectedAddressId(data.address._id);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getDefaultAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleBuyAgain = async (productId: string) => {
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/product/get-a-product`,
         {
           _id: productId,
@@ -105,12 +129,12 @@ export default function PurchasePage() {
     quantity: string,
     price: string
   ) => {
-    const orderItems = [{ cartId, productId, variantId, quantity, price }];
+    const orderItems = [{cartId, productId, variantId, quantity, price}];
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/order/create-order`,
         {
-          addressId: "666b23f5980641f8c29182cf",
+          addressId: selectedAddressId,
           couponId: "",
           orderItems,
         },
@@ -133,7 +157,7 @@ export default function PurchasePage() {
   const [openModalRatingShop, setOpenModalRatingShop] = useState(false);
   const handleSubmitComment = async (productId: string) => {
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/product/create-rating`,
         {
           productId: productId,

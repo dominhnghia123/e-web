@@ -1,22 +1,26 @@
 "use client";
 import styles from "../user.module.css";
-import { Button, Image } from "react-bootstrap";
-import { DatePicker, DatePickerProps, Radio } from "antd";
+import {Button, Image} from "react-bootstrap";
+import {DatePicker, DatePickerProps, Radio, RadioChangeEvent} from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
-import { getToken } from "@/app/helper/stogare";
+import {getToken} from "@/app/helper/stogare";
+import {toast} from "react-toastify";
+import {useRouter} from "next/navigation";
 
-export default function ViewDetailUser({ params }: { params: { id: string } }) {
+export default function ViewDetailUser({params}: {params: {id: string}}) {
   const token = getToken();
+  const router = useRouter();
+
   dayjs.extend(customParseFormat);
   const dateFormat = "YYYY-MM-DD";
 
   const [profile, setProfile] = useState<IUser | any>({});
   useEffect(() => {
     const getProfile = async () => {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/user/get-a-user`,
         {
           _id: params.id[0],
@@ -30,11 +34,39 @@ export default function ViewDetailUser({ params }: { params: { id: string } }) {
 
       if (data.status === true) {
         setProfile(data.user);
+        setRole(data.user.role);
       }
     };
     getProfile();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const [role, setRole] = useState();
+  const handleChangeRole = (e: RadioChangeEvent) => {
+    setRole(e.target.value);
+  };
+  const handleSaveProfile = async () => {
+    try {
+      const {data} = await axios.post(
+        `${process.env.BASE_HOST}/user/change-role-for-user`,
+        {
+          userId: profile._id,
+          role,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (data.status === true) {
+        toast.success(data.msg);
+        router.replace("/admin/user");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div>
@@ -92,6 +124,21 @@ export default function ViewDetailUser({ params }: { params: { id: string } }) {
               maxDate={dayjs("2020-12-31", dateFormat)}
             />
           </div>
+          <div className={styles.form__field}>
+            <div className={styles.form__field__title}>Vai trò</div>
+            <Radio.Group value={role} onChange={handleChangeRole}>
+              <Radio value="admin">Admin</Radio>
+              <Radio value="user">User</Radio>
+            </Radio.Group>
+          </div>
+          {role !== profile.role && (
+            <Button
+              className={styles.button}
+              onClick={() => handleSaveProfile()}
+            >
+              Lưu
+            </Button>
+          )}
         </form>
       </div>
     </div>
