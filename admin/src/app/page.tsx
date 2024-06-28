@@ -1,12 +1,13 @@
 "use client";
-import { MouseEvent, useState } from "react";
+import {MouseEvent, useState} from "react";
 import styles from "./app.module.css";
-import { Button } from "react-bootstrap";
-import { useRouter } from "next/navigation";
-import axios, { AxiosError } from "axios";
+import {Button, Spinner} from "react-bootstrap";
+import {useRouter} from "next/navigation";
+import axios, {AxiosError} from "axios";
 import Cookies from "js-cookie";
-import { toast } from "react-toastify";
-import { setStogare } from "./helper/stogare";
+import {toast} from "react-toastify";
+import {setStogare} from "./helper/stogare";
+import {Spin} from "antd";
 
 export default function Login() {
   const router = useRouter();
@@ -24,16 +25,15 @@ export default function Login() {
   const handleLogin = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/user/login`,
         dataLogin
       );
       if (data.status === true) {
         if (data.currentUser.role === "admin") {
-          setDataLoginError((prev) => ({ ...prev, loginError: "" }));
+          setDataLoginError((prev) => ({...prev, loginError: ""}));
           setIsLoading(true);
-          toast.success(data.msg);
-          Cookies.set("adminActive", "1", { expires: 1 });
+          Cookies.set("adminActive", "1", {expires: 1});
           setStogare("admin", JSON.stringify(data.currentUser));
           router.replace("/admin");
         }
@@ -42,11 +42,11 @@ export default function Login() {
         }
       }
       if (data.status === false) {
-        setDataLoginError((prev) => ({ ...prev, loginError: data.msg }));
+        setDataLoginError((prev) => ({...prev, loginError: data.msg}));
       }
     } catch (error: any) {
       const err = error as AxiosError<{
-        message: { property: string; message: string }[];
+        message: {property: string; message: string}[];
       }>;
       if (err.response?.data?.message) {
         err.response.data.message?.forEach((value) => {
@@ -69,9 +69,23 @@ export default function Login() {
     }
   };
 
+  const contentStyle: React.CSSProperties = {
+    padding: 50,
+    background: "rgba(0, 0, 0, 0.05)",
+    borderRadius: 4,
+  };
+
+  const content = <div style={contentStyle} />;
+
   return (
     <div className={styles.main}>
-      {isLoading && <div className={styles.loading}></div>}
+      {isLoading && (
+        <div className={styles.loading}>
+          <Spin tip="Loading" size="large">
+            {content}
+          </Spin>
+        </div>
+      )}
       <div className={styles.container}>
         <div className={styles.title_container}>
           <p className={styles.title}>Đăng nhập</p>
@@ -86,7 +100,7 @@ export default function Login() {
                 placeholder="Nhập địa chỉ email"
                 value={dataLogin.email}
                 onChange={(e) => {
-                  setDataLogin((prev) => ({ ...prev, email: e.target.value }));
+                  setDataLogin((prev) => ({...prev, email: e.target.value}));
                   setDataLoginError((prev) => ({
                     ...prev,
                     emailError: "",

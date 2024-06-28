@@ -318,33 +318,33 @@ export class UserService {
       const user = await this.userModel.findById(currentUser._id);
       if (user && !(await user.isMatchedPassword(currentPassword))) {
         return {
-          msg: 'Current password is incorrectly',
+          msg: 'Mật khẩu hiện tại không chính xác.',
           status: false,
         };
       }
       if (newPassword !== '' && newPassword.length < 4) {
         return {
-          msg: 'Password should be least 4 characters',
+          msg: 'Mật khẩu phải có ít nhất 4 ký tự.',
           status: false,
         };
       }
 
       if (currentPassword === newPassword) {
         return {
-          msg: 'The old and new passwords must be different',
+          msg: 'Mật khẩu cũ và mật khẩu mới phải khác nhau.',
           status: false,
         };
       }
       if (newPassword !== confirmPassword) {
         return {
-          msg: 'The new password and confirmation password must be the same',
+          msg: 'Mật khẩu mới và xác nhận mật khẩu phải giống nhau.',
           status: false,
         };
       }
       user.password = newPassword;
       await user.save();
       return {
-        msg: 'Changed password successfully',
+        msg: 'Thay đổi mật khẩu thành công.',
         status: true,
       };
     } catch (error) {

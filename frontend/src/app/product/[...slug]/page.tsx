@@ -2,26 +2,23 @@
 import AppHeader from "@/components/appHeader";
 import styles from "./product.module.css";
 import AppFooter from "@/components/appFooter";
-import { Button, Image } from "react-bootstrap";
-import { FaRegHeart } from "react-icons/fa";
-import { FaHeart } from "react-icons/fa";
-import { useEffect, useRef, useState } from "react";
-import { BsCart4 } from "react-icons/bs";
-import { Divider, Modal, Rate } from "antd";
-import type { InputNumberProps } from "antd";
-import { InputNumber } from "antd";
+import {Button, Image} from "react-bootstrap";
+import {FaRegHeart} from "react-icons/fa";
+import {FaHeart} from "react-icons/fa";
+import {useEffect, useRef, useState} from "react";
+import {BsCart4} from "react-icons/bs";
+import {Divider, Modal, Rate} from "antd";
+import type {InputNumberProps} from "antd";
+import {InputNumber} from "antd";
 import axios from "axios";
-import { toast } from "react-toastify";
-import { getToken } from "@/app/helper/stogare";
-import { useRouter } from "next/navigation";
+import {toast} from "react-toastify";
+import {getToken} from "@/app/helper/stogare";
+import {useRouter} from "next/navigation";
 
-export default function ViewDetailProduct({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default function ViewDetailProduct({params}: {params: {slug: string}}) {
   const token = getToken();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [hasLove, setHasLove] = useState(false);
 
   const [quantity, setQuantity] = useState<number | any>(1);
@@ -31,9 +28,10 @@ export default function ViewDetailProduct({
 
   const [addToCart, setAddToCart] = useState(false);
   const handleAddToCart = async (type: string) => {
+    setIsLoading(true);
     try {
       if (selectedVariantId) {
-        const { data } = await axios.post(
+        const {data} = await axios.post(
           `${process.env.BASE_HOST}/cart/add-to-cart`,
           {
             productId: params.slug[1],
@@ -48,6 +46,7 @@ export default function ViewDetailProduct({
         );
         if (data.status === true && type === "addToCart") {
           toast.success(data.msg);
+          setIsLoading(false);
           setAddToCart(true);
         }
         if (data.status === false && type === "addToCart") {
@@ -85,7 +84,7 @@ export default function ViewDetailProduct({
   const [checkSubmitComment, setCheckSubmitComment] = useState(false);
   const handleSubmitComment = async () => {
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/product/create-rating`,
         {
           productId: params.slug[1],
@@ -117,7 +116,7 @@ export default function ViewDetailProduct({
 
   useEffect(() => {
     const getAProduct = async () => {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/product/get-a-product`,
         {
           _id: params.slug[1],
@@ -131,7 +130,7 @@ export default function ViewDetailProduct({
       }
     };
     const getDetailRatings = async () => {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/product/get-ratings`,
         {
           _id: params.slug[1],
@@ -151,7 +150,12 @@ export default function ViewDetailProduct({
 
   return (
     <div className={styles.container}>
-      <AppHeader changedCart={addToCart} setChangedCart={setAddToCart} />
+      <AppHeader
+        changedCart={addToCart}
+        setChangedCart={setAddToCart}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+      />
       <main className={styles.main}>
         <div className={styles.main_container}>
           <div className={styles.order_part}>

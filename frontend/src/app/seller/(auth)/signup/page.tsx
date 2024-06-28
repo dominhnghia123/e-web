@@ -1,15 +1,16 @@
 "use client";
 import styles from "./signup.module.css";
-import { Button } from "react-bootstrap";
-import { IoLogoFacebook } from "react-icons/io5";
-import { IoLogoGoogle } from "react-icons/io";
-import { SiHomeassistantcommunitystore } from "react-icons/si";
-import { FaGift } from "react-icons/fa";
-import { FaHandshake } from "react-icons/fa6";
-import { MouseEvent, useState } from "react";
-import axios, { AxiosError } from "axios";
+import {Button} from "react-bootstrap";
+import {IoLogoFacebook} from "react-icons/io5";
+import {IoLogoGoogle} from "react-icons/io";
+import {SiHomeassistantcommunitystore} from "react-icons/si";
+import {FaGift} from "react-icons/fa";
+import {FaHandshake} from "react-icons/fa6";
+import {MouseEvent, useState} from "react";
+import axios, {AxiosError} from "axios";
 import AlreadyMobileModal from "@/components/modal/mobile/alreadyMobileModal/page";
 import NotAlreadyMobileModal from "@/components/modal/mobile/notAlreadyMobileModal/page";
+import {Spin} from "antd";
 
 export default function Signup() {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -18,8 +19,9 @@ export default function Signup() {
   const [openPopupNotExistMobile, setOpenPopupNotExistMobile] = useState(false);
   const handleNext = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/user/check-already-phone-number`,
         {
           mobile: phoneNumber,
@@ -33,7 +35,7 @@ export default function Signup() {
       }
     } catch (error: any) {
       const err = error as AxiosError<{
-        message: { property: string; message: string }[];
+        message: {property: string; message: string}[];
       }>;
       if (err.response?.data?.message) {
         err.response.data.message?.forEach((value) => {
@@ -43,9 +45,28 @@ export default function Signup() {
         });
       }
     }
+    setIsLoading(false);
   };
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const contentStyle: React.CSSProperties = {
+    padding: 50,
+    background: "rgba(0, 0, 0, 0.05)",
+    borderRadius: 4,
+  };
+
+  const content = <div style={contentStyle} />;
+
   return (
     <div className={styles.main_container}>
+      {isLoading && (
+        <div className={styles.loading}>
+          <Spin tip="Loading" size="large">
+            {content}
+          </Spin>
+        </div>
+      )}
       <title>Đăng ký tài khoản</title>
       <div className={styles.main_container__content_left}>
         <div className={styles.main_container__content_left__title}>
@@ -102,10 +123,12 @@ export default function Signup() {
             <AlreadyMobileModal
               openModal={openPopupExistMobile}
               setOpenModal={setOpenPopupExistMobile}
+              setIsLoading={setIsLoading}
             />
             <NotAlreadyMobileModal
               openModal={openPopupNotExistMobile}
               setOpenModal={setOpenPopupNotExistMobile}
+              setIsLoading={setIsLoading}
             />
           </form>
           <div className={styles.other_method_signup}>

@@ -1,22 +1,24 @@
 "use client";
 
-import { getToken } from "@/app/helper/stogare";
+import {getToken} from "@/app/helper/stogare";
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import {useContext, useEffect, useState} from "react";
 import styles from "./notifycation.module.css";
-import { Button } from "react-bootstrap";
-import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
-import { PageContext } from "../../layout";
+import {Button} from "react-bootstrap";
+import {toast} from "react-toastify";
+import {useRouter} from "next/navigation";
+import {PageContext} from "../../layout";
+import { Spin } from "antd";
 
-export default function Notifycation({ params }: { params: { id: string } }) {
-  const { setUpdateNoti } = useContext(PageContext);
+export default function Notifycation({params}: {params: {id: string}}) {
+  const {setUpdateNoti} = useContext(PageContext);
   const token = getToken();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [request, setRequest] = useState<any>();
   useEffect(() => {
     const getDetailRequest = async () => {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/requestSeller/get-detail-request`,
         {
           _id: params.id[0],
@@ -32,13 +34,14 @@ export default function Notifycation({ params }: { params: { id: string } }) {
       }
     };
     getDetailRequest();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleRefuseRequest = async () => {
     try {
+      setIsLoading(true);
       setUpdateNoti(false);
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/requestSeller/refuse-request-become-seller`,
         {
           _id: params.id[0],
@@ -60,12 +63,14 @@ export default function Notifycation({ params }: { params: { id: string } }) {
     } catch (error) {
       console.error(error);
     }
+    setIsLoading(false);
   };
 
   const handleAcceptRequest = async () => {
     try {
+      setIsLoading(true);
       setUpdateNoti(false);
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/requestSeller/accept-request-become-seller`,
         {
           _id: params.id[0],
@@ -87,10 +92,26 @@ export default function Notifycation({ params }: { params: { id: string } }) {
     } catch (error) {
       console.error(error);
     }
+    setIsLoading(false);
   };
+
+  const contentStyle: React.CSSProperties = {
+    padding: 50,
+    background: "rgba(0, 0, 0, 0.05)",
+    borderRadius: 4,
+  };
+
+  const content = <div style={contentStyle} />;
 
   return (
     <div>
+      {isLoading && (
+        <div className={styles.loading}>
+          <Spin tip="Loading" size="large">
+            {content}
+          </Spin>
+        </div>
+      )}
       <h2>Thông tin chi tiết</h2>
       <title>Thông báo</title>
       <div className={styles.main}>

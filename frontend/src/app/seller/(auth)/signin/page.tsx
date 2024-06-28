@@ -1,20 +1,19 @@
 "use client";
-import { Button, Image } from "react-bootstrap";
+import {Button, Image} from "react-bootstrap";
 import styles from "./signin.module.css";
-import { IoLogoFacebook } from "react-icons/io5";
-import { IoLogoGoogle } from "react-icons/io";
-import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/redux/store";
-import { MouseEvent, useState } from "react";
+import {IoLogoFacebook} from "react-icons/io5";
+import {IoLogoGoogle} from "react-icons/io";
+import {useRouter} from "next/navigation";
+import {useAppDispatch} from "@/redux/store";
+import {MouseEvent, useState} from "react";
 import Cookies from "js-cookie";
-import { toast } from "react-toastify";
 import {
   logInError,
   logInStart,
   logInSuccess,
 } from "@/redux/features/auth/authSlice";
-import { logInUser } from "@/redux/features/auth/authService";
-import { Modal } from "antd";
+import {logInUser} from "@/redux/features/auth/authService";
+import {Modal, Spin} from "antd";
 
 export default function Signin() {
   const router = useRouter();
@@ -48,28 +47,41 @@ export default function Signin() {
       const response = await logInUser(dataLogin, setDataLoginError);
       const currentUser = response?.currentUser;
       if (response.status === true) {
-        setDataLoginError((prev) => ({ ...prev, loginError: "" }));
+        setDataLoginError((prev) => ({...prev, loginError: ""}));
         dispatch(logInSuccess(currentUser));
-        Cookies.set("userActive", "1", { expires: 1 });
+        Cookies.set("userActive", "1", {expires: 1});
         if (currentUser.isSeller === true) {
           setIsLoading(true);
-          toast.success(response.msg);
           router.replace("/seller");
         } else {
           setOpenModal(true);
         }
       }
       if (response.status === false) {
-        setDataLoginError((prev) => ({ ...prev, loginError: response.msg }));
+        setDataLoginError((prev) => ({...prev, loginError: response.msg}));
       }
     } catch (error) {
       dispatch(logInError());
     }
   };
 
+  const contentStyle: React.CSSProperties = {
+    padding: 50,
+    background: "rgba(0, 0, 0, 0.05)",
+    borderRadius: 4,
+  };
+
+  const content = <div style={contentStyle} />;
+
   return (
     <div className={styles.main_container}>
-      {isLoading && <div className={styles.loading}></div>}
+      {isLoading && (
+        <div className={styles.loading}>
+          <Spin tip="Loading" size="large">
+            {content}
+          </Spin>
+        </div>
+      )}
       <title>Đăng nhập người bán</title>
       <div className={styles.main_container__content_left}>
         <div className={styles.main_container__content_left__title}>
@@ -96,7 +108,7 @@ export default function Signin() {
                 className={styles.input}
                 value={dataLogin.email}
                 onChange={(e) => {
-                  setDataLogin((prev) => ({ ...prev, email: e.target.value }));
+                  setDataLogin((prev) => ({...prev, email: e.target.value}));
                   setDataLoginError((prev) => ({
                     ...prev,
                     emailError: "",
@@ -150,7 +162,7 @@ export default function Signin() {
           <Modal
             title={
               <div>
-                <span style={{ display: "block" }}>
+                <span style={{display: "block"}}>
                   Tài khoản của bạn chưa đăng ký trở thành người bán.
                 </span>
                 <span>

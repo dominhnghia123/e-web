@@ -245,6 +245,7 @@ export default function Cart() {
 
   const dispatch = useAppDispatch();
   const handlePurchase = async () => {
+    setIsLoading(true);
     dispatch(
       getProductsCheckout({
         checkedList,
@@ -293,9 +294,16 @@ export default function Cart() {
     router.replace(`/checkout`);
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+
   return (
     <div className={styles.container}>
-      <AppHeader changedCart={deleted} setChangedCart={setDeleted} />
+      <AppHeader
+        changedCart={deleted}
+        setChangedCart={setDeleted}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+      />
       <main className={styles.main}>
         <div className={styles.main_container}>
           <div className={styles.cart}>

@@ -6,6 +6,7 @@ import {Button} from "react-bootstrap";
 import {getToken} from "@/app/helper/stogare";
 import moment from "moment";
 import {useRouter} from "next/navigation";
+import {RiDeleteBin5Line} from "react-icons/ri";
 
 export default function ProductTable() {
   const router = useRouter();
@@ -124,13 +125,11 @@ export default function ProductTable() {
     {
       name: "Actions",
       cell: (row: IProduct): JSX.Element => (
-        <div className="d-flex">
-          <Button
-            className={`${styles.button} ${styles.buttonDeleteMany}`}
+        <div className={styles.buttons_container}>
+          <RiDeleteBin5Line
+            className={`${styles.icon_delete}`}
             onClick={() => handleDeleteOneProduct(row._id)}
-          >
-            Xóa
-          </Button>
+          />
         </div>
       ),
     },
@@ -167,12 +166,14 @@ export default function ProductTable() {
         </Button>
       </div>
       <div className={styles.table_top}>
-        <Button
-          className={`${styles.button} ${styles.buttonDeleteMany}`}
-          onClick={() => handleDeleteMany()}
-        >
-          Xóa nhiều
-        </Button>
+        {selectedRows.length ? (
+          <RiDeleteBin5Line
+            className={`${styles.icon_delete}`}
+            onClick={() => handleDeleteMany()}
+          />
+        ) : (
+          <div></div>
+        )}
         <div className={styles.input_container}>
           <input
             type="text"

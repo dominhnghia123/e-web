@@ -1,19 +1,20 @@
 "use client";
-import { Image } from "react-bootstrap";
+import {Image} from "react-bootstrap";
 import styles from "../app/app.module.css";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import {useRouter, useSearchParams} from "next/navigation";
+import {useEffect, useState} from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
 import ReactPaginate from "react-paginate";
+import AppLoading from "./appLoading";
 
 interface IProps {
   brand?: string;
 }
 
 export default function AppContent(props: IProps) {
-  const { brand } = props;
+  const {brand} = props;
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -33,7 +34,7 @@ export default function AppContent(props: IProps) {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const { data } = await axios.post(
+        const {data} = await axios.post(
           `${process.env.BASE_HOST}/product/get-products-by-brand?page=${currentPage}&limit=${itemsPerPage}`,
           {
             brand: brand ? brand : "",
@@ -55,13 +56,16 @@ export default function AppContent(props: IProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, itemsPerPage]);
 
-  const handlePageClick = ({ selected }: { selected: number }) => {
+  const handlePageClick = ({selected}: {selected: number}) => {
     setCurrentPage(selected + 1);
     router.push(`?page=${selected + 1}&limit=${itemsPerPage}`);
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+
   return (
     <div className={styles.content}>
+      {isLoading && <AppLoading />}
       <div className={styles.content__main_container}>
         <div className={styles.main_head}>GỢI Ý HÔM NAY</div>
         <div className={styles.main_content}>
@@ -77,7 +81,7 @@ export default function AppContent(props: IProps) {
                       (a, b) => ({
                         sold: (parseInt(a.sold) + parseInt(b.sold)).toString(),
                       }),
-                      { sold: "0" }
+                      {sold: "0"}
                     ).sold;
 
                     return (
@@ -89,12 +93,13 @@ export default function AppContent(props: IProps) {
                             ? "/buyer/signin"
                             : `/product/${product.slug}/${product._id}`
                         }
+                        onClick={() => setIsLoading(true)}
                       >
                         <div className={styles.product_container__image}>
                           <Image
                             src={product.variants[0].image}
                             alt=""
-                            style={{ height: "100%", width: "100%" }}
+                            style={{height: "100%", width: "100%"}}
                           />
                         </div>
                         <div className={styles.product_container__desc}>
@@ -146,7 +151,7 @@ export default function AppContent(props: IProps) {
                 </div>
               </div>
             ) : (
-              <h4 style={{ textAlign: "center" }}>
+              <h4 style={{textAlign: "center"}}>
                 Hiện tại chưa có sản phẩm nào thuộc hãng này.
               </h4>
             )}

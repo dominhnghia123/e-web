@@ -1,19 +1,20 @@
 "use client";
-import { Button } from "react-bootstrap";
+import {Button} from "react-bootstrap";
 import styles from "./signin.module.css";
-import { IoLogoFacebook } from "react-icons/io5";
-import { IoLogoGoogle } from "react-icons/io";
-import { MouseEvent, useState } from "react";
-import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import {IoLogoFacebook} from "react-icons/io5";
+import {IoLogoGoogle} from "react-icons/io";
+import {MouseEvent, useState} from "react";
+import {toast} from "react-toastify";
+import {useRouter} from "next/navigation";
 import Cookies from "js-cookie";
-import { useAppDispatch } from "@/redux/store";
+import {useAppDispatch} from "@/redux/store";
 import {
   logInError,
   logInStart,
   logInSuccess,
 } from "@/redux/features/auth/authSlice";
-import { logInUser } from "@/redux/features/auth/authService";
+import {logInUser} from "@/redux/features/auth/authService";
+import {Spin} from "antd";
 
 export default function Signin() {
   const router = useRouter();
@@ -38,22 +39,36 @@ export default function Signin() {
       const currentUser = response?.currentUser;
       if (response.status === true) {
         dispatch(logInSuccess(currentUser));
-        setDataLoginError((prev) => ({ ...prev, loginError: "" }));
+        setDataLoginError((prev) => ({...prev, loginError: ""}));
         setIsLoading(true);
-        toast.success(response.msg);
         Cookies.set("userActive", "1", {expires: 1});
         router.replace("/buyer");
       }
       if (response.status === false) {
-        setDataLoginError((prev) => ({ ...prev, loginError: response.msg }));
+        setDataLoginError((prev) => ({...prev, loginError: response.msg}));
       }
     } catch (error) {
       dispatch(logInError());
     }
   };
+
+  const contentStyle: React.CSSProperties = {
+    padding: 50,
+    background: "rgba(0, 0, 0, 0.05)",
+    borderRadius: 4,
+  };
+
+  const content = <div style={contentStyle} />;
+
   return (
     <div className={styles.signin_content_container}>
-      {isLoading && <div className={styles.loading}></div>}
+      {isLoading && (
+        <div className={styles.loading}>
+          <Spin tip="Loading" size="large">
+            {content}
+          </Spin>
+        </div>
+      )}
       <title>Đăng nhập người dùng</title>
       <div className={styles.signin_title}>Đăng nhập</div>
       <div className={styles.signin_container}>
@@ -65,7 +80,7 @@ export default function Signin() {
               className={styles.input}
               value={dataLogin.email}
               onChange={(e) => {
-                setDataLogin((prev) => ({ ...prev, email: e.target.value }));
+                setDataLogin((prev) => ({...prev, email: e.target.value}));
                 setDataLoginError((prev) => ({
                   ...prev,
                   emailError: "",
@@ -86,7 +101,7 @@ export default function Signin() {
               className={styles.input}
               value={dataLogin.password}
               onChange={(e) => {
-                setDataLogin((prev) => ({ ...prev, password: e.target.value }));
+                setDataLogin((prev) => ({...prev, password: e.target.value}));
                 setDataLoginError((prev) => ({
                   ...prev,
                   passwordError: "",
@@ -114,7 +129,11 @@ export default function Signin() {
           </Button>
         </form>
         <div className={styles.forgot_password}>
-          <a href="/reset-password" className={styles.forgot_password__link}>
+          <a
+            href="/reset-password"
+            className={styles.forgot_password__link}
+            onClick={() => setIsLoading(true)}
+          >
             Quên mật khẩu
           </a>
         </div>

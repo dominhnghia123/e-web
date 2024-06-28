@@ -1,6 +1,6 @@
 "use client";
 import styles from "./profile.module.css";
-import React, { useContext, useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
   DatePicker,
   DatePickerProps,
@@ -13,15 +13,17 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { UploadOutlined } from "@ant-design/icons";
-import { getStogare, getToken } from "@/app/helper/stogare";
+import {UploadOutlined} from "@ant-design/icons";
+import {getStogare, getToken} from "@/app/helper/stogare";
 import axios from "axios";
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
 import ButtonReactBootStrap from "react-bootstrap/Button";
-import { PageContext } from "../../layout";
+import {PageContext} from "../../layout";
+import AppLoading from "@/components/appLoading";
 
 export default function ViewProfile() {
-  const { setIsChangeProfile } = useContext(PageContext);
+  const {setIsChangeProfile} = useContext(PageContext);
+  const [isLoading, setIsLoading] = useState(false);
 
   const currentUserString = getStogare("currentUser");
   const currentUser = JSON.parse(currentUserString);
@@ -31,7 +33,7 @@ export default function ViewProfile() {
   const [profile, setProfile] = useState<IUser | any>({});
   useEffect(() => {
     const getProfile = async () => {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/user/get-a-user`,
         {
           _id: currentUser._id,
@@ -102,8 +104,9 @@ export default function ViewProfile() {
   //update profile
   const handleUpdateProfile = async () => {
     setIsChangeProfile(false);
+    setIsLoading(true);
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/user/update-user`,
         {
           _id: currentUser._id,
@@ -119,6 +122,7 @@ export default function ViewProfile() {
       );
       if (data.status === true) {
         setIsChangeProfile(true);
+        setIsLoading(false);
         toast.success(data.msg);
       }
     } catch (error) {
@@ -128,6 +132,7 @@ export default function ViewProfile() {
 
   return (
     <>
+      {isLoading && <AppLoading />}
       <div className={styles.content_header}>
         <div className={styles.content_header__title}>Hồ sơ của tôi</div>
         <div className={styles.content_header__text}>

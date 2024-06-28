@@ -1,16 +1,18 @@
 "use client";
-import { Button, Image } from "react-bootstrap";
+import {Button, Image} from "react-bootstrap";
 import styles from "./register-seller.module.css";
-import { Divider, Modal } from "antd";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { getStogare, getToken } from "../helper/stogare";
-import axios, { AxiosError } from "axios";
-import { toast } from "react-toastify";
+import {Divider, Modal} from "antd";
+import {useRouter} from "next/navigation";
+import {useState} from "react";
+import {getStogare, getToken} from "../helper/stogare";
+import axios, {AxiosError} from "axios";
+import {toast} from "react-toastify";
+import AppLoading from "@/components/appLoading";
 
 export default function RegisterSellerPage() {
   const router = useRouter();
   const token = getToken();
+  const [isLoading, setIsLoading] = useState(false);
 
   const currentUserString = getStogare("currentUser");
   let currentUser;
@@ -36,7 +38,8 @@ export default function RegisterSellerPage() {
   const handleOk = async () => {
     try {
       if (isChecked) {
-        const { data } = await axios.post(
+        setIsLoading(true);
+        const {data} = await axios.post(
           `${process.env.BASE_HOST}/requestSeller/send-request-become-seller`,
           {
             shopName: dataInput.shopName,
@@ -57,6 +60,7 @@ export default function RegisterSellerPage() {
         if (data.status === false) {
           toast.error(data.msg);
         }
+        setIsLoading(false);
       } else {
         setDataInputError((prev: any) => ({
           ...prev,
@@ -65,7 +69,7 @@ export default function RegisterSellerPage() {
       }
     } catch (error: any) {
       const err = error as AxiosError<{
-        message: { property: string; message: string }[];
+        message: {property: string; message: string}[];
       }>;
       if (err.response?.data?.message) {
         err.response.data.message?.forEach((value) => {
@@ -100,6 +104,7 @@ export default function RegisterSellerPage() {
 
   return (
     <div className={styles.container}>
+      {isLoading && <AppLoading />}
       <div className={styles.header}>
         <div className={styles.header_content}>
           <Image
@@ -282,7 +287,10 @@ export default function RegisterSellerPage() {
           <div className={`${styles.button_container} ${styles.back}`}>
             <Button
               className={`${styles.button} ${styles.back}`}
-              onClick={() => router.back()}
+              onClick={() => {
+                setIsLoading(true);
+                router.back();
+              }}
             >
               Quay lại
             </Button>

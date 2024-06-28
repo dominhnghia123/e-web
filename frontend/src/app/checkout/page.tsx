@@ -141,7 +141,9 @@ export default function Checkout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const [isLoading, setIsLoading] = useState(false);
   const handlePayment = async () => {
+    setIsLoading(true);
     // update cart: Remove products to be purchased from the shopping cart
     try {
       await axios.post(
@@ -190,7 +192,7 @@ export default function Checkout() {
 
   return (
     <div className={styles.container}>
-      <AppHeader />
+      <AppHeader isLoading={isLoading} setIsLoading={setIsLoading} />
       <main className={styles.main}>
         <div className={styles.main_container}>
           <div className={styles.cart}>

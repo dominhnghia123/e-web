@@ -7,6 +7,7 @@ import {getToken} from "@/app/helper/stogare";
 import {Button, Image} from "react-bootstrap";
 import {useRouter} from "next/navigation";
 import {CartConstant} from "@/contants/CartConstant";
+import AppLoading from "@/components/appLoading";
 
 const listStatusCart = [
   "",
@@ -102,6 +103,7 @@ export default function PurchasePage() {
   }, []);
 
   const handleBuyAgain = async (productId: string) => {
+    setIsLoading(true);
     try {
       const {data} = await axios.post(
         `${process.env.BASE_HOST}/product/get-a-product`,
@@ -129,6 +131,7 @@ export default function PurchasePage() {
     quantity: string,
     price: string
   ) => {
+    setIsLoading(true);
     const orderItems = [{cartId, productId, variantId, quantity, price}];
     try {
       const {data} = await axios.post(
@@ -157,6 +160,7 @@ export default function PurchasePage() {
   const [openModalRatingShop, setOpenModalRatingShop] = useState(false);
   const handleSubmitComment = async (productId: string) => {
     try {
+      setConfirmLoading(true);
       const {data} = await axios.post(
         `${process.env.BASE_HOST}/product/create-rating`,
         {
@@ -171,6 +175,7 @@ export default function PurchasePage() {
         }
       );
       if (data.status === true) {
+        setConfirmLoading(false);
         showModalCommentSuccess();
         setOpenModalRatingShop(false);
       }
@@ -380,8 +385,10 @@ export default function PurchasePage() {
     },
   ];
 
+  const [isLoading, setIsLoading] = useState(false);
   return (
     <div className={styles.container}>
+      {isLoading && <AppLoading />}
       <title>Đơn hàng</title>
       <Tabs
         className={styles.tabs}

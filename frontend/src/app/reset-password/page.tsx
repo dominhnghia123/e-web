@@ -6,10 +6,11 @@ import {useRouter} from "next/navigation";
 import {useState} from "react";
 import axios, {AxiosError} from "axios";
 import {toast} from "react-toastify";
-import {Modal} from "antd";
+import {Modal, Spin} from "antd";
 
 export default function ResetPassword() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [email, setEmail] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
@@ -25,6 +26,7 @@ export default function ResetPassword() {
   const [password, setPassword] = useState<string>("");
 
   const handleSendRequest = async () => {
+    setIsLoading(true);
     try {
       const {data} = await axios.post(
         `${process.env.BASE_HOST}/user/forgot-password`,
@@ -50,6 +52,7 @@ export default function ResetPassword() {
         });
       }
     }
+    setIsLoading(false);
   };
 
   const handleCheckCode = async () => {
@@ -106,8 +109,23 @@ export default function ResetPassword() {
     setOpenModalResetPassword(false);
   };
 
+  const contentStyle: React.CSSProperties = {
+    padding: 50,
+    background: "rgba(0, 0, 0, 0.05)",
+    borderRadius: 4,
+  };
+
+  const content = <div style={contentStyle} />;
+
   return (
     <div className={styles.container}>
+      {isLoading && (
+        <div className={styles.loading}>
+          <Spin tip="Loading" size="large">
+            {content}
+          </Spin>
+        </div>
+      )}
       <title>Reset password</title>
       <nav className={styles.nav}>
         <div className={styles.nav_content}>
@@ -120,7 +138,11 @@ export default function ResetPassword() {
                 width={35}
                 style={{borderRadius: "50px"}}
               />
-              <a href="/" className={styles.nav_content__left__shopify}>
+              <a
+                href="/"
+                className={styles.nav_content__left__shopify}
+                onClick={() => setIsLoading(true)}
+              >
                 Shopify
               </a>
             </div>
@@ -138,16 +160,19 @@ export default function ResetPassword() {
           <div className={styles.box_head}>
             <FaArrowLeftLong
               className={styles.arrow_left_icon}
-              onClick={() => router.back()}
+              onClick={() => {
+                setIsLoading(true);
+                router.replace("/buyer/signin");
+              }}
             />
             <div className={styles.title_container}>
               <h3>Đặt lại mật khẩu</h3>
             </div>
           </div>
-          <form className={styles.form_container}>
+          <div className={styles.form_container}>
             <input
               type="text"
-              placeholder="Email/Số điện thoại"
+              placeholder="Email"
               className={styles.input}
               value={email}
               onChange={(e) => {
@@ -166,7 +191,7 @@ export default function ResetPassword() {
             >
               Gửi yêu cầu
             </Button>
-          </form>
+          </div>
         </div>
       </main>
 

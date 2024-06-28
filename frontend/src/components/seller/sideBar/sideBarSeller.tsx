@@ -1,8 +1,13 @@
 "use client";
-import { usePathname } from "next/navigation";
+import {usePathname} from "next/navigation";
 import styles from "./sideBar.module.css";
 
-export default function SideBarSeller() {
+interface IProps {
+  setIsLoading: (value: boolean) => void;
+}
+
+export default function SideBarSeller(props: IProps) {
+  const {setIsLoading} = props;
   const pathname = usePathname();
 
   return (
@@ -15,6 +20,7 @@ export default function SideBarSeller() {
             className={`${styles.options__link} ${
               pathname === "/seller" ? styles.options__link_focus : ""
             }`}
+            onClick={() => setIsLoading(true)}
           >
             Trang chủ
           </a>
@@ -27,6 +33,7 @@ export default function SideBarSeller() {
                 ? styles.options__link_focus
                 : ""
             }`}
+            onClick={() => setIsLoading(true)}
           >
             Sản phẩm
           </a>
@@ -39,6 +46,7 @@ export default function SideBarSeller() {
                 ? styles.options__link_focus
                 : ""
             }`}
+            onClick={() => setIsLoading(true)}
           >
             Đơn hàng
           </a>

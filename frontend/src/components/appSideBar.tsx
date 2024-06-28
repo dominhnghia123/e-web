@@ -1,7 +1,12 @@
 "use client";
-import { usePathname } from "next/navigation";
+import {usePathname} from "next/navigation";
 import styles from "../app/app.module.css";
-export default function AppSideBar() {
+
+interface IProps {
+  setIsLoading?: (value: boolean) => void;
+}
+
+export default function AppSideBar(props: IProps) {
   const pathname = usePathname();
 
   return (
@@ -16,6 +21,7 @@ export default function AppSideBar() {
                 ? styles.options__link_focus
                 : ""
             }`}
+            onClick={() =>props.setIsLoading?.(true)}
           >
             Tất cả
           </a>
@@ -26,6 +32,7 @@ export default function AppSideBar() {
             className={`${styles.options__link} ${
               pathname === "/buyer/iphone" ? styles.options__link_focus : ""
             }`}
+            onClick={() =>props.setIsLoading?.(true)}
           >
             Iphone
           </a>
@@ -36,6 +43,7 @@ export default function AppSideBar() {
             className={`${styles.options__link} ${
               pathname === "/buyer/samsung" ? styles.options__link_focus : ""
             }`}
+            onClick={() =>props.setIsLoading?.(true)}
           >
             Sam Sung
           </a>
@@ -46,6 +54,7 @@ export default function AppSideBar() {
             className={`${styles.options__link} ${
               pathname === "/buyer/vivo" ? styles.options__link_focus : ""
             }`}
+            onClick={() =>props.setIsLoading?.(true)}
           >
             Vivo
           </a>
@@ -56,6 +65,7 @@ export default function AppSideBar() {
             className={`${styles.options__link} ${
               pathname === "/buyer/huawei" ? styles.options__link_focus : ""
             }`}
+            onClick={() =>props.setIsLoading?.(true)}
           >
             Huawei
           </a>
@@ -66,6 +76,7 @@ export default function AppSideBar() {
             className={`${styles.options__link} ${
               pathname === "/buyer/oppo" ? styles.options__link_focus : ""
             }`}
+            onClick={() =>props.setIsLoading?.(true)}
           >
             Oppo
           </a>
@@ -76,6 +87,7 @@ export default function AppSideBar() {
             className={`${styles.options__link} ${
               pathname === "/buyer/mi" ? styles.options__link_focus : ""
             }`}
+            onClick={() =>props.setIsLoading?.(true)}
           >
             MI
           </a>

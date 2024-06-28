@@ -1,6 +1,6 @@
 "use client";
 import styles from "./admin.module.css";
-import React, { createContext, useEffect, useState } from "react";
+import React, {createContext, useEffect, useState} from "react";
 import {
   AppstoreOutlined,
   HomeOutlined,
@@ -8,17 +8,17 @@ import {
   MenuUnfoldOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Divider, Layout, Menu, theme } from "antd";
-import { RiCoupon4Line } from "react-icons/ri";
-import { Image } from "react-bootstrap";
-import { IoMdNotificationsOutline } from "react-icons/io";
+import {Button, Divider, Layout, Menu, Spin, theme} from "antd";
+import {RiCoupon4Line} from "react-icons/ri";
+import {Image} from "react-bootstrap";
+import {IoMdNotificationsOutline} from "react-icons/io";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import axios from "axios";
-import { getStogare, getToken, removeStogare } from "../helper/stogare";
-import { TbBrand4Chan } from "react-icons/tb";
+import {getStogare, getToken, removeStogare} from "../helper/stogare";
+import {TbBrand4Chan} from "react-icons/tb";
 
-const { Header, Sider, Content } = Layout;
+const {Header, Sider, Content} = Layout;
 
 interface PageContextType {
   setUpdateNoti: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,14 +28,10 @@ export const PageContext = createContext<PageContextType>({
   setUpdateNoti: () => {}, // Default value
 });
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AdminLayout({children}: {children: React.ReactNode}) {
   const [collapsed, setCollapsed] = useState(false);
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: {colorBgContainer, borderRadiusLG},
   } = theme.useToken();
 
   const adminString = getStogare("admin").trim();
@@ -48,7 +44,10 @@ export default function AdminLayout({
   const [openPopupNoti, setOpenPopupNoti] = useState(false);
   const [openOptionsMenu, setOpenOptionsMenu] = useState(false);
   const [updateNoti, setUpdateNoti] = useState<boolean | any>(false);
+
+  const [isLoading, setIsLoading] = useState(false);
   const handleLogout = () => {
+    setIsLoading(true);
     Cookies.remove("adminActive");
     removeStogare("admin");
     router.replace("/");
@@ -58,7 +57,7 @@ export default function AdminLayout({
   useEffect(() => {
     const getRequests = async () => {
       try {
-        const { data } = await axios.post(
+        const {data} = await axios.post(
           `${process.env.BASE_HOST}/requestSeller/get-requests-become-seller`,
           {},
           {
@@ -75,7 +74,7 @@ export default function AdminLayout({
       }
     };
     getRequests();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateNoti]);
 
   const calculateTimeAgo = (timestamp: any) => {
@@ -95,170 +94,201 @@ export default function AdminLayout({
     }
   };
 
+  const contentStyle: React.CSSProperties = {
+    padding: 50,
+    background: "rgba(0, 0, 0, 0.05)",
+    borderRadius: 4,
+  };
+
+  const content = <div style={contentStyle} />;
+
+  const pathname = usePathname();
+  useEffect(() => {
+    setIsLoading(false);
+  }, [pathname]);
+
   return (
-    <Layout>
-      <Sider
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        className={styles.sider_container}
-      >
-        <div className={styles.logo_container}>
-          <h2 className={styles.logo_text}>
-            {collapsed ? (
-              <span className={styles.sm_logo}>
-                <HomeOutlined />
-              </span>
-            ) : (
-              <span className={styles.lg_logo}>Trang chủ</span>
-            )}
-          </h2>
+    <div className={styles.loading_container}>
+      {isLoading && (
+        <div className={styles.loading}>
+          <Spin tip="Loading" size="large">
+            {content}
+          </Spin>
         </div>
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={["1"]}
-          items={[
-            {
-              key: "1",
-              icon: <AppstoreOutlined />,
-              label: "Thống kê",
-              onClick: () => {
-                router.replace("/admin");
-              },
-            },
-            {
-              key: "2",
-              icon: <UserOutlined />,
-              label: "Quản lý người dùng",
-              onClick: () => {
-                router.replace("/admin/user");
-              },
-            },
-            {
-              key: "3",
-              icon: <RiCoupon4Line />,
-              label: "Khuyến mãi",
-              onClick: () => {
-                router.replace("/admin/coupon");
-              },
-            },
-            {
-              key: "4",
-              icon: <TbBrand4Chan />,
-              label: "Thương hiệu",
-              onClick: () => {
-                router.replace("/admin/brand");
-              },
-            },
-          ]}
-        />
-      </Sider>
+      )}
       <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }}>
-          <div className={styles.header_container}>
-            <Button
-              type="text"
-              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-              onClick={() => setCollapsed(!collapsed)}
-              style={{
-                fontSize: "16px",
-                width: 64,
-                height: 64,
-              }}
-            />
-            <div className={styles.header_right_container}>
-              <div className={styles.notifycation_container}>
-                <IoMdNotificationsOutline
-                  className={styles.icon_noti}
-                  onClick={() => setOpenPopupNoti(!openPopupNoti)}
-                />
-                {requests?.length > 0 && (
-                  <span className={styles.count_noti}>{requests.length}</span>
-                )}
-                {openPopupNoti && (
-                  <div className={styles.show_noti_container}>
-                    <div className={styles.noti_content}>
-                      {requests.length ? (
-                        requests.map((request: any, index: number) => {
-                          return (
-                            <div
-                              key={index}
-                              onClick={() => {
-                                router.push(
-                                  `/admin/notifycation/${request._id}`
-                                );
-                                setOpenPopupNoti(false);
-                              }}
-                            >
-                              <div className={styles.item_noti}>
-                                <Image
-                                  src={
-                                    request.userId.avatar
-                                      ? request.userId.avatar
-                                      : "/images/avatar_default.jpg"
-                                  }
-                                  alt="avatar"
-                                  className={styles.image_noti}
-                                />
-                                <div className={styles.item_noti_right}>
-                                  <div className={styles.username_noti}>
-                                    {request.userId.username}
-                                  </div>
-                                  <div className={styles.text_noti}>
-                                    Đã gửi yêu cầu đăng ký bán hàng (
-                                    {calculateTimeAgo(request.createdAt)})
+        <Sider
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+          className={styles.sider_container}
+        >
+          <div className={styles.logo_container}>
+            <h2 className={styles.logo_text}>
+              {collapsed ? (
+                <span className={styles.sm_logo}>
+                  <HomeOutlined />
+                </span>
+              ) : (
+                <span className={styles.lg_logo}>Trang chủ</span>
+              )}
+            </h2>
+          </div>
+          <Menu
+            theme="dark"
+            mode="inline"
+            defaultSelectedKeys={["1"]}
+            items={[
+              {
+                key: "1",
+                icon: <AppstoreOutlined />,
+                label: "Thống kê",
+                onClick: () => {
+                  setIsLoading(true);
+                  router.replace("/admin");
+                },
+              },
+              {
+                key: "2",
+                icon: <UserOutlined />,
+                label: "Quản lý người dùng",
+                onClick: () => {
+                  setIsLoading(true);
+                  router.replace("/admin/user");
+                },
+              },
+              {
+                key: "3",
+                icon: <RiCoupon4Line />,
+                label: "Khuyến mãi",
+                onClick: () => {
+                  setIsLoading(true);
+                  router.replace("/admin/coupon");
+                },
+              },
+              {
+                key: "4",
+                icon: <TbBrand4Chan />,
+                label: "Thương hiệu",
+                onClick: () => {
+                  setIsLoading(true);
+                  router.replace("/admin/brand");
+                },
+              },
+            ]}
+          />
+        </Sider>
+        <Layout>
+          <Header style={{padding: 0, background: colorBgContainer}}>
+            <div className={styles.header_container}>
+              <Button
+                type="text"
+                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                onClick={() => setCollapsed(!collapsed)}
+                style={{
+                  fontSize: "16px",
+                  width: 64,
+                  height: 64,
+                }}
+              />
+              <div className={styles.header_right_container}>
+                <div className={styles.notifycation_container}>
+                  <IoMdNotificationsOutline
+                    className={styles.icon_noti}
+                    onClick={() => setOpenPopupNoti(!openPopupNoti)}
+                  />
+                  {requests?.length > 0 && (
+                    <span className={styles.count_noti}>{requests.length}</span>
+                  )}
+                  {openPopupNoti && (
+                    <div className={styles.show_noti_container}>
+                      <div className={styles.noti_content}>
+                        {requests.length ? (
+                          requests.map((request: any, index: number) => {
+                            return (
+                              <div
+                                key={index}
+                                onClick={() => {
+                                  setIsLoading(true);
+                                  router.push(
+                                    `/admin/notifycation/${request._id}`
+                                  );
+                                  setOpenPopupNoti(false);
+                                }}
+                              >
+                                <div className={styles.item_noti}>
+                                  <Image
+                                    src={
+                                      request.userId.avatar
+                                        ? request.userId.avatar
+                                        : "/images/avatar_default.jpg"
+                                    }
+                                    alt="avatar"
+                                    className={styles.image_noti}
+                                  />
+                                  <div className={styles.item_noti_right}>
+                                    <div className={styles.username_noti}>
+                                      {request.userId.username}
+                                    </div>
+                                    <div className={styles.text_noti}>
+                                      Đã gửi yêu cầu đăng ký bán hàng (
+                                      {calculateTimeAgo(request.createdAt)})
+                                    </div>
                                   </div>
                                 </div>
+                                <Divider />
                               </div>
-                              <Divider />
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <h3>Không có thông báo nào.</h3>
-                      )}
+                            );
+                          })
+                        ) : (
+                          <h3>Không có thông báo nào.</h3>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-              <div className={styles.info_container}>
-                <Image src="/images/avatar.jpg" alt="" className={styles.avatar} />
-                <div
-                  className={styles.username_email_container}
-                  onClick={() => setOpenOptionsMenu(!openOptionsMenu)}
-                >
-                  <div className={styles.username}>{admin?.username}</div>
-                  <div className={styles.email}>{admin?.email}</div>
+                  )}
                 </div>
-                {openOptionsMenu && (
-                  <div className={styles.options_menu_container}>
-                    <a
-                      className={styles.option_menu}
-                      onClick={() => handleLogout()}
-                    >
-                      Đăng xuất
-                    </a>
+                <div className={styles.info_container}>
+                  <Image
+                    src="/images/avatar.jpg"
+                    alt=""
+                    className={styles.avatar}
+                  />
+                  <div
+                    className={styles.username_email_container}
+                    onClick={() => setOpenOptionsMenu(!openOptionsMenu)}
+                  >
+                    <div className={styles.username}>{admin?.username}</div>
+                    <div className={styles.email}>{admin?.email}</div>
                   </div>
-                )}
+                  {openOptionsMenu && (
+                    <div className={styles.options_menu_container}>
+                      <a
+                        className={styles.option_menu}
+                        onClick={() => handleLogout()}
+                      >
+                        Đăng xuất
+                      </a>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        </Header>
-        <Content
-          style={{
-            margin: "24px 16px",
-            padding: 24,
-            minHeight: 280,
-            background: colorBgContainer,
-            borderRadius: borderRadiusLG,
-          }}
-        >
-          <PageContext.Provider value={{ setUpdateNoti }}>
-            {children}
-          </PageContext.Provider>
-        </Content>
+          </Header>
+          <Content
+            style={{
+              margin: "24px 16px",
+              padding: 24,
+              minHeight: 280,
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+            }}
+          >
+            <PageContext.Provider value={{setUpdateNoti}}>
+              {children}
+            </PageContext.Provider>
+          </Content>
+        </Layout>
       </Layout>
-    </Layout>
+    </div>
   );
 }

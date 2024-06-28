@@ -15,15 +15,19 @@ import {
   getProductsBySearchStart,
   getProductsBySearchSuccess,
 } from "@/redux/features/product/productSlice";
+import {Spin} from "antd";
 
 interface IProps {
   changedCart?: boolean;
   setChangedCart?: (value: boolean) => void;
+  isLoading?: boolean;
+  setIsLoading?: (value: boolean) => void;
 }
+
 export default function AppHeader(props: IProps) {
   const router = useRouter();
   const token = getToken();
-  const [isLoading, setIsLoading] = useState(false);
+
   const [userActive, setUserActive] = useState("");
   useEffect(() => {
     const userActiveCookie = Cookies.get("userActive");
@@ -38,7 +42,7 @@ export default function AppHeader(props: IProps) {
 
   const [openOptionsMenu, setOpenOptionsMenu] = useState(false);
   const handleLogout = () => {
-    setIsLoading(true);
+    props.setIsLoading?.(true);
     Cookies.remove("userActive");
     Cookies.remove("refreshToken");
     removeStogare("currentUser");
@@ -87,6 +91,7 @@ export default function AppHeader(props: IProps) {
       );
       if (data.status === true) {
         dispatch(getProductsBySearchSuccess({...data, keySearch}));
+        props.setIsLoading?.(true);
         router.replace("/search");
       }
       if (data.status === false) {
@@ -99,9 +104,25 @@ export default function AppHeader(props: IProps) {
     }
   };
 
+  const contentStyle: React.CSSProperties = {
+    padding: 50,
+    background: "rgba(0, 0, 0, 0.05)",
+    borderRadius: 4,
+  };
+
+  const content = <div style={contentStyle} />;
+
   return (
     <>
-      {isLoading && <div className={styles.loading}></div>}
+      {props.isLoading && (
+        <div className={styles.loading_container}>
+          <div className={styles.loading}>
+            <Spin tip="Loading" size="large">
+              {content}
+            </Spin>
+          </div>
+        </div>
+      )}
       <header className={styles.header}>
         <div className={styles.header__header_top}>
           <nav className={styles.header__header_top__nav_container}>
@@ -115,6 +136,7 @@ export default function AppHeader(props: IProps) {
                     : "/seller/signin"
                 }
                 className={styles.header__header_top__nav_container__left__link}
+                onClick={() => props.setIsLoading?.(true)}
               >
                 Kênh người bán
               </a>
@@ -124,6 +146,7 @@ export default function AppHeader(props: IProps) {
                   className={
                     styles.header__header_top__nav_container__left__link
                   }
+                  onClick={() => props.setIsLoading?.(true)}
                 >
                   Trở thành người bán Shopify
                 </a>
@@ -137,6 +160,7 @@ export default function AppHeader(props: IProps) {
                     className={
                       styles.header__header_top__nav_container__right__link
                     }
+                    onClick={() => props.setIsLoading?.(true)}
                   >
                     Đăng ký
                   </a>
@@ -145,6 +169,7 @@ export default function AppHeader(props: IProps) {
                     className={
                       styles.header__header_top__nav_container__right__link
                     }
+                    onClick={() => props.setIsLoading?.(true)}
                   >
                     Đăng nhập
                   </a>
@@ -166,6 +191,7 @@ export default function AppHeader(props: IProps) {
                       <a
                         className={styles.option_menu}
                         href="/user/account/profile"
+                        onClick={() => props.setIsLoading?.(true)}
                       >
                         Tài khoản của tôi
                       </a>
@@ -197,6 +223,7 @@ export default function AppHeader(props: IProps) {
                 className={
                   styles.header__header_bottom__container__logo_section__link
                 }
+                onClick={() => props.setIsLoading?.(true)}
               >
                 Shopify
               </a>
@@ -242,11 +269,12 @@ export default function AppHeader(props: IProps) {
               className={styles.header__header_bottom__container__cart_section}
             >
               <BsCart4
-                onClick={() =>
+                onClick={() => {
+                  props.setIsLoading?.(true);
                   userActive !== "1"
                     ? router.replace("/buyer/signin")
-                    : router.replace("/cart")
-                }
+                    : router.replace("/cart");
+                }}
                 className={styles.iconCart}
               />
               {userActive === "1" && (

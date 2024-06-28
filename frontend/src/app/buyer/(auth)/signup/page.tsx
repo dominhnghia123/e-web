@@ -1,19 +1,20 @@
 "use client";
 import styles from "./signup.module.css";
-import { Button, Spinner } from "react-bootstrap";
-import { IoLogoFacebook } from "react-icons/io5";
-import { IoLogoGoogle } from "react-icons/io";
-import { MouseEvent, useState } from "react";
+import {Button, Spinner} from "react-bootstrap";
+import {IoLogoFacebook} from "react-icons/io5";
+import {IoLogoGoogle} from "react-icons/io";
+import {MouseEvent, useState} from "react";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
-import { useAppDispatch } from "@/redux/store";
+import {useRouter} from "next/navigation";
+import {toast} from "react-toastify";
+import {useAppDispatch} from "@/redux/store";
 import {
   registerError,
   registerStart,
   registerSuccess,
 } from "@/redux/features/auth/authSlice";
-import { registerUser } from "@/redux/features/auth/authService";
+import {registerUser} from "@/redux/features/auth/authService";
+import {Spin} from "antd";
 
 export default function Signup() {
   const router = useRouter();
@@ -40,9 +41,8 @@ export default function Signup() {
       const currentUser = response?.newUser;
       if (response.status === true) {
         dispatch(registerSuccess(currentUser));
-        setDataSignupError((prev) => ({ ...prev, loginError: "" }));
+        setDataSignupError((prev) => ({...prev, loginError: ""}));
         setIsLoading(true);
-        toast.success(response.msg);
         Cookies.set("userActive", "1", {expires: 1});
         router.replace("/buyer");
       }
@@ -54,7 +54,7 @@ export default function Signup() {
           }));
         }
         if (response.property === "email") {
-          setDataSignupError((prev) => ({ ...prev, emailError: response.msg }));
+          setDataSignupError((prev) => ({...prev, emailError: response.msg}));
         }
         if (response.property === "mobile") {
           setDataSignupError((prev) => ({
@@ -67,9 +67,24 @@ export default function Signup() {
       dispatch(registerError());
     }
   };
+
+  const contentStyle: React.CSSProperties = {
+    padding: 50,
+    background: "rgba(0, 0, 0, 0.05)",
+    borderRadius: 4,
+  };
+
+  const content = <div style={contentStyle} />;
+
   return (
     <div className={styles.signup_content_container}>
-      {isLoading && <div className={styles.loading}></div>}
+      {isLoading && (
+        <div className={styles.loading}>
+          <Spin tip="Loading" size="large">
+            {content}
+          </Spin>
+        </div>
+      )}
       <title>Đăng ký tài khoản</title>
       <div className={styles.signup_title}>Đăng Ký</div>
       <div className={styles.signup_container}>
@@ -85,7 +100,7 @@ export default function Signup() {
                   ...prev,
                   username: e.target.value,
                 }));
-                setDataSignupError((prev) => ({ ...prev, usernameError: "" }));
+                setDataSignupError((prev) => ({...prev, usernameError: ""}));
               }}
             />
             {dataSignupError.usernameError && (
@@ -105,7 +120,7 @@ export default function Signup() {
                   ...prev,
                   email: e.target.value,
                 }));
-                setDataSignupError((prev) => ({ ...prev, emailError: "" }));
+                setDataSignupError((prev) => ({...prev, emailError: ""}));
               }}
             />
             {dataSignupError.emailError && (
@@ -125,7 +140,7 @@ export default function Signup() {
                   ...prev,
                   password: e.target.value,
                 }));
-                setDataSignupError((prev) => ({ ...prev, passwordError: "" }));
+                setDataSignupError((prev) => ({...prev, passwordError: ""}));
               }}
             />
             {dataSignupError.passwordError && (
@@ -145,7 +160,7 @@ export default function Signup() {
                   ...prev,
                   mobile: e.target.value,
                 }));
-                setDataSignupError((prev) => ({ ...prev, mobileError: "" }));
+                setDataSignupError((prev) => ({...prev, mobileError: ""}));
               }}
             />
             {dataSignupError.mobileError && (

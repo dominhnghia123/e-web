@@ -1,12 +1,14 @@
 "use client";
-import { Button } from "react-bootstrap";
+import {Button} from "react-bootstrap";
 import styles from "./changePassword.module.css";
-import { getToken } from "@/app/helper/stogare";
-import { useState } from "react";
+import {getToken} from "@/app/helper/stogare";
+import {useState} from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
+import AppLoading from "@/components/appLoading";
 
 export default function ChangePassword() {
+  const [isLoading, setIsLoading] = useState(false);
   const token = getToken();
   const [dataInput, setDataInput] = useState({
     currentPassword: "",
@@ -15,8 +17,9 @@ export default function ChangePassword() {
   });
 
   const handleChangePassword = async () => {
+    setIsLoading(true);
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/user/change-password`,
         {
           currentPassword: dataInput.currentPassword,
@@ -43,10 +46,12 @@ export default function ChangePassword() {
     } catch (error) {
       console.error(error);
     }
+    setIsLoading(false);
   };
 
   return (
     <>
+      {isLoading && <AppLoading />}
       <h3>Thay đổi mật khẩu</h3>
       <form action="" className={styles.form}>
         <div className={styles.form__field}>

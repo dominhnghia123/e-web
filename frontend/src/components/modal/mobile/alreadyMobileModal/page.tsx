@@ -4,13 +4,15 @@ import { useRouter } from "next/navigation";
 interface IProps {
   openModal: boolean;
   setOpenModal: (value: boolean) => void;
+  setIsLoading: (value: boolean) => void;
 }
 
 export default function AlreadyMobileModal(props: IProps) {
-  const { openModal, setOpenModal } = props;
+  const { openModal, setOpenModal, setIsLoading } = props;
   const router = useRouter();
   const handleOk = async () => {
     setOpenModal(false);
+    setIsLoading(true);
     router.replace("/buyer/signin");
   };
 
