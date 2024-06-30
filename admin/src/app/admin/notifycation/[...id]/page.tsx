@@ -8,7 +8,7 @@ import {Button} from "react-bootstrap";
 import {toast} from "react-toastify";
 import {useRouter} from "next/navigation";
 import {PageContext} from "../../layout";
-import { Spin } from "antd";
+import {Spin} from "antd";
 
 export default function Notifycation({params}: {params: {id: string}}) {
   const {setUpdateNoti} = useContext(PageContext);

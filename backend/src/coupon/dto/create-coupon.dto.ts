@@ -4,18 +4,18 @@ import { User } from '../../user/user.schema';
 
 export class CreateCouponDto {
   @ApiProperty({ example: '662dc4d2f03d0525993d0a3b' })
-  @IsNotEmpty({ message: 'UserId cannot be empty' })
+  @IsNotEmpty({ message: 'Điền tên người được hưởng.' })
   userId: User;
 
   @ApiProperty({ example: 'Voucher mùa hè' })
-  @IsNotEmpty({ message: 'Name cannot be empty' })
+  @IsNotEmpty({ message: 'Điền tên khuyến mãi.' })
   name: string;
 
   @ApiProperty({ example: '2024-03-10' })
-  @IsNotEmpty({ message: 'Expiry cannot be empty' })
+  @IsNotEmpty({ message: 'Điền ngày hết hạn khuyến mãi.' })
   expiry: string;
 
   @ApiProperty({ example: '40' })
-  @IsNotEmpty({ message: 'Discount cannot be empty' })
+  @IsNotEmpty({ message: 'Điền lượng giảm giá.' })
   discount: string;
 }

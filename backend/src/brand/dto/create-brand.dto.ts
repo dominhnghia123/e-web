@@ -3,6 +3,6 @@ import { IsNotEmpty } from 'class-validator';
 
 export class CreateBrandDto {
   @ApiProperty({ example: 'Apple' })
-  @IsNotEmpty({ message: 'Name cannot be empty' })
+  @IsNotEmpty({ message: 'Điền tên thương hiệu.' })
   name: string;
 }

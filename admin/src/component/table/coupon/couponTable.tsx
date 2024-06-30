@@ -6,9 +6,14 @@ import {Button} from "react-bootstrap";
 import {getToken} from "@/app/helper/stogare";
 import moment from "moment";
 import {useRouter} from "next/navigation";
-import { RiDeleteBin5Line } from "react-icons/ri";
+import {RiDeleteBin5Line} from "react-icons/ri";
 
-export default function CouponTable() {
+interface IProps {
+  setIsLoading: (value: boolean) => void;
+}
+
+export default function CouponTable(props: IProps) {
+  const {setIsLoading} = props;
   const router = useRouter();
   const token = getToken();
   const [coupons, setCoupons] = useState<ICoupon[]>([]);
@@ -47,6 +52,7 @@ export default function CouponTable() {
 
   const handleDeleteMany = async () => {
     try {
+      setIsLoading(true);
       const {data} = await axios.post(
         `${process.env.BASE_HOST}/coupon/delete-many-coupons`,
         {
@@ -59,6 +65,7 @@ export default function CouponTable() {
         }
       );
       if (data.status === true) {
+        setIsLoading(false);
         setDeleted(!deleted);
       }
     } catch (error) {
@@ -68,6 +75,7 @@ export default function CouponTable() {
 
   const handleDeleteOneCoupon = async (_id: string) => {
     try {
+      setIsLoading(true);
       const {data} = await axios.post(
         `${process.env.BASE_HOST}/coupon/delete-a-coupon`,
         {
@@ -80,6 +88,7 @@ export default function CouponTable() {
         }
       );
       if (data.status === true) {
+        setIsLoading(false);
         setDeleted(!deleted);
       }
     } catch (error) {
@@ -164,7 +173,10 @@ export default function CouponTable() {
       <div className={styles.head}>
         <Button
           className={`${styles.button} ${styles.buttonAdd}`}
-          onClick={() => router.replace("/admin/coupon/addNew")}
+          onClick={() => {
+            setIsLoading(true);
+            router.replace("/admin/coupon/addNew");
+          }}
         >
           Thêm khuyến mãi
         </Button>

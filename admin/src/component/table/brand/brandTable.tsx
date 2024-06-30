@@ -8,7 +8,12 @@ import moment from "moment";
 import {useRouter} from "next/navigation";
 import {RiDeleteBin5Line} from "react-icons/ri";
 
-export default function BrandTable() {
+interface IProps {
+  setIsLoading: (value: boolean) => void;
+}
+
+export default function BrandTable(props: IProps) {
+  const {setIsLoading} = props;
   const router = useRouter();
   const token = getToken();
   const [brands, setBrands] = useState<IBrand[]>([]);
@@ -47,6 +52,7 @@ export default function BrandTable() {
 
   const handleDeleteMany = async () => {
     try {
+      setIsLoading(true);
       const {data} = await axios.post(
         `${process.env.BASE_HOST}/brand/delete-many-brands`,
         {
@@ -59,6 +65,7 @@ export default function BrandTable() {
         }
       );
       if (data.status === true) {
+        setIsLoading(false);
         setDeleted(!deleted);
       }
     } catch (error) {
@@ -68,6 +75,7 @@ export default function BrandTable() {
 
   const handleDeleteOneBrand = async (_id: string) => {
     try {
+      setIsLoading(true);
       const {data} = await axios.post(
         `${process.env.BASE_HOST}/brand/delete-a-brand`,
         {
@@ -80,6 +88,7 @@ export default function BrandTable() {
         }
       );
       if (data.status === true) {
+        setIsLoading(false);
         setDeleted(!deleted);
       }
     } catch (error) {
@@ -152,7 +161,10 @@ export default function BrandTable() {
       <div className={styles.head}>
         <Button
           className={`${styles.button} ${styles.buttonAdd}`}
-          onClick={() => router.replace("/admin/brand/addNew")}
+          onClick={() => {
+            setIsLoading(true);
+            router.replace("/admin/brand/addNew");
+          }}
         >
           Thêm thương hiệu
         </Button>

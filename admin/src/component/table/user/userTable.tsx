@@ -2,14 +2,17 @@ import DataTable, {TableStyles} from "react-data-table-component";
 import styles from "./user.module.css";
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {Button} from "react-bootstrap";
 import {getToken} from "@/app/helper/stogare";
 import moment from "moment";
 import {useRouter} from "next/navigation";
-import {CiSettings} from "react-icons/ci";
 import {RiDeleteBin5Line} from "react-icons/ri";
 
-export default function UserTable() {
+interface IProps {
+  setIsLoading: (value: boolean) => void;
+}
+
+export default function UserTable(props: IProps) {
+  const {setIsLoading} = props;
   const router = useRouter();
   const token = getToken();
   const [users, setUsers] = useState<IUser[]>([]);
@@ -48,6 +51,7 @@ export default function UserTable() {
 
   const handleDeleteMany = async () => {
     try {
+      setIsLoading(true);
       const {data} = await axios.post(
         `${process.env.BASE_HOST}/user/delete-many-users`,
         {
@@ -60,6 +64,7 @@ export default function UserTable() {
         }
       );
       if (data.status === true) {
+        setIsLoading(false);
         setDeleted(!deleted);
       }
     } catch (error) {
@@ -69,6 +74,7 @@ export default function UserTable() {
 
   const handleDeleteOneUser = async (_id: string) => {
     try {
+      setIsLoading(true);
       const {data} = await axios.post(
         `${process.env.BASE_HOST}/user/delete-a-user`,
         {
@@ -81,6 +87,7 @@ export default function UserTable() {
         }
       );
       if (data.status === true) {
+        setIsLoading(false);
         setDeleted(!deleted);
       }
     } catch (error) {

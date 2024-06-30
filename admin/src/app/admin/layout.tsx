@@ -108,7 +108,7 @@ export default function AdminLayout({children}: {children: React.ReactNode}) {
   }, [pathname]);
 
   return (
-    <div className={styles.loading_container}>
+    <div>
       {isLoading && (
         <div className={styles.loading}>
           <Spin tip="Loading" size="large">
