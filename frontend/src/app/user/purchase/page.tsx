@@ -8,6 +8,7 @@ import {Button, Image} from "react-bootstrap";
 import {useRouter} from "next/navigation";
 import {CartConstant} from "@/contants/CartConstant";
 import AppLoading from "@/components/appLoading";
+import {ProductConstant} from "@/app/helper/constant/ProductConstant";
 
 const listStatusCart = [
   "",
@@ -322,7 +323,12 @@ export default function PurchasePage() {
                   <div className={styles.name_color_qty}>
                     <div className={styles.name}>{cart.name}</div>
                     <div className={styles.color}>
-                      Phân loại hàng: {cart.color}
+                      Phân loại hàng:{" "}
+                      {
+                        ProductConstant.COLOR[
+                          cart.color as keyof typeof ProductConstant.COLOR
+                        ]
+                      }
                     </div>
                     <div className={styles.qty}>x{cart.quantity}</div>
                   </div>

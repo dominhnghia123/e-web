@@ -7,9 +7,18 @@ import {Button, Image} from "react-bootstrap";
 import moment from "moment";
 import {toast} from "react-toastify";
 import {CartConstant} from "@/contants/CartConstant";
+import {useRouter} from "next/navigation";
+import {OrderSellerConstant} from "@/app/helper/constant/OrderSellerConstant";
+import {ProductConstant} from "@/app/helper/constant/ProductConstant";
 
-export default function OrderTable() {
+interface IProps {
+  setIsLoading: (value: boolean) => void;
+}
+
+export default function OrderTable(props: IProps) {
+  const {setIsLoading} = props;
   const token = getToken();
+  const router = useRouter();
   const [orders, setOrders] = useState<any>([]);
   const [keySearch, setKeySearch] = useState<string>("");
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
@@ -108,19 +117,22 @@ export default function OrderTable() {
       selector: (row: any) => row.buyername,
     },
     {
+      name: "Tên sản phẩm",
+      selector: (row: any) =>
+        `${row.productName} - ${
+          ProductConstant.COLOR[
+            row.variantName as keyof typeof ProductConstant.COLOR
+          ]
+        }`,
+    },
+    {
       name: "Số lượng",
       selector: (row: any) => row.quantity,
     },
     {
-      name: "Ảnh",
+      name: "Thời điểm cập nhật",
       selector: (row: any) => {
-        return <Image src={row.image} alt="" className={styles.image} />;
-      },
-    },
-    {
-      name: "Thời điểm tạo",
-      selector: (row: any) => {
-        const dateTimeString = row.createdAt?.toString();
+        const dateTimeString = row.updatedAt?.toString();
         const dateTime = moment(dateTimeString);
 
         const formattedDate = dateTime.format("DD/MM/YYYY");
@@ -130,7 +142,11 @@ export default function OrderTable() {
     },
     {
       name: "Trạng thái",
-      selector: (row: any) => row.status_delivery,
+      selector: (row: any) => {
+        const status =
+          row.status_delivery as keyof typeof OrderSellerConstant.ORDER_STATUS_DELIVERY;
+        return OrderSellerConstant.ORDER_STATUS_DELIVERY[status];
+      },
     },
     {
       name: "Hành động",
@@ -190,6 +206,10 @@ export default function OrderTable() {
           onChangeRowsPerPage={handlePerRowsChange}
           onChangePage={handleChangePage}
           paginationDefaultPage={currentPage}
+          onRowClicked={(row, e) => {
+            setIsLoading(true);
+            router.replace(`/seller/orders/${row.cartId}`);
+          }}
         />
       </div>
     </div>

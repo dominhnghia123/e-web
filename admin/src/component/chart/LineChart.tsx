@@ -66,7 +66,7 @@ export default function LineChart(props: IProps) {
     labels,
     datasets: [
       {
-        label: "Doanh thu",
+        label: "Doanh thu (VNĐ)",
         data: totalSales,
         borderColor: "#F49342",
         backgroundColor: "#F49342",

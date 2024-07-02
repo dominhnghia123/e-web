@@ -73,8 +73,6 @@ export default function AddNewCoupon() {
         router.replace("/admin/coupon");
       }
     } catch (error) {
-      console.log(error);
-
       const err = error as AxiosError<{
         message: {property: string; message: string}[];
       }>;

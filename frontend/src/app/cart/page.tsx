@@ -245,53 +245,57 @@ export default function Cart() {
 
   const dispatch = useAppDispatch();
   const handlePurchase = async () => {
-    setIsLoading(true);
-    dispatch(
-      getProductsCheckout({
-        checkedList,
-        quantityPurchase,
-        selectedAddressId,
-        selectedCouponId,
-        totalPriceBeforeApllyCoupon,
-      })
-    );
+    if (checkedList.length) {
+      setIsLoading(true);
+      dispatch(
+        getProductsCheckout({
+          checkedList,
+          quantityPurchase,
+          selectedAddressId,
+          selectedCouponId,
+          totalPriceBeforeApllyCoupon,
+        })
+      );
 
-    const {data} = await axios.post(
-      `${process.env.BASE_HOST}/cart/get-carts-by-id`,
-      {
-        cartIds: checkedList,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const {data} = await axios.post(
+        `${process.env.BASE_HOST}/cart/get-carts-by-id`,
+        {
+          cartIds: checkedList,
         },
-      }
-    );
-    const orderItems = data.products.map((item: any) => {
-      return {
-        cartId: item.cartId,
-        productId: item.productId,
-        variantId: item.variantId,
-        quantity: item.quantity,
-        price: item.price,
-      };
-    });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const orderItems = data.products.map((item: any) => {
+        return {
+          cartId: item.cartId,
+          productId: item.productId,
+          variantId: item.variantId,
+          quantity: item.quantity,
+          price: item.price,
+        };
+      });
 
-    await axios.post(
-      `${process.env.BASE_HOST}/order/create-order`,
-      {
-        user: currentUser._id,
-        addressId: selectedAddressId,
-        couponId: selectedCouponId || "",
-        orderItems,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      await axios.post(
+        `${process.env.BASE_HOST}/order/create-order`,
+        {
+          user: currentUser._id,
+          addressId: selectedAddressId,
+          couponId: selectedCouponId || "",
+          orderItems,
         },
-      }
-    );
-    router.replace(`/checkout`);
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      router.replace(`/checkout`);
+    } else {
+      toast.warning("Vui lòng chọn ít nhất 1 sản phẩm.")
+    }
   };
 
   const [isLoading, setIsLoading] = useState(false);

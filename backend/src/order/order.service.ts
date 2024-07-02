@@ -135,6 +135,7 @@ export class OrderService {
         return {
           msg: 'Không tìm thấy order ở trạng thái pending của người dùng này.',
           status: false,
+          order: {},
         };
       }
       const detailProductsPromise = order.orderItems.map(async (item: any) => {
@@ -202,8 +203,8 @@ export class OrderService {
     //add product to Stripe to prepare payment online
     try {
       const lineItems: any = [];
-      const order = (await this.getUserOrderPending(req)).order;
-      const products = order.orderItems;
+      const order = (await this.getUserOrderPending(req))?.order;
+      const products = order?.orderItems;
 
       for (const item of products) {
         const { productId, variantId, quantity } = item;
@@ -455,6 +456,8 @@ export class OrderService {
           quantity: order.quantity,
           status_delivery: order.status_delivery,
           buyername: order.userId.username,
+          productName: order.productId.name,
+          variantName: variant.color,
           createdAt: order.createdAt,
           updatedAt: order.updatedAt,
         };
@@ -465,6 +468,47 @@ export class OrderService {
         totalOrders,
         page,
         limit,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async paymentOrderWithCOD(req: RequestWithRawBody) {
+    try {
+      const order = (await this.getUserOrderPending(req))?.order;
+      await this.orderModel.findByIdAndUpdate(
+        order._id,
+        {
+          status: statusOrderEnum.done,
+        },
+        {
+          new: true,
+        },
+      );
+      const cartIds = order.orderItems.map((item) => item.cartId);
+
+      await this.cartModel.updateMany(
+        {
+          _id: { $in: cartIds },
+        },
+        {
+          $set: {
+            status_delivery: statusDeliveryEnum.notShippedYet,
+            createdAt: new Date(),
+          },
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (order?.coupon) {
+        await this.couponModel.findByIdAndDelete(order?.coupon);
+      }
+      return {
+        msg: 'Đặt hàng thành công.',
+        status: true,
       };
     } catch (error) {
       throw new BadRequestException(error);

@@ -14,12 +14,12 @@ import axios from "axios";
 import {toast} from "react-toastify";
 import {getToken} from "@/app/helper/stogare";
 import {useRouter} from "next/navigation";
+import {ProductConstant} from "@/app/helper/constant/ProductConstant";
 
 export default function ViewDetailProduct({params}: {params: {slug: string}}) {
   const token = getToken();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [hasLove, setHasLove] = useState(false);
 
   const [quantity, setQuantity] = useState<number | any>(1);
   const onChangeQuantity: InputNumberProps["onChange"] = (value) => {
@@ -46,7 +46,6 @@ export default function ViewDetailProduct({params}: {params: {slug: string}}) {
         );
         if (data.status === true && type === "addToCart") {
           toast.success(data.msg);
-          setIsLoading(false);
           setAddToCart(true);
         }
         if (data.status === false && type === "addToCart") {
@@ -61,6 +60,7 @@ export default function ViewDetailProduct({params}: {params: {slug: string}}) {
     } catch (error) {
       console.error(error);
     }
+    setIsLoading(false);
   };
 
   //get detail product
@@ -182,19 +182,6 @@ export default function ViewDetailProduct({params}: {params: {slug: string}}) {
                     })}
                 </div>
               </div>
-              <div
-                className={styles.textlove}
-                onClick={() => setHasLove(!hasLove)}
-              >
-                {hasLove ? (
-                  <FaHeart className={styles.iconLove} />
-                ) : (
-                  <FaRegHeart className={styles.iconLove} />
-                )}
-                <div className={styles.textlove__button}>
-                  {product?.likes} yêu thích
-                </div>
-              </div>
             </div>
             <div className={styles.order_info_container}>
               <div className={styles.evaluate_container}>
@@ -239,7 +226,11 @@ export default function ViewDetailProduct({params}: {params: {slug: string}}) {
                               className={styles.variant_content__image}
                             />
                             <div className={styles.variant_content__text}>
-                              {variant.color}
+                              {
+                                ProductConstant.COLOR[
+                                  variant.color as keyof typeof ProductConstant.COLOR
+                                ]
+                              }
                             </div>
                           </Button>
                         );
@@ -357,7 +348,7 @@ export default function ViewDetailProduct({params}: {params: {slug: string}}) {
                 </div>
               </div>
             </div>
-            <div className={styles.writing_evaluate}>
+            {/* <div className={styles.writing_evaluate}>
               <div className={styles.writing_evaluate_container}>
                 <div className={styles.writing_evaluate_container__title}>
                   Viết đánh giá
@@ -387,7 +378,7 @@ export default function ViewDetailProduct({params}: {params: {slug: string}}) {
                   </Button>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </main>

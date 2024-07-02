@@ -30,24 +30,27 @@ export class CartService {
         (variant) => variant._id.toString() === variantId.toString(),
       );
 
-      const checkAlreadyCart = await this.cartModel.findOne({
+      const checkAlreadyCartNotOrderedYet = await this.cartModel.findOne({
         userId,
         productId,
         variantId,
+        status_delivery: statusDeliveryEnum.notOrderedYet,
       });
-      if (
-        checkAlreadyCart &&
-        checkAlreadyCart.status_delivery === statusDeliveryEnum.notOrderedYet
-      ) {
+
+      if (checkAlreadyCartNotOrderedYet) {
         return {
           msg: 'Sản phẩm này đã tồn tại trong giỏ hàng.',
           status: false,
         };
       }
-      if (
-        checkAlreadyCart &&
-        checkAlreadyCart.status_delivery === statusDeliveryEnum.notPaymentDone
-      ) {
+
+      const checkAlreadyCartNotPaymentDone = await this.cartModel.findOne({
+        userId,
+        productId,
+        variantId,
+        status_delivery: statusDeliveryEnum.notPaymentDone,
+      });
+      if (checkAlreadyCartNotPaymentDone) {
         return {
           msg: 'Sản phẩm này đã được chọn mua và được chờ thanh toán.',
           status: false,
@@ -190,6 +193,7 @@ export class CartService {
             return {
               cartId: item._id,
               productId: item.productId._id,
+              slug: item.productId.slug,
               variantId: variant._id,
               name: item.productId.name,
               price: variant.price,
@@ -198,6 +202,7 @@ export class CartService {
               quantity: item.quantity,
               sold: variant.sold,
               inventory_quantity: variant.quantity,
+              status_delivery: item.status_delivery,
             };
           }
         });

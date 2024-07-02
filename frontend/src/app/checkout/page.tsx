@@ -143,45 +143,64 @@ export default function Checkout() {
 
   const [isLoading, setIsLoading] = useState(false);
   const handlePayment = async () => {
-    setIsLoading(true);
-    // update cart: Remove products to be purchased from the shopping cart
-    try {
-      await axios.post(
-        `${process.env.BASE_HOST}/cart/update-status-delivery-many-products`,
-        {
-          cartIds: products.map((product: any) => product.cartId),
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-    } catch (error) {
-      console.error(error);
-    }
-
-    if (paymentMethod === "online") {
-      // thanh toán online đơn hàng
+    if (paymentMethod !== "") {
+      setIsLoading(true);
+      // update cart: Remove products to be purchased from the shopping cart
       try {
-        const {data} = await axios.post(
-          `${process.env.BASE_HOST}/order/payment-order`,
-          {},
+        await axios.post(
+          `${process.env.BASE_HOST}/cart/update-status-delivery-many-products`,
+          {
+            cartIds: products.map((product: any) => product.cartId),
+          },
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        router.replace(data.url);
       } catch (error) {
         console.error(error);
       }
-    }
 
-    if (paymentMethod === "offline") {
-      router.replace("/");
-      toast.success("Đã đặt hàng.");
+      if (paymentMethod === "online") {
+        // thanh toán online đơn hàng
+        try {
+          const {data} = await axios.post(
+            `${process.env.BASE_HOST}/order/payment-order`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          router.replace(data.url);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      if (paymentMethod === "offline") {
+        try {
+          const {data} = await axios.post(
+            `${process.env.BASE_HOST}/order/payment-order-with-cod`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (data.status === true) {
+            toast.success(data.msg);
+            router.replace("/");
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    } else {
+      toast.warning("Vui lòng chọn phương thức thanh toán.");
     }
   };
 

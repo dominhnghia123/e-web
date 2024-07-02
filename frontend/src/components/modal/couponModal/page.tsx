@@ -66,7 +66,11 @@ export default function CouponModal(props: IProps) {
 
   return (
     <Modal
-      title="Chọn voucher khuyến mãi"
+      title={
+        coupons.length
+          ? "Chọn voucher khuyến mãi"
+          : "Bạn không có voucher khuyến mãi nào."
+      }
       open={openCouponModal}
       onOk={() => handleOk(selectCouponTemporary)}
       onCancel={handleCancel}

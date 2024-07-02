@@ -58,4 +58,11 @@ export class OrderController {
   getAllOrdersBySeller(@Req() req: Request) {
     return this.orderService.getAllOrdersBySeller(req);
   }
+
+  @ApiBearerAuth()
+  @UseGuards(UserGuard)
+  @Post('/payment-order-with-cod')
+  paymentOrderWithCOD(@Req() req: RequestWithRawBody) {
+    return this.orderService.paymentOrderWithCOD(req);
+  }
 }

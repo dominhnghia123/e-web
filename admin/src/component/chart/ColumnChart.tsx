@@ -68,7 +68,7 @@ export default function ColumnChart(props: IProps) {
     labels,
     datasets: [
       {
-        label: "Number of orders",
+        label: "Số lượng đơn hàng",
         data: totalOrders,
         backgroundColor: "#9B6ADF",
         borderWidth: 1,

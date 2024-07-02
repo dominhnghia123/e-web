@@ -41,6 +41,7 @@
 .images_container {
   width: 100%;
   height: auto;
+  margin-bottom: 20px;
 }
 .images_container__main {
   width: 100%;

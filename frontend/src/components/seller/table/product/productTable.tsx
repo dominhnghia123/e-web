@@ -8,7 +8,12 @@ import moment from "moment";
 import {useRouter} from "next/navigation";
 import {RiDeleteBin5Line} from "react-icons/ri";
 
-export default function ProductTable() {
+interface IProps {
+  setIsLoading: (value: boolean) => void;
+}
+
+export default function ProductTable(props: IProps) {
+  const {setIsLoading} = props;
   const router = useRouter();
   const token = getToken();
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -46,6 +51,7 @@ export default function ProductTable() {
   };
 
   const handleDeleteMany = async () => {
+    setIsLoading(true);
     try {
       const {data} = await axios.post(
         `${process.env.BASE_HOST}/product/delete-many-products`,
@@ -64,9 +70,11 @@ export default function ProductTable() {
     } catch (error) {
       console.error(error);
     }
+    setIsLoading(false);
   };
 
   const handleDeleteOneProduct = async (_id: string) => {
+    setIsLoading(true);
     try {
       const {data} = await axios.post(
         `${process.env.BASE_HOST}/product/delete-a-product`,
@@ -85,6 +93,7 @@ export default function ProductTable() {
     } catch (error) {
       console.error(error);
     }
+    setIsLoading(false);
   };
 
   const columns = [
@@ -160,7 +169,10 @@ export default function ProductTable() {
       <div className={styles.head}>
         <Button
           className={`${styles.button} ${styles.buttonAdd}`}
-          onClick={() => router.replace("/seller/products/addNew")}
+          onClick={() => {
+            setIsLoading(true);
+            router.replace("/seller/products/addNew");
+          }}
         >
           Thêm sản phẩm
         </Button>
@@ -204,6 +216,7 @@ export default function ProductTable() {
             setSelectedRows(selectedRows.map((row: IProduct) => row._id));
           }}
           onRowClicked={(row, e) => {
+            setIsLoading(true);
             router.replace(`/seller/products/${row.slug}/${row._id}`);
           }}
         />
