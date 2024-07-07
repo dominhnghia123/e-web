@@ -72,29 +72,6 @@ export default function UserTable(props: IProps) {
     }
   };
 
-  const handleDeleteOneUser = async (_id: string) => {
-    try {
-      setIsLoading(true);
-      const {data} = await axios.post(
-        `${process.env.BASE_HOST}/user/delete-a-user`,
-        {
-          _id: _id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (data.status === true) {
-        setIsLoading(false);
-        setDeleted(!deleted);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const columns = [
     {
       name: "Tên",
@@ -113,7 +90,7 @@ export default function UserTable(props: IProps) {
       selector: (row: IUser) => row.role,
     },
     {
-      name: "Created At",
+      name: "Thời điểm tạo",
       selector: (row: IUser) => {
         const dateTimeString = row.createdAt.toString();
         const dateTime = moment(dateTimeString);
@@ -124,7 +101,7 @@ export default function UserTable(props: IProps) {
       },
     },
     {
-      name: "Updated At",
+      name: "Thời điểm cập nhật",
       selector: (row: IUser) => {
         const dateTimeString = row.updatedAt.toString();
         const dateTime = moment(dateTimeString);
@@ -133,17 +110,6 @@ export default function UserTable(props: IProps) {
         const formattedTime = dateTime.format("HH:mm:ss");
         return `${formattedTime} ${formattedDate}`;
       },
-    },
-    {
-      name: "Actions",
-      cell: (row: IUser): JSX.Element => (
-        <div className={styles.buttons_container}>
-          <RiDeleteBin5Line
-            className={`${styles.button}`}
-            onClick={() => handleDeleteOneUser(row._id)}
-          />
-        </div>
-      ),
     },
   ];
   const tableCustomStyles: TableStyles | undefined = {
@@ -208,6 +174,7 @@ export default function UserTable(props: IProps) {
             setSelectedRows(selectedRows.map((row: IUser) => row._id));
           }}
           onRowClicked={(row, e) => {
+            setIsLoading(true);
             router.replace(`/admin/user/${row._id}`);
           }}
         />

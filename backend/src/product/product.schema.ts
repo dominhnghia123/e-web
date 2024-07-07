@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from '../user/user.schema';
-import { brandEnum, colorEnum } from '../utils/variableGlobal';
+import { colorEnum } from '../utils/variableGlobal';
 
 export type ProductDocument = HydratedDocument<Product>;
 
@@ -13,7 +13,7 @@ export class Product {
   @Prop({ required: true, unique: true })
   slug: string;
 
-  @Prop()
+  @Prop({ required: true })
   description: string;
 
   @Prop({
@@ -53,23 +53,11 @@ export class Product {
     image: string;
   }[];
 
-  @Prop({ required: true, enum: brandEnum })
+  @Prop({ required: true })
   brand: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   seller: User;
-
-  @Prop({ default: '0' })
-  likes: string;
-
-  @Prop({ default: '0' })
-  dislikes: string;
-
-  @Prop({ default: false })
-  isLiked: boolean;
-
-  @Prop({ default: false })
-  isDisliked: boolean;
 
   @Prop({
     type: [

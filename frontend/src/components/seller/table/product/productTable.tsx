@@ -73,44 +73,21 @@ export default function ProductTable(props: IProps) {
     setIsLoading(false);
   };
 
-  const handleDeleteOneProduct = async (_id: string) => {
-    setIsLoading(true);
-    try {
-      const {data} = await axios.post(
-        `${process.env.BASE_HOST}/product/delete-a-product`,
-        {
-          _id: _id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (data.status === true) {
-        setDeleted(!deleted);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-    setIsLoading(false);
-  };
-
   const columns = [
     {
-      name: "Name",
+      name: "Tên",
       selector: (row: IProduct) => row.name,
     },
     {
-      name: "Brand",
+      name: "Thương hiệu",
       selector: (row: IProduct) => row.brand,
     },
     {
-      name: "Total Rate",
+      name: "Đánh giá",
       selector: (row: IProduct) => row.totalRatings,
     },
     {
-      name: "Created At",
+      name: "Thời điểm tạo",
       selector: (row: IProduct) => {
         const dateTimeString = row.createdAt.toString();
         const dateTime = moment(dateTimeString);
@@ -121,7 +98,7 @@ export default function ProductTable(props: IProps) {
       },
     },
     {
-      name: "Updated At",
+      name: "Thời điểm cập nhật",
       selector: (row: IProduct) => {
         const dateTimeString = row.updatedAt.toString();
         const dateTime = moment(dateTimeString);
@@ -130,17 +107,6 @@ export default function ProductTable(props: IProps) {
         const formattedTime = dateTime.format("HH:mm:ss");
         return `${formattedTime} ${formattedDate}`;
       },
-    },
-    {
-      name: "Actions",
-      cell: (row: IProduct): JSX.Element => (
-        <div className={styles.buttons_container}>
-          <RiDeleteBin5Line
-            className={`${styles.icon_delete}`}
-            onClick={() => handleDeleteOneProduct(row._id)}
-          />
-        </div>
-      ),
     },
   ];
   const tableCustomStyles: TableStyles | undefined = {

@@ -6,6 +6,7 @@ import { CreateBrandDto } from './dto/create-brand.dto';
 import { BrandIdDto } from './dto/brandId.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import { Request } from 'express';
+import slugify from 'slugify';
 
 @Injectable()
 export class BrandService {
@@ -57,34 +58,18 @@ export class BrandService {
     }
   }
 
-  async getAllBrands(req: Request) {
-    const keySearch: string = req.query?.s?.toString();
-    const currentPage: number = req.query.page as any;
-    const itemsPerPage: number = req.query.limit as any;
+  async getAllBrands() {
     try {
-      let options = {};
-
-      if (keySearch) {
-        options = { name: new RegExp(keySearch, 'i') };
-      }
-      const allBrands = await this.brandModel
-        .find(options)
-        .sort({ createdAt: -1 });
-      const page: number = currentPage || 1;
-      const limit: number = itemsPerPage || 10;
-      const skip: number = (page - 1) * limit;
-
-      const totalBrands = await this.brandModel.countDocuments(options);
-      const data = allBrands.slice(
-        skip,
-        parseInt(skip.toString()) + parseInt(limit.toString()),
-      );
+      const brands = await this.brandModel.find();
+      const alterBrands = brands.map((brand) => {
+        return {
+          ...JSON.parse(JSON.stringify(brand)),
+          url: slugify(brand.name.toLowerCase()),
+        };
+      });
       return {
         status: true,
-        brands: data,
-        totalBrands,
-        page,
-        limit,
+        brands: alterBrands,
       };
     } catch (error) {
       throw new BadRequestException(error);
@@ -94,14 +79,6 @@ export class BrandService {
   async updateBrand(updateBrandDto: UpdateBrandDto) {
     const { _id, name } = updateBrandDto;
     try {
-      const findBrand = await this.brandModel.findById(_id);
-      if (!findBrand) {
-        return {
-          msg: 'This brand not exists',
-          status: false,
-        };
-      }
-
       const updatedBrand = await this.brandModel.findByIdAndUpdate(
         _id,
         {
@@ -113,7 +90,7 @@ export class BrandService {
       );
 
       return {
-        msg: 'Updated brand successfully',
+        msg: 'Cập nhật thành công.',
         status: true,
         updatedBrand: updatedBrand,
       };
@@ -125,19 +102,10 @@ export class BrandService {
   async deleteABrand(brandIdDto: BrandIdDto) {
     const { _id } = brandIdDto;
     try {
-      const findBrand = await this.brandModel.findById(_id);
-      if (!findBrand) {
-        return {
-          msg: 'This brand is not exist',
-          status: false,
-        };
-      }
-
-      const deletedBrand = await this.brandModel.findByIdAndDelete(_id);
+      await this.brandModel.findByIdAndDelete(_id);
       return {
-        msg: 'Deleted brand successfully',
+        msg: 'Xóa thành công.',
         status: true,
-        deletedBrand: deletedBrand,
       };
     } catch (error) {
       throw new BadRequestException(error);
@@ -152,7 +120,7 @@ export class BrandService {
       });
 
       return {
-        msg: 'Deleted brands successfully',
+        msg: 'Xóa thành công',
         status: true,
         deletedManyBrands: deletedManyBrands,
       };

@@ -7,6 +7,6 @@ export class UpdateBrandDto {
   _id: string;
 
   @ApiProperty({ example: 'Apple' })
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Vui lòng điền nhãn hiệu.' })
   name: string;
 }

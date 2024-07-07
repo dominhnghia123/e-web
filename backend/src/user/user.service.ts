@@ -276,19 +276,10 @@ export class UserService {
   async deleteAUser(userIdDto: UserIdDto) {
     const { _id } = userIdDto;
     try {
-      const user = await this.userModel.findById(_id);
-      if (!user) {
-        return {
-          msg: 'This user is not exist',
-          status: false,
-        };
-      }
-
-      const deletedUser = await this.userModel.findByIdAndDelete(_id);
+      await this.userModel.findByIdAndDelete(_id);
       return {
-        msg: 'Deleted this user successfully',
+        msg: 'Xóa thành công.',
         status: true,
-        deletedUser: deletedUser,
       };
     } catch (error) {
       throw new BadRequestException(error);
@@ -302,7 +293,7 @@ export class UserService {
         _id: { $in: userIds },
       });
       return {
-        msg: 'Deleted users successfully',
+        msg: 'Xóa thành công.',
         status: true,
         deleteManyUser: deleteManyUser,
       };

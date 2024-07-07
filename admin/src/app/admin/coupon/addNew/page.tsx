@@ -107,6 +107,12 @@ export default function AddNewCoupon() {
     }
   };
 
+  const onKeyDown = (event: any) => {
+    if (event.key === "-") {
+      event.preventDefault();
+    }
+  };
+
   const contentStyle: React.CSSProperties = {
     padding: 50,
     background: "rgba(0, 0, 0, 0.05)",
@@ -186,6 +192,7 @@ export default function AddNewCoupon() {
                 className={styles.input}
                 max={100}
                 min={0}
+                onKeyDown={onKeyDown}
                 value={dataInput.discount}
                 onChange={(e) => {
                   setDataInput((prev) => ({

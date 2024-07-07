@@ -25,8 +25,8 @@ export class BrandController {
   }
 
   @Post('/get-all-brands')
-  getAllBrands(@Req() req: Request) {
-    return this.brandService.getAllBrands(req);
+  getAllBrands() {
+    return this.brandService.getAllBrands();
   }
 
   @ApiBearerAuth()

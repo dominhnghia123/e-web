@@ -1,37 +1,30 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, ValidateNested } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class UpdateProductDto {
   @ApiProperty({ example: '65ea8d744f3d63f2131bfe47' })
   @IsNotEmpty({ message: 'ProductId cannot be empty' })
   _id: string;
 
-  @ApiProperty({ example: 'Smart phone' })
-  @IsNotEmpty()
+  @ApiProperty({ example: 'Iphone 11' })
+  @IsNotEmpty({ message: 'Vui lòng điền tên sản phẩm.' })
   name: string;
 
-  @ApiProperty({ example: 'smart-phone' })
-  @IsNotEmpty()
+  @ApiProperty({ example: 'Iphone-11' })
+  @IsNotEmpty({ message: 'Vui lòng điền slug.' })
   slug: string;
 
-  @ApiProperty({ example: 'Mặt hàng này rất gì và này nọ' })
-  @IsNotEmpty()
+  @ApiProperty({ example: 'Sản phẩm đẹp' })
+  @IsNotEmpty({ message: 'Vui lòng điền mô tả sản phẩm.' })
   description: string;
 
-  @ApiProperty({ example: 'Apple' })
-  @IsNotEmpty({ message: 'Brand cannot be empty' })
+  @ApiProperty({ example: 'iphone' })
+  @IsNotEmpty({ message: 'Vui lòng chọn thương hiệu sản phẩm.' })
   brand: string;
 
   @ApiProperty({
-    example: {
-      screen_size: 6.7,
-      memory: 128,
-      pin: 4,
-      ram: 8,
-    },
+    example: { screen_size: '123', memory: '128', pin: '100', ram: '64' },
   })
-  @IsNotEmpty()
-  @ValidateNested()
   specifications: {
     screen_size: string;
     memory: string;
@@ -42,16 +35,19 @@ export class UpdateProductDto {
   @ApiProperty({
     example: [
       {
-        quantity: 100,
-        price: 999,
+        quantity: '20',
+        price: '28',
         color: 'black',
-        image: 'http://localhost:8000/image.jpg',
+        image: 'http://localhost:8000/api/app/iphone.png',
+      },
+      {
+        quantity: '30',
+        price: '38',
+        color: 'white',
+        image: 'http://localhost:8000/api/app/iphone.png',
       },
     ],
   })
-  @IsNotEmpty()
-  @IsArray()
-  @ValidateNested({ each: true })
   variants: {
     quantity: string;
     price: string;

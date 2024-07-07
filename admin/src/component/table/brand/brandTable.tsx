@@ -73,36 +73,13 @@ export default function BrandTable(props: IProps) {
     }
   };
 
-  const handleDeleteOneBrand = async (_id: string) => {
-    try {
-      setIsLoading(true);
-      const {data} = await axios.post(
-        `${process.env.BASE_HOST}/brand/delete-a-brand`,
-        {
-          _id: _id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (data.status === true) {
-        setIsLoading(false);
-        setDeleted(!deleted);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const columns = [
     {
       name: "Tên",
       selector: (row: IBrand) => row.name,
     },
     {
-      name: "Created At",
+      name: "Thời điểm tạo",
       selector: (row: IBrand) => {
         const dateTimeString = row.createdAt.toString();
         const dateTime = moment(dateTimeString);
@@ -113,7 +90,7 @@ export default function BrandTable(props: IProps) {
       },
     },
     {
-      name: "Updated At",
+      name: "Thời điểm cập nhật",
       selector: (row: IBrand) => {
         const dateTimeString = row.updatedAt.toString();
         const dateTime = moment(dateTimeString);
@@ -122,17 +99,6 @@ export default function BrandTable(props: IProps) {
         const formattedTime = dateTime.format("HH:mm:ss");
         return `${formattedTime} ${formattedDate}`;
       },
-    },
-    {
-      name: "Actions",
-      cell: (row: IBrand): JSX.Element => (
-        <div className={styles.buttons_container}>
-          <RiDeleteBin5Line
-            className={`${styles.icon_delete}`}
-            onClick={() => handleDeleteOneBrand(row._id)}
-          />
-        </div>
-      ),
     },
   ];
   const tableCustomStyles: TableStyles | undefined = {
@@ -208,6 +174,7 @@ export default function BrandTable(props: IProps) {
             setSelectedRows(selectedRows.map((row: IBrand) => row._id));
           }}
           onRowClicked={(row, e) => {
+            setIsLoading(true);
             router.replace(`/admin/brand/${row._id}`);
           }}
         />

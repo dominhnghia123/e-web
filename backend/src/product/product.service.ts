@@ -8,7 +8,6 @@ import { ProductIdDto } from './dto/productId.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { User } from '../user/user.schema';
 import { BrandDto } from './dto/brand.dto';
-import { brandEnum } from '../utils/variableGlobal';
 import slugify from 'slugify';
 import { CreateRatingDto } from './dto/create-rating.dto';
 
@@ -80,12 +79,6 @@ export class ProductService {
           { name: new RegExp(keySearch, 'i') },
           { brand: new RegExp(keySearch, 'i') },
         ];
-      }
-      if (brand !== '' && !(brand in brandEnum)) {
-        return {
-          msg: 'Không có hãng điện thoại này!',
-          status: false,
-        };
       }
 
       const getProductsByBrand = await this.productModel
@@ -168,10 +161,13 @@ export class ProductService {
       }
 
       if (!slug) {
-        const alreadySlugMovie = await this.productModel.findOne({
+        const alreadySlugProduct = await this.productModel.findOne({
           slug: slugify(name),
+          _id: {
+            $ne: _id,
+          },
         });
-        if (alreadySlugMovie) {
+        if (alreadySlugProduct) {
           return {
             msg: 'Slug này đã tồn tại',
             status: false,
@@ -179,10 +175,13 @@ export class ProductService {
         }
         updateProductDto.slug = slugify(name);
       } else {
-        const alreadySlugMovie = await this.productModel.findOne({
+        const alreadySlugProduct = await this.productModel.findOne({
           slug: slugify(slug),
+          _id: {
+            $ne: _id,
+          },
         });
-        if (alreadySlugMovie) {
+        if (alreadySlugProduct) {
           return {
             msg: 'Slug này đã tồn tại',
             status: false,
@@ -219,19 +218,10 @@ export class ProductService {
   async deleteAProduct(productIdDto: ProductIdDto) {
     const { _id } = productIdDto;
     try {
-      const findProduct = await this.productModel.findById(_id);
-      if (!findProduct) {
-        return {
-          msg: 'This product is not exist',
-          status: false,
-        };
-      }
-
-      const deletedProduct = await this.productModel.findByIdAndDelete(_id);
+      await this.productModel.findByIdAndDelete(_id);
       return {
-        msg: 'Deleted product successfully',
+        msg: 'Xóa sản phẩm thành công.',
         status: true,
-        deletedProduct: deletedProduct,
       };
     } catch (error) {
       throw new BadRequestException(error);

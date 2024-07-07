@@ -29,15 +29,6 @@ export enum genderEnum {
   other = 'other',
 }
 
-export enum brandEnum {
-  iphone = 'iphone',
-  samsung = 'samsung',
-  vivo = 'vivo',
-  huawei = 'huawei',
-  oppo = 'oppo',
-  mi = 'mi',
-}
-
 export enum colorEnum {
   white = 'white',
   black = 'black',

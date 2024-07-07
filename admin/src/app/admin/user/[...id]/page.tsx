@@ -68,6 +68,28 @@ export default function ViewDetailUser({params}: {params: {id: string}}) {
     }
   };
 
+  const handleDeleteUser = async () => {
+    try {
+      const {data} = await axios.post(
+        `${process.env.BASE_HOST}/user/delete-a-user`,
+        {
+          _id: params.id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (data.status === true) {
+        router.replace("/admin/user");
+        toast.success(data.msg);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div>
       <title>Chi tiết người dùng</title>
@@ -131,14 +153,24 @@ export default function ViewDetailUser({params}: {params: {id: string}}) {
               <Radio value="user">User</Radio>
             </Radio.Group>
           </div>
-          {role !== profile.role && (
+          <div className={styles.button_delete_container}>
+            {role !== profile.role ? (
+              <Button
+                className={styles.button}
+                onClick={() => handleSaveProfile()}
+              >
+                Lưu
+              </Button>
+            ) : (
+              <div className={styles.div_empty}></div>
+            )}
             <Button
-              className={styles.button}
-              onClick={() => handleSaveProfile()}
+              className={styles.button_delete}
+              onClick={() => handleDeleteUser()}
             >
-              Lưu
+              Xóa người dùng
             </Button>
-          )}
+          </div>
         </form>
       </div>
     </div>

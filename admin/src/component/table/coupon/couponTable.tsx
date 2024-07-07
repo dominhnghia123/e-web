@@ -7,6 +7,7 @@ import {getToken} from "@/app/helper/stogare";
 import moment from "moment";
 import {useRouter} from "next/navigation";
 import {RiDeleteBin5Line} from "react-icons/ri";
+import {format} from "date-fns";
 
 interface IProps {
   setIsLoading: (value: boolean) => void;
@@ -73,29 +74,6 @@ export default function CouponTable(props: IProps) {
     }
   };
 
-  const handleDeleteOneCoupon = async (_id: string) => {
-    try {
-      setIsLoading(true);
-      const {data} = await axios.post(
-        `${process.env.BASE_HOST}/coupon/delete-a-coupon`,
-        {
-          _id: _id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (data.status === true) {
-        setIsLoading(false);
-        setDeleted(!deleted);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const columns = [
     {
       name: "Tên",
@@ -103,7 +81,10 @@ export default function CouponTable(props: IProps) {
     },
     {
       name: "Thời hạn",
-      selector: (row: ICoupon) => row.expiry,
+      selector: (row: ICoupon) => {
+        const formattedDate = format(new Date(row.expiry), "dd/MM/yyyy");
+        return formattedDate;
+      },
     },
     {
       name: "Giảm giá",
@@ -114,7 +95,7 @@ export default function CouponTable(props: IProps) {
       selector: (row: ICoupon) => row.userId.username,
     },
     {
-      name: "Created At",
+      name: "Thời điểm tạo",
       selector: (row: ICoupon) => {
         const dateTimeString = row.createdAt.toString();
         const dateTime = moment(dateTimeString);
@@ -125,7 +106,7 @@ export default function CouponTable(props: IProps) {
       },
     },
     {
-      name: "Updated At",
+      name: "Thời điểm cập nhật",
       selector: (row: ICoupon) => {
         const dateTimeString = row.updatedAt.toString();
         const dateTime = moment(dateTimeString);
@@ -134,17 +115,6 @@ export default function CouponTable(props: IProps) {
         const formattedTime = dateTime.format("HH:mm:ss");
         return `${formattedTime} ${formattedDate}`;
       },
-    },
-    {
-      name: "Actions",
-      cell: (row: ICoupon): JSX.Element => (
-        <div className={styles.buttons_container}>
-          <RiDeleteBin5Line
-            className={`${styles.icon_delete}`}
-            onClick={() => handleDeleteOneCoupon(row._id)}
-          />
-        </div>
-      ),
     },
   ];
   const tableCustomStyles: TableStyles | undefined = {
@@ -220,6 +190,7 @@ export default function CouponTable(props: IProps) {
             setSelectedRows(selectedRows.map((row: ICoupon) => row._id));
           }}
           onRowClicked={(row, e) => {
+            setIsLoading(true);
             router.replace(`/admin/coupon/${row._id}`);
           }}
         />

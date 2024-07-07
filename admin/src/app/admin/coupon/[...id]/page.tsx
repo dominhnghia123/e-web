@@ -1,23 +1,25 @@
 "use client";
 import styles from "../addNew/addNew.module.css";
-import { Button } from "react-bootstrap";
-import { DatePicker, DatePickerProps } from "antd";
+import {Button} from "react-bootstrap";
+import {DatePicker, DatePickerProps} from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { useEffect, useState } from "react";
-import { Autocomplete, TextField } from "@mui/material";
-import axios from "axios";
-import { getToken } from "@/app/helper/stogare";
-import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
-export default function ViewDetailCoupon({
-  params,
-}: {
-  params: { id: string };
-}) {
+import {useEffect, useState} from "react";
+import {Autocomplete, TextField} from "@mui/material";
+import axios, {AxiosError} from "axios";
+import {getToken} from "@/app/helper/stogare";
+import {toast} from "react-toastify";
+import {useRouter} from "next/navigation";
+export default function ViewDetailCoupon({params}: {params: {id: string}}) {
   const token = getToken();
   const router = useRouter();
   const [dataInput, setDataInput] = useState({
+    userId: "",
+    name: "",
+    expiry: "",
+    discount: "",
+  });
+  const [dataInputError, setDataInputError] = useState({
     userId: "",
     name: "",
     expiry: "",
@@ -29,19 +31,19 @@ export default function ViewDetailCoupon({
     date,
     dateString
   ) => {
-    setDataInput((prev) => ({ ...prev, expiry: dateString.toString() }));
+    setDataInput((prev) => ({...prev, expiry: dateString.toString()}));
   };
 
   const [userArray, setUserArray] = useState<IUser[]>([]);
   useEffect(() => {
     const getUsers = async () => {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/user/get-all-users`
       );
-      setUserArray(data.allUsers);
+      setUserArray(data.users);
     };
     const getCoupon = async () => {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/coupon/get-a-coupon`,
         {
           _id: params.id[0],
@@ -63,12 +65,12 @@ export default function ViewDetailCoupon({
     };
     getUsers();
     getCoupon();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleUpdateCoupon = async () => {
     try {
-      const { data } = await axios.post(
+      const {data} = await axios.post(
         `${process.env.BASE_HOST}/coupon/update-coupon`,
         {
           _id: params.id[0],
@@ -88,7 +90,65 @@ export default function ViewDetailCoupon({
         router.replace("/admin/coupon");
       }
     } catch (error) {
+      const err = error as AxiosError<{
+        message: {property: string; message: string}[];
+      }>;
+      if (err.response?.data?.message) {
+        err.response.data.message?.forEach((value) => {
+          if (value.property === "userId") {
+            setDataInputError((prev: any) => ({
+              ...prev,
+              userId: value.message,
+            }));
+          }
+          if (value.property === "name") {
+            setDataInputError((prev: any) => ({
+              ...prev,
+              name: value.message,
+            }));
+          }
+          if (value.property === "expiry") {
+            setDataInputError((prev: any) => ({
+              ...prev,
+              expiry: value.message,
+            }));
+          }
+          if (value.property === "discount") {
+            setDataInputError((prev: any) => ({
+              ...prev,
+              discount: value.message,
+            }));
+          }
+        });
+      }
+    }
+  };
+
+  const handleDeleteCoupon = async () => {
+    try {
+      const {data} = await axios.post(
+        `${process.env.BASE_HOST}/coupon/delete-a-coupon`,
+        {
+          _id: params.id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (data.status === true) {
+        router.replace("/admin/coupon");
+        toast.success(data.msg);
+      }
+    } catch (error) {
       console.error(error);
+    }
+  };
+
+  const onKeyDown = (event: any) => {
+    if (event.key === "-") {
+      event.preventDefault();
     }
   };
 
@@ -102,30 +162,48 @@ export default function ViewDetailCoupon({
             <label htmlFor="" className={styles.label}>
               Tên voucher *
             </label>
-            <input
-              type="text"
-              placeholder="Tên voucher"
-              className={styles.input}
-              value={dataInput.name}
-              onChange={(e) =>
-                setDataInput((prev) => ({ ...prev, name: e.target.value }))
-              }
-            />
+            <div className={styles.input_container}>
+              <input
+                type="text"
+                placeholder="Tên voucher"
+                className={styles.input}
+                value={dataInput.name}
+                onChange={(e) => {
+                  setDataInput((prev) => ({...prev, name: e.target.value}));
+                  setDataInputError((prev) => ({
+                    ...prev,
+                    name: "",
+                  }));
+                }}
+              />
+              {dataInputError.name && (
+                <span className={styles.text_warning}>
+                  {dataInputError.name}
+                </span>
+              )}
+            </div>
           </div>
           <div className={styles.input_label_container}>
             <label htmlFor="" className={styles.label}>
               Ngày hết hạn *
             </label>
-            <DatePicker
-              value={
-                dataInput.expiry
-                  ? dayjs(dataInput.expiry, dateFormat)
-                  : dayjs("2024-06-01")
-              }
-              minDate={dayjs("2024-06-01", dateFormat)}
-              maxDate={dayjs("2025-12-31", dateFormat)}
-              onChange={handleChangeExpiry}
-            />
+            <div className={styles.input_container}>
+              <DatePicker
+                value={
+                  dataInput.expiry
+                    ? dayjs(dataInput.expiry, dateFormat)
+                    : dayjs("2024-06-01")
+                }
+                minDate={dayjs("2024-06-01", dateFormat)}
+                maxDate={dayjs("2025-12-31", dateFormat)}
+                onChange={handleChangeExpiry}
+              />
+              {dataInputError.expiry && (
+                <span className={styles.text_warning}>
+                  {dataInputError.expiry}
+                </span>
+              )}
+            </div>
           </div>
           <div className={styles.input_label_container}>
             <label htmlFor="" className={styles.label}>
@@ -138,14 +216,24 @@ export default function ViewDetailCoupon({
                 className={styles.input}
                 max={100}
                 min={0}
+                onKeyDown={onKeyDown}
                 value={dataInput.discount}
-                onChange={(e) =>
+                onChange={(e) => {
                   setDataInput((prev) => ({
                     ...prev,
                     discount: e.target.value,
-                  }))
-                }
+                  }));
+                  setDataInputError((prev) => ({
+                    ...prev,
+                    discount: "",
+                  }));
+                }}
               />
+              {dataInputError.discount && (
+                <span className={styles.text_warning}>
+                  {dataInputError.discount}
+                </span>
+              )}
             </div>
           </div>
           <div className={styles.input_label_container}>
@@ -162,7 +250,7 @@ export default function ViewDetailCoupon({
                     id: user._id,
                   })) ?? []
                 }
-                sx={{ width: 370 }}
+                sx={{width: 370}}
                 renderInput={(params) => (
                   <TextField {...params} label="Chọn user" />
                 )}
@@ -175,16 +263,31 @@ export default function ViewDetailCoupon({
                     ...prev,
                     userId: newValue ? newValue.id : "",
                   }));
+                  setDataInputError((prev) => ({
+                    ...prev,
+                    userId: "",
+                  }));
                 }}
               />
+              {dataInputError.userId && (
+                <span className={styles.text_warning}>
+                  {dataInputError.userId}
+                </span>
+              )}
             </div>
           </div>
           <div className={`${styles.button_container}`}>
             <Button
+              className={`${styles.button} ${styles.button_delete}`}
+              onClick={() => handleDeleteCoupon()}
+            >
+              Xóa
+            </Button>
+            <Button
               className={`${styles.button}`}
               onClick={() => handleUpdateCoupon()}
             >
-              Save
+              Lưu
             </Button>
           </div>
         </div>
