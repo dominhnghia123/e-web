@@ -18,7 +18,7 @@ export default function AddNewCoupon() {
   const [dataInput, setDataInput] = useState({
     userId: "",
     name: "",
-    expiry: "2024-06-01",
+    expiry: "",
     discount: "",
   });
   const [dataInputError, setDataInputError] = useState({
@@ -168,7 +168,7 @@ export default function AddNewCoupon() {
                 value={
                   dataInput.expiry
                     ? dayjs(dataInput.expiry, dateFormat)
-                    : dayjs("2024-06-01")
+                    : null
                 }
                 minDate={dayjs("2024-06-01", dateFormat)}
                 maxDate={dayjs("2025-12-31", dateFormat)}

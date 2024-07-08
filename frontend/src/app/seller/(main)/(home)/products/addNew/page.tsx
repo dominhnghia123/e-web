@@ -227,9 +227,9 @@ export default function AddNewProduct() {
         console.log(info.file, info.fileList);
       }
       if (status === "done") {
-        message.success(`${info.file.name} file uploaded successfully.`);
+        message.success(`File ${info.file.name} được tải lên thành công.`);
       } else if (status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
+        message.error(`File ${info.file.name} tải lên thất bại.`);
       }
     },
     onDrop(e) {

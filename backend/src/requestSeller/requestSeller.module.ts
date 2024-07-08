@@ -5,6 +5,7 @@ import { User, UserSchema } from '../user/user.schema';
 import { RequestSeller, RequestSellerSchema } from './requestSeller.schema';
 import { RequestSellerController } from './requestSeller.controller';
 import { RequestSellerService } from './requestSeller.service';
+import { AppService } from '../app.service';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { RequestSellerService } from './requestSeller.service';
     UserModule,
   ],
   controllers: [RequestSellerController],
-  providers: [RequestSellerService],
+  providers: [RequestSellerService, AppService],
 })
 export class RequestSellerModule {}

@@ -1,7 +1,7 @@
 "use client";
 import styles from "../user.module.css";
 import {Button, Image} from "react-bootstrap";
-import {DatePicker, DatePickerProps, Radio, RadioChangeEvent} from "antd";
+import {DatePicker, Modal, Radio, RadioChangeEvent} from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import {useEffect, useState} from "react";
@@ -9,6 +9,7 @@ import axios from "axios";
 import {getToken} from "@/app/helper/stogare";
 import {toast} from "react-toastify";
 import {useRouter} from "next/navigation";
+import {SlOptions} from "react-icons/sl";
 
 export default function ViewDetailUser({params}: {params: {id: string}}) {
   const token = getToken();
@@ -18,25 +19,25 @@ export default function ViewDetailUser({params}: {params: {id: string}}) {
   const dateFormat = "YYYY-MM-DD";
 
   const [profile, setProfile] = useState<IUser | any>({});
-  useEffect(() => {
-    const getProfile = async () => {
-      const {data} = await axios.post(
-        `${process.env.BASE_HOST}/user/get-a-user`,
-        {
-          _id: params.id[0],
+  const getProfile = async () => {
+    const {data} = await axios.post(
+      `${process.env.BASE_HOST}/user/get-a-user`,
+      {
+        _id: params.id[0],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (data.status === true) {
-        setProfile(data.user);
-        setRole(data.user.role);
       }
-    };
+    );
+
+    if (data.status === true) {
+      setProfile(data.user);
+      setRole(data.user.role);
+    }
+  };
+  useEffect(() => {
     getProfile();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -88,6 +89,32 @@ export default function ViewDetailUser({params}: {params: {id: string}}) {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const [openModal, setOpenModal] = useState(false);
+  const handleOk = async () => {
+    try {
+      const {data} = await axios.post(
+        `${process.env.BASE_HOST}/user/cancel-sell-function`,
+        {
+          _id: params.id[0],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (data.status === true) {
+        setOpenModal(false);
+        setProfile(data.user);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleCancel = () => {
+    setOpenModal(false);
   };
 
   return (
@@ -147,6 +174,19 @@ export default function ViewDetailUser({params}: {params: {id: string}}) {
             />
           </div>
           <div className={styles.form__field}>
+            <div className={styles.form__field__title}>Đăng ký bán hàng</div>
+            <Radio.Group value={profile.isSeller}>
+              <Radio value={true}>Đã đăng ký</Radio>
+              <Radio value={false}>Chưa đăng ký</Radio>
+            </Radio.Group>
+            {profile.isSeller && (
+              <SlOptions
+                className={styles.option_icon}
+                onClick={() => setOpenModal(true)}
+              />
+            )}
+          </div>
+          <div className={styles.form__field}>
             <div className={styles.form__field__title}>Vai trò</div>
             <Radio.Group value={role} onChange={handleChangeRole}>
               <Radio value="admin">Admin</Radio>
@@ -173,6 +213,20 @@ export default function ViewDetailUser({params}: {params: {id: string}}) {
           </div>
         </form>
       </div>
+      <Modal
+        title={
+          <div>
+            <span style={{display: "block"}}>Hủy đăng ký bán hàng.</span>
+            <span>
+              Bạn có chắc chắn muốn hủy tính năng bán hàng của người dùng này
+              không?
+            </span>
+          </div>
+        }
+        open={openModal}
+        onOk={() => handleOk()}
+        onCancel={handleCancel}
+      />
     </div>
   );
 }

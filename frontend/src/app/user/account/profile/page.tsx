@@ -20,6 +20,7 @@ import {toast} from "react-toastify";
 import ButtonReactBootStrap from "react-bootstrap/Button";
 import {PageContext} from "../../layout";
 import AppLoading from "@/components/appLoading";
+import {Image} from "react-bootstrap";
 
 export default function ViewProfile() {
   const {setIsChangeProfile} = useContext(PageContext);
@@ -93,10 +94,10 @@ export default function ViewProfile() {
         console.log(info.file, info.fileList);
       }
       if (info.file.status === "done") {
-        message.success(`${info.file.name} file uploaded successfully`);
+        message.success(`File ${info.file.name} được tải lên thành công.`);
         setUrl(info.file.response.url);
       } else if (info.file.status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
+        message.error(`File ${info.file.name} tải lên thất bại.`);
       }
     },
   };
@@ -123,6 +124,7 @@ export default function ViewProfile() {
       if (data.status === true) {
         setIsChangeProfile(true);
         setIsLoading(false);
+        setUrl("");
         toast.success(data.msg);
       }
     } catch (error) {
@@ -180,9 +182,7 @@ export default function ViewProfile() {
           <div className={styles.form__field}>
             <div className={styles.form__field__title}>Ngày sinh</div>
             <DatePicker
-              value={
-                birthday ? dayjs(birthday, dateFormat) : dayjs("1945-01-01")
-              }
+              value={birthday ? dayjs(birthday, dateFormat) : null}
               minDate={dayjs("1945-01-01", dateFormat)}
               maxDate={dayjs("2020-12-31", dateFormat)}
               onChange={handleChangeBirthday}
@@ -199,6 +199,7 @@ export default function ViewProfile() {
           <Upload {...props}>
             <Button icon={<UploadOutlined />}>Click to Upload avatar</Button>
           </Upload>
+          {url && <Image src={url} alt="" className={styles.avatar_img} />}
         </div>
       </div>
     </>

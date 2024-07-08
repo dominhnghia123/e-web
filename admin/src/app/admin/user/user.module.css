@@ -89,7 +89,20 @@
 .button_delete:hover {
   background-color: rgb(217, 3, 3);
 }
-.div_empty{
+.div_empty {
   height: 40px;
   width: 100px;
+}
+
+.option_icon {
+  margin-left: 50px;
+  cursor: pointer;
+  padding: 2px;
+  width: 24px;
+  height: 24px;
+}
+.option_icon:hover {
+  background-color: rgb(226, 226, 226);
+  border: none;
+  border-radius: 50px;
 }

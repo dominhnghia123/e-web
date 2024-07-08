@@ -1,7 +1,7 @@
 "use client";
 import {Button, Image} from "react-bootstrap";
 import styles from "./register-seller.module.css";
-import {Divider, Modal} from "antd";
+import {Divider} from "antd";
 import {useRouter} from "next/navigation";
 import {useState} from "react";
 import {getStogare, getToken} from "../helper/stogare";
@@ -36,8 +36,8 @@ export default function RegisterSellerPage() {
   });
 
   const handleOk = async () => {
-    try {
-      if (isChecked) {
+    if (isChecked) {
+      try {
         setIsLoading(true);
         const {data} = await axios.post(
           `${process.env.BASE_HOST}/requestSeller/send-request-become-seller`,
@@ -55,50 +55,50 @@ export default function RegisterSellerPage() {
         );
         if (data.status === true) {
           toast.success(data.msg);
-          router.back();
+          router.replace("/buyer");
         }
         if (data.status === false) {
           toast.error(data.msg);
         }
-        setIsLoading(false);
-      } else {
-        setDataInputError((prev: any) => ({
-          ...prev,
-          checkedPolicy: "Vui lòng click chọn ô này trước khi đăng ký.",
-        }));
+      } catch (error: any) {
+        const err = error as AxiosError<{
+          message: {property: string; message: string}[];
+        }>;
+        if (err.response?.data?.message) {
+          err.response.data.message?.forEach((value) => {
+            if (value.property === "shopName") {
+              setDataInputError((prev: any) => ({
+                ...prev,
+                shopNameError: value.message,
+              }));
+            }
+            if (value.property === "addressGetGoods") {
+              setDataInputError((prev: any) => ({
+                ...prev,
+                addressGetGoodsError: value.message,
+              }));
+            }
+            if (value.property === "cccd") {
+              setDataInputError((prev: any) => ({
+                ...prev,
+                cccdError: value.message,
+              }));
+            }
+            if (value.property === "fullName") {
+              setDataInputError((prev: any) => ({
+                ...prev,
+                fullNameError: value.message,
+              }));
+            }
+          });
+        }
       }
-    } catch (error: any) {
-      const err = error as AxiosError<{
-        message: {property: string; message: string}[];
-      }>;
-      if (err.response?.data?.message) {
-        err.response.data.message?.forEach((value) => {
-          if (value.property === "shopName") {
-            setDataInputError((prev: any) => ({
-              ...prev,
-              shopNameError: value.message,
-            }));
-          }
-          if (value.property === "addressGetGoods") {
-            setDataInputError((prev: any) => ({
-              ...prev,
-              addressGetGoodsError: value.message,
-            }));
-          }
-          if (value.property === "cccd") {
-            setDataInputError((prev: any) => ({
-              ...prev,
-              cccdError: value.message,
-            }));
-          }
-          if (value.property === "fullName") {
-            setDataInputError((prev: any) => ({
-              ...prev,
-              fullNameError: value.message,
-            }));
-          }
-        });
-      }
+      setIsLoading(false);
+    } else {
+      setDataInputError((prev: any) => ({
+        ...prev,
+        checkedPolicy: "Vui lòng click chọn ô này trước khi đăng ký.",
+      }));
     }
   };
 
@@ -126,7 +126,7 @@ export default function RegisterSellerPage() {
               type="email"
               placeholder="Địa chỉ email"
               className={styles.input}
-              value={currentUser.email}
+              value={currentUser?.email}
               disabled
             />
           </div>
@@ -138,7 +138,7 @@ export default function RegisterSellerPage() {
               type="text"
               placeholder="Số điện thoại"
               className={styles.input}
-              value={currentUser.mobile}
+              value={currentUser?.mobile}
               disabled
             />
           </div>

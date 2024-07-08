@@ -190,9 +190,7 @@ export default function ViewDetailCoupon({params}: {params: {id: string}}) {
             <div className={styles.input_container}>
               <DatePicker
                 value={
-                  dataInput.expiry
-                    ? dayjs(dataInput.expiry, dateFormat)
-                    : dayjs("2024-06-01")
+                  dataInput.expiry ? dayjs(dataInput.expiry, dateFormat) : null
                 }
                 minDate={dayjs("2024-06-01", dateFormat)}
                 maxDate={dayjs("2025-12-31", dateFormat)}

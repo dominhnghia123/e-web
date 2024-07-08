@@ -115,4 +115,11 @@ export class UserController {
   changeRoleForUser(@Body() changeRoleDto: ChangeRoleDto) {
     return this.userService.changeRoleForUser(changeRoleDto);
   }
+
+  @ApiBearerAuth()
+  @UseGuards(AdminGuard)
+  @Post('/cancel-sell-function')
+  cancelSellFunction(@Body() userDtoId: UserIdDto) {
+    return this.userService.cancelSellFunction(userDtoId);
+  }
 }

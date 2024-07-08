@@ -243,14 +243,6 @@ export class UserService {
   async updateUser(updateUserDto: UpdateUserDto) {
     const { _id, gender, birthday, avatar } = updateUserDto;
     try {
-      const user = await this.userModel.findById(_id);
-      if (!user) {
-        return {
-          msg: 'This user not exists',
-          status: false,
-        };
-      }
-
       const updatedUser = await this.userModel.findByIdAndUpdate(
         _id,
         {
@@ -264,7 +256,7 @@ export class UserService {
       );
 
       return {
-        msg: 'Updated user successfully',
+        msg: 'Cập nhật thành công.',
         status: true,
         updatedUser: updatedUser,
       };
@@ -468,6 +460,27 @@ export class UserService {
       return {
         msg: 'Cập nhật vai trò người dùng thành công.',
         status: true,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async cancelSellFunction(userDtoId: UserIdDto) {
+    const { _id } = userDtoId;
+    try {
+      const updateUser = await this.userModel.findByIdAndUpdate(
+        _id,
+        {
+          isSeller: false,
+        },
+        {
+          new: true,
+        },
+      );
+      return {
+        status: true,
+        user: updateUser,
       };
     } catch (error) {
       throw new BadRequestException(error);

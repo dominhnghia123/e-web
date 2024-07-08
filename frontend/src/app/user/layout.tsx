@@ -22,7 +22,12 @@ export const PageContext = createContext<PageContextType>({
 export default function AccountLayout({children}: {children: React.ReactNode}) {
   const pathname = usePathname();
   const currentUserString = getStogare("currentUser");
-  const currentUser = JSON.parse(currentUserString);
+  let currentUser = null;
+  try {
+    currentUser = JSON?.parse(currentUserString);
+  } catch (e) {
+    console.error("Error parsing currentUserString:", e);
+  }
   const token = getToken();
   //get profile
   const [profile, setProfile] = useState<IUser | any>({});
@@ -30,7 +35,7 @@ export default function AccountLayout({children}: {children: React.ReactNode}) {
     const {data} = await axios.post(
       `${process.env.BASE_HOST}/user/get-a-user`,
       {
-        _id: currentUser._id,
+        _id: currentUser?._id,
       },
       {
         headers: {

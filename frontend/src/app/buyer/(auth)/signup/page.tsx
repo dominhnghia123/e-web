@@ -14,7 +14,7 @@ import {
   registerSuccess,
 } from "@/redux/features/auth/authSlice";
 import {registerUser} from "@/redux/features/auth/authService";
-import {Spin} from "antd";
+import {Modal, Spin} from "antd";
 
 export default function Signup() {
   const router = useRouter();
@@ -36,15 +36,15 @@ export default function Signup() {
   const handleSignup = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     dispatch(registerStart());
+    setIsLoading(true);
     try {
       const response = await registerUser(dataSignup, setDataSignupError);
       const currentUser = response?.newUser;
       if (response.status === true) {
         dispatch(registerSuccess(currentUser));
         setDataSignupError((prev) => ({...prev, loginError: ""}));
-        setIsLoading(true);
         Cookies.set("userActive", "1", {expires: 1});
-        router.replace("/buyer");
+        showModalCommentSuccess();
       }
       if (response.status === false) {
         if (response.property === "username") {
@@ -66,6 +66,17 @@ export default function Signup() {
     } catch (error) {
       dispatch(registerError());
     }
+    setIsLoading(false);
+  };
+
+  const showModalCommentSuccess = () => {
+    Modal.success({
+      content:
+        "Chúc mừng bạn đã đăng ký tài khoản thành công. Hãy bắt đầu trải nghiệm nào!",
+      onOk: () => {
+        router.replace("/buyer");
+      },
+    });
   };
 
   const contentStyle: React.CSSProperties = {

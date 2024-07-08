@@ -34,11 +34,13 @@ export default function AdminLayout({children}: {children: React.ReactNode}) {
     token: {colorBgContainer, borderRadiusLG},
   } = theme.useToken();
 
-  const adminString = getStogare("admin").trim();
-  let admin;
-  if (adminString) {
-    admin = JSON.parse(adminString);
-  }
+  const [admin, setAdmin] = useState<any>(null);
+  useEffect(() => {
+    const adminString = getStogare("admin").trim();
+    if (adminString) {
+      setAdmin(JSON.parse(adminString));
+    }
+  }, []);
   const token = getToken();
   const router = useRouter();
   const [openPopupNoti, setOpenPopupNoti] = useState(false);
@@ -257,8 +259,10 @@ export default function AdminLayout({children}: {children: React.ReactNode}) {
                     className={styles.username_email_container}
                     onClick={() => setOpenOptionsMenu(!openOptionsMenu)}
                   >
-                    <div className={styles.username}>{admin?.username}</div>
-                    <div className={styles.email}>{admin?.email}</div>
+                    <div className={styles.username}>
+                      {admin?.username || ""}
+                    </div>
+                    <div className={styles.email}>{admin?.email || ""}</div>
                   </div>
                   {openOptionsMenu && (
                     <div className={styles.options_menu_container}>
