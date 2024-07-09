@@ -101,7 +101,13 @@ export default function OrderTable(props: IProps) {
       case CartConstant.STATUS_DELIVERY.CANCEL:
       case CartConstant.STATUS_DELIVERY.SHIPPED:
         return (
-          <Button className={`${styles.button} ${styles.button_view_detail}`}>
+          <Button
+            className={`${styles.button} ${styles.button_view_detail}`}
+            onClick={() => {
+              setIsLoading(true);
+              router.replace(`/seller/orders/${cartId}`);
+            }}
+          >
             Xem chi tiết
           </Button>
         );
@@ -115,6 +121,7 @@ export default function OrderTable(props: IProps) {
     {
       name: "Khách hàng",
       selector: (row: any) => row.buyername,
+      sortable: true,
     },
     {
       name: "Tên sản phẩm",
@@ -124,10 +131,12 @@ export default function OrderTable(props: IProps) {
             row.variantName as keyof typeof ProductConstant.COLOR
           ]
         }`,
+      sortable: true,
     },
     {
       name: "Số lượng",
       selector: (row: any) => row.quantity,
+      sortable: true,
     },
     {
       name: "Thời điểm cập nhật",
@@ -139,6 +148,7 @@ export default function OrderTable(props: IProps) {
         const formattedTime = dateTime.format("HH:mm:ss");
         return `${formattedTime} ${formattedDate}`;
       },
+      sortable: true,
     },
     {
       name: "Trạng thái",
@@ -147,6 +157,7 @@ export default function OrderTable(props: IProps) {
           row.status_delivery as keyof typeof OrderSellerConstant.ORDER_STATUS_DELIVERY;
         return OrderSellerConstant.ORDER_STATUS_DELIVERY[status];
       },
+      sortable: true,
     },
     {
       name: "Hành động",

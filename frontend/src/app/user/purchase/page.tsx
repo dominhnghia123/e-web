@@ -238,8 +238,7 @@ export default function PurchasePage() {
               onCancel={() => setOpenModalConfirmCancelOrder(false)}
             >
               <p>
-                Nếu bạn đồng ý hủy không mua mặt hàng này sẽ đồng nghĩa với việc
-                đơn hàng chứa mặt hàng này sẽ bị hủy toàn bộ.
+                Bạn có chắc chắn muốn hủy đơn hàng này?
               </p>
             </Modal>
           </div>

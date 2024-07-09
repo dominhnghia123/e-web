@@ -12,6 +12,7 @@ import AppHeader from "@/components/appHeader";
 import AppFooter from "@/components/appFooter";
 import {RootState, useAppSelector} from "@/redux/store";
 import {useRouter} from "next/navigation";
+import { ProductConstant } from "../helper/constant/ProductConstant";
 
 export default function Checkout() {
   const router = useRouter();
@@ -250,7 +251,7 @@ export default function Checkout() {
                               className={styles.image}
                             />
                             <div className={styles.title}>
-                              {option.name} ({option.color})
+                              {option.name} ({ProductConstant.COLOR[option.color as keyof typeof ProductConstant.COLOR]})
                             </div>
                           </div>
                           <div className={`${styles.unit_price}`}>

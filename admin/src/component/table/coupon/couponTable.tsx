@@ -78,6 +78,7 @@ export default function CouponTable(props: IProps) {
     {
       name: "Tên",
       selector: (row: ICoupon) => row.name,
+      sortable: true,
     },
     {
       name: "Thời hạn",
@@ -85,14 +86,17 @@ export default function CouponTable(props: IProps) {
         const formattedDate = format(new Date(row.expiry), "dd/MM/yyyy");
         return formattedDate;
       },
+      sortable: true,
     },
     {
       name: "Giảm giá",
       selector: (row: ICoupon) => row.discount,
+      sortable: true,
     },
     {
       name: "Người sở hữu",
       selector: (row: ICoupon) => row.userId.username,
+      sortable: true,
     },
     {
       name: "Thời điểm tạo",
@@ -104,6 +108,7 @@ export default function CouponTable(props: IProps) {
         const formattedTime = dateTime.format("HH:mm:ss");
         return `${formattedTime} ${formattedDate}`;
       },
+      sortable: true,
     },
     {
       name: "Thời điểm cập nhật",
@@ -115,6 +120,7 @@ export default function CouponTable(props: IProps) {
         const formattedTime = dateTime.format("HH:mm:ss");
         return `${formattedTime} ${formattedDate}`;
       },
+      sortable: true,
     },
   ];
   const tableCustomStyles: TableStyles | undefined = {

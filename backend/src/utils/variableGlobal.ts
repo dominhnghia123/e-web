@@ -15,12 +15,12 @@ export enum paymentMethodEnum {
 }
 
 export enum statusDeliveryEnum {
-  notOrderedYet = 'notOrderedYet',
-  notPaymentDone = 'notPaymentDone',
-  notShippedYet = 'notShippedYet',
-  shipping = 'shipping',
-  shipped = 'shipped',
-  cancel = 'cancel',
+  notOrderedYet = 'Chưa đặt hàng',
+  notPaymentDone = 'Chưa trả tiền',
+  notShippedYet = 'Chưa vận chuyển',
+  shipping = 'Đang vận chuyển',
+  shipped = 'Đã nhận hàng',
+  cancel = 'Đã hủy',
 }
 
 export enum genderEnum {

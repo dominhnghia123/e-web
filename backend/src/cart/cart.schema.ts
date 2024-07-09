@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from '../user/user.schema';
 import { Product } from '../product/product.schema';
-import { statusDeliveryEnum } from '../utils/variableGlobal';
+import { paymentMethodEnum, statusDeliveryEnum } from '../utils/variableGlobal';
 
 export type CartDocument = HydratedDocument<Cart>;
 
@@ -35,6 +35,9 @@ export class Cart {
 
   @Prop()
   sellerId: string;
+
+  @Prop({ enum: paymentMethodEnum })
+  paymentMethod: string;
 }
 
 export const CartSchema = SchemaFactory.createForClass(Cart);

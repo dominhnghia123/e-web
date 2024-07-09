@@ -77,14 +77,17 @@ export default function ProductTable(props: IProps) {
     {
       name: "Tên",
       selector: (row: IProduct) => row.name,
+      sortable: true,
     },
     {
       name: "Thương hiệu",
       selector: (row: IProduct) => row.brand,
+      sortable: true,
     },
     {
       name: "Đánh giá",
       selector: (row: IProduct) => row.totalRatings,
+      sortable: true,
     },
     {
       name: "Thời điểm tạo",
@@ -96,6 +99,7 @@ export default function ProductTable(props: IProps) {
         const formattedTime = dateTime.format("HH:mm:ss");
         return `${formattedTime} ${formattedDate}`;
       },
+      sortable: true,
     },
     {
       name: "Thời điểm cập nhật",
@@ -107,6 +111,7 @@ export default function ProductTable(props: IProps) {
         const formattedTime = dateTime.format("HH:mm:ss");
         return `${formattedTime} ${formattedDate}`;
       },
+      sortable: true,
     },
   ];
   const tableCustomStyles: TableStyles | undefined = {

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from '../user/user.schema';
-import { paymentMethodEnum, statusOrderEnum } from '../utils/variableGlobal';
+import { statusOrderEnum } from '../utils/variableGlobal';
 import { Product } from '../product/product.schema';
 
 export type OrderDocument = HydratedDocument<Order>;
@@ -49,9 +49,6 @@ export class Order {
     default: statusOrderEnum.pending,
   })
   status: string;
-
-  @Prop({ enum: paymentMethodEnum })
-  paymentMethod: string;
 
   @Prop({ default: '' })
   session_id: string;

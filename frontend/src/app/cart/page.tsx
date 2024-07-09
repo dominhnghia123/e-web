@@ -20,6 +20,7 @@ import AppFooter from "@/components/appFooter";
 import {useRouter} from "next/navigation";
 import {useAppDispatch} from "@/redux/store";
 import {getProductsCheckout} from "@/redux/features/checkout/checkoutSlice";
+import {ProductConstant} from "../helper/constant/ProductConstant";
 
 type CheckboxValueType = GetProp<typeof Checkbox.Group, "value">[number];
 const CheckboxGroup = Checkbox.Group;
@@ -294,7 +295,7 @@ export default function Cart() {
       );
       router.replace(`/checkout`);
     } else {
-      toast.warning("Vui lòng chọn ít nhất 1 sản phẩm.")
+      toast.warning("Vui lòng chọn ít nhất 1 sản phẩm.");
     }
   };
 
@@ -344,7 +345,8 @@ export default function Cart() {
                                   className={styles.image}
                                 />
                                 <div className={styles.title}>
-                                  {option.name} ({option.color})
+                                  {option.name} (
+                                  {ProductConstant.COLOR[option.color as keyof typeof ProductConstant.COLOR]})
                                 </div>
                               </div>
                               <div className={styles.unit_price}>

@@ -76,18 +76,22 @@ export default function UserTable(props: IProps) {
     {
       name: "Tên",
       selector: (row: IUser) => row.username,
+      sortable: true,
     },
     {
       name: "Email",
       selector: (row: IUser) => row.email,
+      sortable: true,
     },
     {
       name: "Số điện thoại",
       selector: (row: IUser) => row.mobile,
+      sortable: true,
     },
     {
       name: "Vai trò",
       selector: (row: IUser) => row.role,
+      sortable: true,
     },
     {
       name: "Thời điểm tạo",
@@ -99,6 +103,7 @@ export default function UserTable(props: IProps) {
         const formattedTime = dateTime.format("HH:mm:ss");
         return `${formattedTime} ${formattedDate}`;
       },
+      sortable: true,
     },
     {
       name: "Thời điểm cập nhật",
@@ -110,6 +115,7 @@ export default function UserTable(props: IProps) {
         const formattedTime = dateTime.format("HH:mm:ss");
         return `${formattedTime} ${formattedDate}`;
       },
+      sortable: true,
     },
   ];
   const tableCustomStyles: TableStyles | undefined = {
