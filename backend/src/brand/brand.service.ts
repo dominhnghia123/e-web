@@ -19,7 +19,7 @@ export class BrandService {
       const alreadyBrand = await this.brandModel.findOne({ name: name });
       if (alreadyBrand) {
         return {
-          msg: 'This brand already exists',
+          msg: 'Thương hiệu này đã tồn tại',
           status: false,
         };
       }
@@ -29,7 +29,7 @@ export class BrandService {
       });
 
       return {
-        msg: 'Created brand successfully',
+        msg: 'Tạo thành công.',
         status: true,
         newBrand: newBrand,
       };
@@ -44,12 +44,11 @@ export class BrandService {
       const brand = await this.brandModel.findById(_id);
       if (!brand) {
         return {
-          msg: 'This brand is not exists',
+          msg: 'Thương hiệu này không tồn tại',
           status: false,
         };
       }
       return {
-        msg: 'Found brand successfully',
         status: true,
         brand: brand,
       };

@@ -15,16 +15,6 @@ import { Cart } from '../cart/cart.schema';
 import { CartIdDto } from '../cart/dto/cartId.dto';
 import { Coupon } from '../coupon/coupon.schema';
 
-interface AggregateStage {
-  $match?: any;
-  $lookup?: any;
-  $unwind?: any;
-  $project?: any;
-  $sort?: any;
-  $skip?: any;
-  $limit?: any;
-}
-
 @Injectable()
 export class OrderService {
   constructor(
@@ -499,85 +489,6 @@ export class OrderService {
       throw new BadRequestException(error);
     }
   }
-
-  // async getAllOrdersBySeller(req: Request) {
-  //   const sellerId = req['user']._id;
-  //   const keySearch: string = req.query?.s?.toString() || '';
-  //   const currentPage: number = parseInt(req.query.page as any) || 1;
-  //   const itemsPerPage: number = parseInt(req.query.limit as any) || 10;
-
-  //   try {
-  //     const aggregateOptions: AggregateStage[] = [
-  //       { $match: { sellerId: sellerId } },
-  //       {
-  //         $lookup: {
-  //           from: 'Users',
-  //           localField: 'userId',
-  //           foreignField: '_id',
-  //           as: 'user',
-  //         },
-  //       },
-  //       {
-  //         $lookup: {
-  //           from: 'Products',
-  //           localField: 'productId',
-  //           foreignField: '_id',
-  //           as: 'product',
-  //         },
-  //       },
-  //       { $unwind: '$user' },
-  //       { $unwind: '$product' },
-  //       {
-  //         $match: {
-  //           'product.name': { $regex: new RegExp(keySearch, 'i') },
-  //           'user.username': { $regex: new RegExp(keySearch, 'i') },
-  //           status_delivery: {
-  //             $in: [
-  //               statusDeliveryEnum.notShippedYet,
-  //               statusDeliveryEnum.shipping,
-  //               statusDeliveryEnum.shipped,
-  //               statusDeliveryEnum.cancel,
-  //             ],
-  //           },
-  //         },
-  //       },
-  //       {
-  //         $project: {
-  //           cartId: '$_id',
-  //           image: '$product.variants.image',
-  //           sold: '$product.variants.sold',
-  //           color: '$product.variants.color',
-  //           price: '$product.variants.price',
-  //           quantity: 1,
-  //           status_delivery: 1,
-  //           buyername: '$user.username',
-  //           productName: '$product.name',
-  //           variantName: '$product.variants.color',
-  //           createdAt: 1,
-  //           updatedAt: 1,
-  //         },
-  //       },
-  //       { $sort: { createdAt: -1 } },
-  //       { $skip: (currentPage - 1) * itemsPerPage },
-  //       { $limit: itemsPerPage },
-  //     ];
-
-  //     const totalOrders = await this.cartModel
-  //       .aggregate(aggregateOptions)
-  //       .count('total');
-  //     const orders = await this.cartModel.aggregate(aggregateOptions);
-
-  //     return {
-  //       status: true,
-  //       orders,
-  //       totalOrders,
-  //       page: currentPage,
-  //       limit: itemsPerPage,
-  //     };
-  //   } catch (error) {
-  //     throw new BadRequestException(error);
-  //   }
-  // }
 
   async paymentOrderWithCOD(req: RequestWithRawBody) {
     try {

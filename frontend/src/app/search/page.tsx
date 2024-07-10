@@ -1,20 +1,22 @@
 "use client";
 import AppHeader from "@/components/appHeader";
 import styles from "./search.module.css";
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import {useEffect, useState} from "react";
+import {useRouter, useSearchParams} from "next/navigation";
 import Cookies from "js-cookie";
-import { Image } from "react-bootstrap";
-import { RootState, useAppSelector } from "@/redux/store";
+import {Image} from "react-bootstrap";
+import {RootState, useAppSelector} from "@/redux/store";
 import axios from "axios";
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
 import ReactPaginate from "react-paginate";
+import {Spin} from "antd";
 
 export default function SearchPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = searchParams.get("page");
   const [userActive, setUserActive] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const userActiveCookie = Cookies.get("userActive");
     setUserActive(userActiveCookie || "");
@@ -41,7 +43,7 @@ export default function SearchPage() {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const { data } = await axios.post(
+        const {data} = await axios.post(
           `${process.env.BASE_HOST}/product/get-products-by-brand?s=${keySearchRedux}&page=${currentPage}&limit=${itemsPerPage}`,
           {
             brand: "",
@@ -62,19 +64,34 @@ export default function SearchPage() {
     getProducts();
   }, [currentPage, itemsPerPage, keySearchRedux]);
 
-  const handlePageClick = ({ selected }: { selected: number }) => {
+  const handlePageClick = ({selected}: {selected: number}) => {
     setCurrentPage(selected + 1);
     router.push(`?page=${selected + 1}&limit=${itemsPerPage}`);
   };
 
+  const contentStyle: React.CSSProperties = {
+    padding: 50,
+    background: "rgba(0, 0, 0, 0.05)",
+    borderRadius: 4,
+  };
+
+  const content = <div style={contentStyle} />;
+
   return (
     <div className={styles.container}>
       <AppHeader />
+      {isLoading && (
+        <div className={styles.loading}>
+          <Spin tip="Loading" size="large">
+            {content}
+          </Spin>
+        </div>
+      )}
       <div className={styles.main_content}>
         <div className={styles.main_content__container}>
           <div className={styles.text}>
             Kết quả tìm kiếm cho từ khóa &quot;
-            <span style={{ fontStyle: "italic" }}>
+            <span style={{fontStyle: "italic"}}>
               {keySearchRedux}
             </span> &quot;{" "}
           </div>
@@ -88,7 +105,7 @@ export default function SearchPage() {
                   (a, b) => ({
                     sold: (parseInt(a.sold) + parseInt(b.sold)).toString(),
                   }),
-                  { sold: "0" }
+                  {sold: "0"}
                 ).sold;
                 return (
                   <a
@@ -99,12 +116,13 @@ export default function SearchPage() {
                         ? "/buyer/signin"
                         : `/product/${product.slug}/${product._id}`
                     }
+                    onClick={() => setIsLoading(true)}
                   >
                     <div className={styles.product_container__image}>
                       <Image
                         src={product.variants[0].image}
                         alt=""
-                        style={{ height: "100%", width: "100%" }}
+                        style={{height: "100%", width: "100%"}}
                       />
                     </div>
                     <div className={styles.product_container__desc}>

@@ -1,7 +1,7 @@
 "use client";
 import {Button, Image} from "react-bootstrap";
 import styles from "./register-seller.module.css";
-import {Divider} from "antd";
+import {Divider, Modal} from "antd";
 import {useRouter} from "next/navigation";
 import {useState} from "react";
 import {getStogare, getToken} from "../helper/stogare";
@@ -54,8 +54,7 @@ export default function RegisterSellerPage() {
           }
         );
         if (data.status === true) {
-          toast.success(data.msg);
-          router.replace("/buyer");
+          showModalCommentSuccess();
         }
         if (data.status === false) {
           toast.error(data.msg);
@@ -100,6 +99,17 @@ export default function RegisterSellerPage() {
         checkedPolicy: "Vui lòng click chọn ô này trước khi đăng ký.",
       }));
     }
+  };
+
+  const showModalCommentSuccess = () => {
+    Modal.success({
+      content:
+        "Gửi yêu cầu thành công! Chúng tôi sẽ phản hồi qua email của bạn trong thời gian sớm nhất.",
+      onOk: () => {
+        setIsLoading(true);
+        router.replace("/buyer");
+      },
+    });
   };
 
   return (

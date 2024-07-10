@@ -74,6 +74,7 @@ export default function Signup() {
       content:
         "Chúc mừng bạn đã đăng ký tài khoản thành công. Hãy bắt đầu trải nghiệm nào!",
       onOk: () => {
+        setIsLoading(true);
         router.replace("/buyer");
       },
     });

@@ -169,7 +169,7 @@ export default function Cart() {
           }
         );
         if (data.status === true) {
-          setSelectedAddressId(data.address._id);
+          setSelectedAddressId(data?.address?._id);
         }
       } catch (error) {
         console.error(error);
@@ -180,7 +180,7 @@ export default function Cart() {
   }, []);
   //set up modal address
   const [openPickAddressModal, setOpenPickAddressModal] = useState(false);
-  const [selectedAddressId, setSelectedAddressId] = useState<string>();
+  const [selectedAddressId, setSelectedAddressId] = useState<string>("");
   const [selectedAddress, setSelectedAddress] = useState<IAddress | any>();
   useEffect(() => {
     const getAnAddress = async () => {
@@ -247,53 +247,57 @@ export default function Cart() {
   const dispatch = useAppDispatch();
   const handlePurchase = async () => {
     if (checkedList.length) {
-      setIsLoading(true);
-      dispatch(
-        getProductsCheckout({
-          checkedList,
-          quantityPurchase,
-          selectedAddressId,
-          selectedCouponId,
-          totalPriceBeforeApllyCoupon,
-        })
-      );
+      if (selectedAddressId) {
+        setIsLoading(true);
+        dispatch(
+          getProductsCheckout({
+            checkedList,
+            quantityPurchase,
+            selectedAddressId,
+            selectedCouponId,
+            totalPriceBeforeApllyCoupon,
+          })
+        );
 
-      const {data} = await axios.post(
-        `${process.env.BASE_HOST}/cart/get-carts-by-id`,
-        {
-          cartIds: checkedList,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const {data} = await axios.post(
+          `${process.env.BASE_HOST}/cart/get-carts-by-id`,
+          {
+            cartIds: checkedList,
           },
-        }
-      );
-      const orderItems = data.products.map((item: any) => {
-        return {
-          cartId: item.cartId,
-          productId: item.productId,
-          variantId: item.variantId,
-          quantity: item.quantity,
-          price: item.price,
-        };
-      });
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const orderItems = data.products.map((item: any) => {
+          return {
+            cartId: item.cartId,
+            productId: item.productId,
+            variantId: item.variantId,
+            quantity: item.quantity,
+            price: item.price,
+          };
+        });
 
-      await axios.post(
-        `${process.env.BASE_HOST}/order/create-order`,
-        {
-          user: currentUser._id,
-          addressId: selectedAddressId,
-          couponId: selectedCouponId || "",
-          orderItems,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        await axios.post(
+          `${process.env.BASE_HOST}/order/create-order`,
+          {
+            user: currentUser._id,
+            addressId: selectedAddressId,
+            couponId: selectedCouponId || "",
+            orderItems,
           },
-        }
-      );
-      router.replace(`/checkout`);
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        router.replace(`/checkout`);
+      } else {
+        toast.warning("Vui lòng thêm địa chỉ giao hàng.");
+      }
     } else {
       toast.warning("Vui lòng chọn ít nhất 1 sản phẩm.");
     }
@@ -346,7 +350,12 @@ export default function Cart() {
                                 />
                                 <div className={styles.title}>
                                   {option.name} (
-                                  {ProductConstant.COLOR[option.color as keyof typeof ProductConstant.COLOR]})
+                                  {
+                                    ProductConstant.COLOR[
+                                      option.color as keyof typeof ProductConstant.COLOR
+                                    ]
+                                  }
+                                  )
                                 </div>
                               </div>
                               <div className={styles.unit_price}>

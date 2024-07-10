@@ -141,21 +141,13 @@ export default function ViewDetailProduct({params}: {params: {slug: string}}) {
   const handleUpdateProduct = async () => {
     const newSpecificationError = {
       screen_size:
-        dataInput.specifications.screen_size === ""
+        specifications.screen_size === ""
           ? "Vui lòng nhập kích thước màn hình."
           : "",
       memory:
-        dataInput.specifications.memory === ""
-          ? "Vui lòng nhập bộ nhớ điện thoại."
-          : "",
-      pin:
-        dataInput.specifications.pin === ""
-          ? "Vui lòng nhập dung lượng pin."
-          : "",
-      ram:
-        dataInput.specifications.ram === ""
-          ? "Vui lòng nhập dung lượng RAM."
-          : "",
+        specifications.memory === "" ? "Vui lòng nhập bộ nhớ điện thoại." : "",
+      pin: specifications.pin === "" ? "Vui lòng nhập dung lượng pin." : "",
+      ram: specifications.ram === "" ? "Vui lòng nhập dung lượng RAM." : "",
     };
     const hasSpecificationsError = Object.values(newSpecificationError).some(
       (error) => error !== ""
@@ -338,7 +330,11 @@ export default function ViewDetailProduct({params}: {params: {slug: string}}) {
                   className={styles.input}
                   value={dataInput.name}
                   onChange={(e) => {
-                    setDataInput((prev) => ({...prev, name: e.target.value}));
+                    setDataInput((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                      slug: slugify(e.target.value),
+                    }));
                     setDataInputError((prev) => ({...prev, name: ""}));
                   }}
                 />

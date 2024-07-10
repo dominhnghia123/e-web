@@ -50,6 +50,7 @@ export default function ViewDetailProduct({params}: {params: {slug: string}}) {
           toast.error(data.msg);
         }
         if (type === "buyNow") {
+          setIsLoading(true);
           router.replace("/cart");
         }
       } else {

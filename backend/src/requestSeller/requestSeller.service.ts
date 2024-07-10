@@ -83,12 +83,12 @@ export class RequestSellerService {
         },
       );
 
-      const message = `Congratulations, \nYour request to register to sell on Shopify has been accepted. Please exit the system and log back in to use the service.\nThank you for trusting and supporting us.`;
+      const message = `Chúc mừng,\nYêu cầu đăng ký bán hàng trên Shopify của bạn đã được quản trị viên chấp nhận. Vui lòng thoát khỏi hệ thống và đăng nhập lại để sử dụng dịch vụ.\n Cảm ơn đã tin tưởng và ủng hộ chúng tôi.`;
 
       const dataPayload = {
         to: email,
         text: message,
-        subject: 'Register to seller successfully.',
+        subject: 'Đăng ký bán hàng thành công.',
       };
       await this.appService.sendEmail(dataPayload);
 
@@ -125,12 +125,12 @@ export class RequestSellerService {
         },
       );
 
-      const message = `Notifycation: Your request to register to sell on Shopify was rejected. Please check and try again.`;
+      const message = `Thông báo: Yêu cầu đăng ký bán hàng của bạn đã bị từ chối. Vui lòng kiểm tra và thử lại.`;
 
       const dataPayload = {
         to: email,
         text: message,
-        subject: 'Register to seller failed.',
+        subject: 'Đăng ký bán hàng thất bại.',
       };
       await this.appService.sendEmail(dataPayload);
 
