@@ -11,7 +11,7 @@
 
 # Bước 3: 
 - Đối với folder backend, copy file .env.example và đổi tên file là .env
-- Sau đó điền các biến môi trường của mình vào
+- Sau đó điền các biến môi trường của mình
 
 # Bước 4: 
 - Đối với folder backend (server), chạy lệnh npm run server để kết nối với server ở cổng 8000
