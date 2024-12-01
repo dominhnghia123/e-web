@@ -11,11 +11,11 @@ export class UpdateCouponDto {
   @IsNotEmpty({ message: 'Điền tên người được hưởng.' })
   userId: User;
 
-  @ApiProperty({ example: 'Voucher mùa hè' })
+  @ApiProperty({ example: 'Voucher cuối năm' })
   @IsNotEmpty({ message: 'Điền tên khuyến mãi.' })
   name: string;
 
-  @ApiProperty({ example: '2024-03-10' })
+  @ApiProperty({ example: '2024-11-15' })
   @IsNotEmpty({ message: 'Điền ngày hết hạn khuyến mãi.' })
   expiry: string;
 

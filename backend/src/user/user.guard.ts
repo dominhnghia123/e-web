@@ -36,7 +36,7 @@ export class UserGuard implements CanActivate {
       });
 
       if (!currentUser) {
-        throw new ForbiddenException('Not found user!!!');
+        throw new ForbiddenException('Không tìm thấy user!!!');
       }
 
       request['user'] = {

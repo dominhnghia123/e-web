@@ -2,11 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
 export class CreateProductDto {
-  @ApiProperty({ example: 'Iphone 11' })
+  @ApiProperty({ example: 'Iphone 15' })
   @IsNotEmpty({ message: 'Vui lòng điền tên sản phẩm.' })
   name: string;
 
-  @ApiProperty({ example: 'Iphone-11' })
+  @ApiProperty({ example: 'Iphone-15' })
   @IsNotEmpty({ message: 'Vui lòng điền slug.' })
   slug: string;
 

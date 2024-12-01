@@ -10,7 +10,7 @@ export class UpdateUserDto {
   @IsOptional()
   gender: string;
 
-  @ApiProperty({ example: '2024-03-08T03:59:22.164+00:00' })
+  @ApiProperty({ example: '2024-11-15T03:59:22.164+00:00' })
   @IsOptional()
   birthday: string;
 

@@ -36,11 +36,11 @@ export class AdminGuard implements CanActivate {
       });
 
       if (!currentUser) {
-        throw new ForbiddenException('Not found user!!!');
+        throw new ForbiddenException('Không tìm thấy user!!!');
       }
 
       if (currentUser && currentUser.role !== 'admin') {
-        throw new ForbiddenException('You are not an admin');
+        throw new ForbiddenException('Bạn không phải admin');
       }
 
       request['user'] = {

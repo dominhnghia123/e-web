@@ -6,7 +6,7 @@ export class CreateAddressDto {
   @IsNotEmpty({ message: 'Username cannot be empty' })
   username: string;
 
-  @ApiProperty({ example: '0975191025' })
+  @ApiProperty({ example: '0374681416' })
   @IsNotEmpty({ message: 'Phone cannot be empty' })
   phone: string;
 

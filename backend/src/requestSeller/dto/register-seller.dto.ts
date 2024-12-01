@@ -6,15 +6,15 @@ export class RegisterSellerDto {
   @IsNotEmpty({ message: 'Vui lòng điền tên cửa hàng.' })
   shopName: string;
 
-  @ApiProperty({ example: 'Hồ đền lừ' })
+  @ApiProperty({ example: 'Khương Trung' })
   @IsNotEmpty({ message: 'Vui lòng điền địa chỉ lấy hàng.' })
   addressGetGoods: string;
 
-  @ApiProperty({ example: '026202005876' })
+  @ApiProperty({ example: '036202010705' })
   @IsNotEmpty({ message: 'Vui lòng nhập căn cước công dân.' })
   cccd: string;
 
-  @ApiProperty({ example: 'Nguyễn Văn Hiển' })
+  @ApiProperty({ example: 'Đỗ Minh Nghĩa' })
   @IsNotEmpty({ message: 'Vui lòng nhập đầy đủ họ và tên theo CCCD.' })
   fullName: string;
 }
