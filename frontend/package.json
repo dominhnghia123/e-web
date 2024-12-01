@@ -20,7 +20,7 @@
     "dotenv": "^16.4.5",
     "js-cookie": "^3.0.5",
     "moment": "^2.30.1",
-    "next": "14.1.3",
+    "next": "^15.0.0-canary.193",
     "react": "^18",
     "react-bootstrap": "^2.10.2",
     "react-chartjs-2": "^5.2.0",
