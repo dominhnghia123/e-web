@@ -144,12 +144,12 @@ export default function SearchPage() {
             </div>
             <div className={styles.pagination_container}>
               <ReactPaginate
-                nextLabel="next >"
+                nextLabel=" >"
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={3}
                 marginPagesDisplayed={2}
                 pageCount={pageCount}
-                previousLabel="< previous"
+                previousLabel="< "
                 pageClassName={styles.page_item}
                 pageLinkClassName={styles.page_link}
                 previousClassName={styles.page_item}

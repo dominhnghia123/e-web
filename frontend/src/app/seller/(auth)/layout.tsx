@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation";
 import styles from "./auth.module.css";
 import { Container, Image } from "react-bootstrap";
 import AppFooter from "@/components/appFooter";
+import { FaShopify } from "react-icons/fa";
 
 export default function SellerLayout({
   children,
@@ -16,15 +17,11 @@ export default function SellerLayout({
         <div className={styles.nav_content}>
           <div className={styles.nav_content__left}>
             <div className={styles.nav_content__left__title}>
-              <Image
-                src="/images/shopify-icon.jpg"
-                alt="avatar"
-                height={35}
-                width={35}
-                style={{ borderRadius: "50px" }}
+              <FaShopify
+                className={styles.main_container__content_header__logo_shops}
               />
-              <a href="/" className={styles.nav_content__left__shopify}>
-                Shopify
+              <a href="/" className={styles.nav_content__left__shops}>
+                ShopS
               </a>
             </div>
             <div className={styles.nav_content__left__signin}>

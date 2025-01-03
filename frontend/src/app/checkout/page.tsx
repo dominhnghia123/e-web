@@ -255,13 +255,13 @@ export default function Checkout() {
                             </div>
                           </div>
                           <div className={`${styles.unit_price}`}>
-                            {option.price} đ
+                          {Number(option.price).toLocaleString("vi-VN")}
                           </div>
                           <div className={`${styles.quantity}`}>
                             {option.quantity}
                           </div>
                           <div className={`${styles.total_money}`}>
-                            {option.price * option.quantity} đ
+                          {Number(option.price * option.quantity).toLocaleString("vi-VN")}
                           </div>
                         </div>
                       </div>
@@ -327,7 +327,7 @@ export default function Checkout() {
                   <div className={styles.calc_money_temp}>
                     <div className={styles.calc_money_text}>Tạm tính</div>
                     <div className={styles.calc_money_temp__value}>
-                      {totalPriceBeforeApllyCoupon} đ
+                     {Number(totalPriceBeforeApllyCoupon).toLocaleString("vi-VN")}vnđ
                     </div>
                   </div>
                   {selectedCoupon && (
@@ -345,12 +345,11 @@ export default function Checkout() {
                   <div className={styles.calc_money_total}>
                     <div className={styles.calc_money_text}>Thành tiền</div>
                     <div className={styles.calc_money_total__value}>
-                      {selectedCoupon
+                    {Number(selectedCoupon
                         ? (parseFloat(totalPriceBeforeApllyCoupon) *
                             (100 - selectedCoupon?.discount)) /
                           100
-                        : parseFloat(totalPriceBeforeApllyCoupon)}
-                      đ
+                        : parseFloat(totalPriceBeforeApllyCoupon)).toLocaleString("vi-VN")}vnđ
                     </div>
                   </div>
                 </div>

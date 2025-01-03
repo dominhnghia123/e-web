@@ -1,6 +1,6 @@
 "use client";
 import {Button} from "react-bootstrap";
-import {BsCart4} from "react-icons/bs";
+import {FiShoppingCart} from "react-icons/fi";
 import {FaShopify} from "react-icons/fa6";
 import styles from "../app/app.module.css";
 import Cookies from "js-cookie";
@@ -138,7 +138,7 @@ export default function AppHeader(props: IProps) {
                 className={styles.header__header_top__nav_container__left__link}
                 onClick={() => props.setIsLoading?.(true)}
               >
-                Kênh người bán
+                Trang người bán
               </a>
               {userActive !== "1" && (
                 <a
@@ -148,7 +148,7 @@ export default function AppHeader(props: IProps) {
                   }
                   onClick={() => props.setIsLoading?.(true)}
                 >
-                  Trở thành người bán Shopify
+                  Trở thành người bán ShopS
                 </a>
               )}
             </div>
@@ -225,7 +225,7 @@ export default function AppHeader(props: IProps) {
                 }
                 onClick={() => props.setIsLoading?.(true)}
               >
-                Shopify
+                ShopS
               </a>
             </div>
             <div
@@ -268,7 +268,7 @@ export default function AppHeader(props: IProps) {
             <div
               className={styles.header__header_bottom__container__cart_section}
             >
-              <BsCart4
+              <FiShoppingCart
                 onClick={() => {
                   props.setIsLoading?.(true);
                   userActive !== "1"

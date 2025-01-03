@@ -95,7 +95,7 @@ export default function Seller() {
     {
       id: 1,
       title: "Doanh thu",
-      content: `${totalSalesAllMonth} VND`,
+      content: `${Number(totalSalesAllMonth).toLocaleString("vi-VN")} VND`,
     },
     {
       id: 2,

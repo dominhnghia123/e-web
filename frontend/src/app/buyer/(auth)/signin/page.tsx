@@ -161,7 +161,7 @@ export default function Signin() {
       </div>
       <div className={styles.bottom_container}>
         <div className={styles.bottom_container__content}>
-          Bạn mới biết đến Shopify?
+          Bạn mới biết đến ShopS?
           <a
             href="/buyer/signup"
             className={styles.bottom_container__content__link}

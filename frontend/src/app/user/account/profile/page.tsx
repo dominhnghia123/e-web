@@ -27,7 +27,10 @@ export default function ViewProfile() {
   const [isLoading, setIsLoading] = useState(false);
 
   const currentUserString = getStogare("currentUser");
-  const currentUser = JSON.parse(currentUserString);
+  let currentUser = null;
+  if(currentUserString) {
+    currentUser = JSON.parse(currentUserString);
+  }
   const token = getToken();
 
   //get profile

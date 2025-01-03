@@ -7,6 +7,7 @@ import {useState} from "react";
 import axios, {AxiosError} from "axios";
 import {toast} from "react-toastify";
 import {Modal, Spin} from "antd";
+import { FaShopify } from "react-icons/fa";
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -131,19 +132,15 @@ export default function ResetPassword() {
         <div className={styles.nav_content}>
           <div className={styles.nav_content__left}>
             <div className={styles.nav_content__left__title}>
-              <Image
-                src="/images/shopify-icon.jpg"
-                alt="avatar"
-                height={35}
-                width={35}
-                style={{borderRadius: "50px"}}
+            <FaShopify
+                className={styles.main_container__content_header__logo_shops}
               />
               <a
                 href="/"
                 className={styles.nav_content__left__shopify}
                 onClick={() => setIsLoading(true)}
               >
-                Shopify
+                ShopS
               </a>
             </div>
             <div className={styles.nav_content__left__signin}>

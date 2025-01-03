@@ -151,7 +151,7 @@ export default function Login() {
               className={styles.button}
               onClick={(e) => handleLogin(e)}
             >
-              Log in
+              Đăng nhập
             </Button>
           </div>
         </form>

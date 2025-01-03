@@ -1,6 +1,6 @@
 import { Button } from "react-bootstrap";
-import { FaFacebookF, FaTwitter } from "react-icons/fa";
-import { IoLogoInstagram } from "react-icons/io";
+import { FaFacebook, FaTwitter } from "react-icons/fa";
+import { FaInstagramSquare } from "react-icons/fa";
 import styles from "../app/app.module.css";
 
 export default function AppFooter() {
@@ -10,27 +10,22 @@ export default function AppFooter() {
         <div className={styles.footer_container__top}>
           <div className={styles.footer_container__top__left}>
             <div className={styles.footer_container__top__left__column}>
-              <div className={styles.title}>SHOP</div>
-              <div className={styles.option}>Drinks</div>
-              <div className={styles.option}>Gift Cards</div>
-              <div className={styles.option}>Store Locator</div>
-              <div className={styles.option}>Refer a Friend</div>
+              <div className={styles.title}>Cửa Hàng</div>
+              <div className={styles.option}>Phiếu giảm giá</div>
+              <div className={styles.option}>Tìm kiếm cửa hàng</div>
+              <div className={styles.option}>Giới thiệu bạn bè</div>
             </div>
             <div className={styles.footer_container__top__left__column}>
-              <div className={styles.title}>HELP</div>
-              <div className={styles.option}>Contact Us</div>
-              <div className={styles.option}>FAQ</div>
-              <div className={styles.option}>Accessibility</div>
+              <div className={styles.title}>Hỗ trợ</div>
+              <div className={styles.option}>Liên hệ với chúng tôi</div>
+              <div className={styles.option}>Câu hỏi thường gặp</div>
+              <div className={styles.option}>Phương thức thanh toán</div>
             </div>
             <div className={styles.footer_container__top__left__column}>
-              <div className={styles.title}>ABOUT</div>
-              <div className={styles.option}>Our Story</div>
-              <div className={styles.option}>OLIPOP Digest</div>
-              <div className={styles.option}>Ingredients</div>
-              <div className={styles.option}>Digestive Health</div>
-              <div className={styles.option}>Wholesale</div>
-              <div className={styles.option}>Press</div>
-              <div className={styles.option}>Careers</div>
+              <div className={styles.title}>Về chúng tôi</div>
+              <div className={styles.option}>Tin tức</div>
+              <div className={styles.option}>Giới thiệu</div>
+              <div className={styles.option}>Tuyển dụng</div>
             </div>
           </div>
           <div className={styles.footer_container__top__right}>
@@ -38,7 +33,7 @@ export default function AppFooter() {
               <div
                 className={styles.footer_container__top__right__container__text}
               >
-                Sign up to get 10% off your first order
+                Đăng ký nhận giảm giá 5% cho đơn hàng đầu tiên
               </div>
               <div
                 className={
@@ -53,7 +48,7 @@ export default function AppFooter() {
                 >
                   <input
                     type="email"
-                    placeholder="Your Email Address"
+                    placeholder="Email của bạn"
                     className={
                       styles.footer_container__top__right__container__search__form__input
                     }
@@ -63,15 +58,15 @@ export default function AppFooter() {
                       styles.footer_container__top__right__container__search__form__button
                     }
                   >
-                    Subcribe
+                    Đăng ký
                   </Button>
                 </form>
               </div>
               <div
                 className={styles.footer_container__top__right__container__icon}
               >
-                <IoLogoInstagram className={styles.icon} />
-                <FaFacebookF className={styles.icon} />
+                <FaInstagramSquare className={styles.icon} />
+                <FaFacebook className={styles.icon} />
                 <FaTwitter className={styles.icon} />
               </div>
             </div>
@@ -79,26 +74,20 @@ export default function AppFooter() {
         </div>
         <div className={styles.footer_container__bottom}>
           <div className={styles.footer_container__bottom__left}>
-            2024 Olipop, Inc.All Rights Reserved
+            2024 ShopS All Rights Reserved
           </div>
           <div className={styles.footer_container__bottom__right}>
             <a
               href="#"
               className={styles.footer_container__bottom__right__link}
             >
-              Term of Service
+              Điều khoản dịch vụ
             </a>
             <a
               href="#"
               className={styles.footer_container__bottom__right__link}
             >
-              Privacy Policy
-            </a>
-            <a
-              href="#"
-              className={styles.footer_container__bottom__right__link}
-            >
-              Do Not Sell My Information
+              Chính sách bảo mật
             </a>
           </div>
         </div>

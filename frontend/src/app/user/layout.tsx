@@ -22,11 +22,15 @@ export const PageContext = createContext<PageContextType>({
 export default function AccountLayout({children}: {children: React.ReactNode}) {
   const pathname = usePathname();
   const currentUserString = getStogare("currentUser");
+  console.log("currentUserString", currentUserString);
+  
   let currentUser = null;
-  try {
-    currentUser = JSON?.parse(currentUserString);
-  } catch (e) {
-    console.error("Error parsing currentUserString:", e);
+  if(currentUserString){
+    try {
+      currentUser = JSON.parse(currentUserString);
+    } catch (e) {
+      console.error("Error parsing currentUserString:", e);
+    }
   }
   const token = getToken();
   //get profile
@@ -73,9 +77,10 @@ export default function AccountLayout({children}: {children: React.ReactNode}) {
           <div className={styles.sidebar}>
             <div className={styles.avatar_username_container}>
               <Image
-                src={profile.avatar ? profile.avatar : "/images/avatar.jpg"}
-                alt=""
-                className={styles.avatar}
+               src={profile.avatar ? profile.avatar : "/images/avatar.jpg"}
+               alt="Avatar"
+               className={styles.avatar}
+               onError={(e) => (e.target.src = "/images/avatar.jpg")}
               />
               <div className={styles.username}>{profile.username}</div>
             </div>

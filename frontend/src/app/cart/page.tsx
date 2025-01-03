@@ -237,7 +237,7 @@ export default function Cart() {
           toast.error(data.msg);
         }
       } catch (error) {
-        console.error(error);
+        // console.error(error);
       }
     };
     getACoupon();
@@ -359,7 +359,7 @@ export default function Cart() {
                                 </div>
                               </div>
                               <div className={styles.unit_price}>
-                                {option.price} đ
+                              {Number(option.price).toLocaleString("vi-VN")}
                               </div>
                               <InputNumber
                                 min={1}
@@ -371,7 +371,7 @@ export default function Cart() {
                                 value={option.quantity}
                               />
                               <div className={styles.total_price_for_item}>
-                                {option.price * option.quantity} đ
+                                {Number(option.price * option.quantity).toLocaleString("vi-VN")}
                               </div>
                             </div>
                             <RiDeleteBin6Line
@@ -435,7 +435,7 @@ export default function Cart() {
                     <div className={styles.calc_money_temp}>
                       <div className={styles.calc_money_text}>Tạm tính</div>
                       <div className={styles.calc_money_temp__value}>
-                        {totalPriceBeforeApllyCoupon} đ
+                       {Number(totalPriceBeforeApllyCoupon).toLocaleString("vi-VN")} vnđ
                       </div>
                     </div>
                     {selectedCoupon && (
@@ -455,12 +455,12 @@ export default function Cart() {
                     <div className={styles.calc_money_total}>
                       <div className={styles.calc_money_text}>Thành tiền</div>
                       <div className={styles.calc_money_total__value}>
-                        {selectedCoupon
+                      {Number(selectedCoupon
                           ? (totalPriceBeforeApllyCoupon *
                               (100 - selectedCoupon?.discount)) /
                             100
-                          : totalPriceBeforeApllyCoupon}
-                        đ
+                          : totalPriceBeforeApllyCoupon).toLocaleString("vi-VN")} vnđ
+                        
                       </div>
                     </div>
                   </div>

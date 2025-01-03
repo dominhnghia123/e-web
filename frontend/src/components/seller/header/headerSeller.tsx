@@ -63,7 +63,7 @@ export default function HeaderSeller(props: IProps) {
               className={styles.header__content__left__link}
               onClick={() => setIsLoading(true)}
             >
-              Shopify
+              ShopS
             </a>
           </div>
           <div className={styles.header__content__right}>
@@ -82,7 +82,7 @@ export default function HeaderSeller(props: IProps) {
                   className={styles.option_menu}
                   onClick={() => setIsLoading(true)}
                 >
-                  Kênh người mua
+                  Trang người mua
                 </a>
                 <a
                   className={styles.option_menu}

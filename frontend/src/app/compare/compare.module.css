@@ -1,0 +1,108 @@
+.container {
+    width: 100%;
+    height: auto;
+  }
+  .main_content {
+    margin-top: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .main_content__container {
+    width: 80%;
+    height: 100%;
+    margin-top: 20px;
+  }
+  .text{
+      font-size: 10px;
+      font-weight: 500;
+  }
+  .horizontalView {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-around;
+  }
+  
+  .productCard {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    width: 250px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+  }
+  
+  .productCard:hover {
+    transform: translateY(-5px);
+  }
+  
+  .productImage {
+    width: 250px;  
+    height: 300px;
+    object-fit: cover; 
+  }
+  
+  .emptyState {
+    text-align: center;
+    margin-top: 50px;
+  }
+  .price {
+    color: red;
+    font-weight: bold;
+  }
+  .button_remove {
+    background-color: red;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    padding: 5px 10px;
+  }
+  .specificationsList {
+    list-style-type: disc; /* Show bullet points */
+    padding-left: 10px; /* Reduce space between bullet and text */
+    margin: 0; /* Remove any default margin */
+  }
+  
+  .specificationsList li {
+    margin-bottom: 8px; /* Space between list items */
+    padding-left: 0; /* Remove extra padding on the left */
+    text-align: left; /* Align text to the left */
+  }
+  .starIcon {
+    color: gold; /* Color the star gold */
+    font-size: 16px; /* Adjust size of the star */
+    margin-left: 5px; /* Space between rating number and star */
+  }
+  .clearAllButton {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 5px 15px;
+    border: none;
+    cursor: pointer;
+    margin-left: 20px;
+    font-size: 16px;
+    border-radius: 25px; /* Makes the button rounded */
+  }
+  
+  .clearAllButton:hover {
+    background-color: #ff0000;
+  }
+  .button_back {
+    background-color: #ff7f00; /* Orange color */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 25px; /* Rounded corners */
+    text-align: center;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button_back:hover {
+    background-color: #e66a00; /* Darker orange on hover */
+  }
+  

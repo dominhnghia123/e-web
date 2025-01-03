@@ -70,7 +70,7 @@ export default function Signup() {
       <title>Đăng ký tài khoản</title>
       <div className={styles.main_container__content_left}>
         <div className={styles.main_container__content_left__title}>
-          Shopify Việt Nam
+          ShopS Việt Nam
         </div>
         <div className={styles.main_container__content_left__title_second}>
           Trở thành người bán ngay hôm nay
@@ -79,7 +79,7 @@ export default function Signup() {
           <SiHomeassistantcommunitystore
             className={styles.main_container__content_left__title_third__icon}
           />
-          <div>Nền tảng thương mại điện tử hàng đầu Đông Nam Á & Đài Loan</div>
+          <div>Nền tảng thương mại điện tử sô 1 Việt Nam</div>
         </div>
         <div className={styles.main_container__content_left__title_third}>
           <FaGift
@@ -159,7 +159,7 @@ export default function Signup() {
             </div>
           </div>
           <div className={styles.policy_container}>
-            Bằng việc đăng kí, bạn đã đồng ý với Shopee về{" "}
+            Bằng việc đăng kí, bạn đã đồng ý với ShopS về{" "}
             <span className={styles.policy_container__text_red}>
               Điều khoản dịch vụ
             </span>{" "}

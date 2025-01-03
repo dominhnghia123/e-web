@@ -2,7 +2,7 @@
 import { usePathname } from "next/navigation";
 import styles from "./auth.module.css";
 import { Container, Image } from "react-bootstrap";
-import { BiLogoShopify } from "react-icons/bi";
+import { FaShopify } from "react-icons/fa";
 import AppFooter from "@/components/appFooter";
 
 export default function BuyerLayout({
@@ -17,15 +17,11 @@ export default function BuyerLayout({
         <div className={styles.nav_content}>
           <div className={styles.nav_content__left}>
             <div className={styles.nav_content__left__title}>
-              <Image
-                src="/images/shopify-icon.jpg"
-                alt="avatar"
-                height={35}
-                width={35}
-                style={{ borderRadius: "50px" }}
+            <FaShopify
+                className={styles.main_container__content_header__logo_shops}
               />
-              <a href="/" className={styles.nav_content__left__shopify}>
-                Shopify
+              <a href="/" className={styles.nav_content__left__shops}>
+                ShopS
               </a>
             </div>
             <div className={styles.nav_content__left__signin}>
@@ -40,14 +36,14 @@ export default function BuyerLayout({
       <main className={styles.main}>
         <div className={styles.main_container}>
           <div className={styles.main_container__content_left}>
-            <BiLogoShopify
-              className={styles.main_container__content_left__logo_shopify}
+            <FaShopify
+              className={styles.main_container__content_left__logo_shops}
             />
             <div className={styles.main_container__content_left__brand}>
-              SHOPIFY
+              ShopS
             </div>
             <div className={styles.main_container__content_left__text}>
-              Nền tảng thương mại điện tử yêu thích ở Đông Nam Á & Đài Loan
+              Nền tảng thương mại điện tử số 1 Việt Nam
             </div>
           </div>
           <Container className={styles.main_container__children}>

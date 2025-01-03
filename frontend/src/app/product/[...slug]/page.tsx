@@ -13,6 +13,7 @@ import {toast} from "react-toastify";
 import {getToken} from "@/app/helper/stogare";
 import {useRouter} from "next/navigation";
 import {ProductConstant} from "@/app/helper/constant/ProductConstant";
+import { FaCodeCompare } from "react-icons/fa6";
 
 export default function ViewDetailProduct({params}: {params: {slug: string}}) {
   const token = getToken();
@@ -20,6 +21,7 @@ export default function ViewDetailProduct({params}: {params: {slug: string}}) {
   const [isLoading, setIsLoading] = useState(false);
 
   const [quantity, setQuantity] = useState<number | any>(1);
+
   const onChangeQuantity: InputNumberProps["onChange"] = (value) => {
     setQuantity(value);
   };
@@ -60,6 +62,32 @@ export default function ViewDetailProduct({params}: {params: {slug: string}}) {
       console.error(error);
     }
     setIsLoading(false);
+  };
+  const [compareList, setCompareList] = useState<IProduct[]>([]);
+  const handleAddToCompare = () => {
+    if (product) {
+      const storedCompareList = localStorage.getItem("compareList");
+      const compareList = storedCompareList ? JSON.parse(storedCompareList) : [];
+
+      if (compareList.length >= 4) {
+        toast.warning("Danh sách so sánh chỉ có thể chứa tối đa 4 sản phẩm.");
+        return;
+      }
+      const exists = compareList.find((item) => item._id === product._id);
+      if (exists) {
+        toast.warning("Sản phẩm này đã có trong danh sách so sánh.");
+        return;
+      }
+      
+      setCompareList((prev) => [...prev, product]);
+      const updatedList = [...compareList, product];
+      localStorage.setItem("compareList", JSON.stringify(updatedList));
+      toast.success("Đã thêm sản phẩm vào danh sách so sánh!");
+    }
+  };
+
+  const handleViewCompare = () => {
+    router.push("/compare");
   };
 
   //get detail product
@@ -197,7 +225,7 @@ export default function ViewDetailProduct({params}: {params: {slug: string}}) {
                 </div>
               </div>
               <div className={styles.price_product}>
-                {product?.variants[selectedVariant]?.price} vnđ
+              {Number(product?.variants[selectedVariant].price).toLocaleString("vi-VN")} vnđ
               </div>
               <div className={styles.detail_order_info}>
                 <div className={styles.intro_product}>
@@ -272,6 +300,21 @@ export default function ViewDetailProduct({params}: {params: {slug: string}}) {
                   Mua ngay
                 </Button>
               </div>
+              <div className={styles.buttons_container}>
+            <Button
+              className={`${styles.button} ${styles.compare}`}
+              onClick={handleAddToCompare}
+            >
+              <FaCodeCompare className={styles.iconCompare} />
+              Thêm vào so sánh
+            </Button>
+            <Button
+              className={`${styles.button} ${styles.viewCompare}`}
+              onClick={handleViewCompare}
+            >
+              Xem danh sách so sánh
+            </Button>
+          </div>
             </div>
           </div>
           <div className={styles.detail_product_part}>

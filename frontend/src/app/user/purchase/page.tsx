@@ -93,7 +93,7 @@ export default function PurchasePage() {
           }
         );
         if (data.status === true) {
-          setSelectedAddressId(data.address._id);
+          setSelectedAddressId(data.address?._id);
         }
       } catch (error) {
         console.error(error);
@@ -134,6 +134,8 @@ export default function PurchasePage() {
   ) => {
     setIsLoading(true);
     const orderItems = [{cartId, productId, variantId, quantity, price}];
+    console.log("123", selectedAddressId);
+    
     try {
       const {data} = await axios.post(
         `${process.env.BASE_HOST}/order/create-order`,
@@ -200,7 +202,7 @@ export default function PurchasePage() {
     variantId: string,
     quantity: string,
     price: string
-  ) => {
+  ) => {  
     switch (status) {
       case listStatusCart[1]:
         return (
@@ -332,12 +334,12 @@ export default function PurchasePage() {
                     <div className={styles.qty}>x{cart.quantity}</div>
                   </div>
                 </div>
-                <div className={styles.unit_price}>{cart.price} vnđ</div>
+                <div className={styles.unit_price}>{Number(cart.price).toLocaleString("vi-VN")} vnđ</div>
               </div>
               <Divider />
               <div className={styles.cart_bottom}>
                 <div className={styles.total_price}>
-                  Thành tiền: {total_price} vnđ
+                  Thành tiền: {Number(total_price).toLocaleString("vi-VN")} vnđ
                 </div>
                 {getDisplayBtn(
                   cart.status_delivery,

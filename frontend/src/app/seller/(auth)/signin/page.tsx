@@ -88,12 +88,12 @@ export default function Signin() {
           Bán hàng chuyên nghiệp
         </div>
         <div className={styles.main_container__content_left__text}>
-          Quản lý shop của bạn một cách hiệu quả hơn trên Shopify với Shopify -
+          Quản lý shop của bạn một cách hiệu quả hơn trên ShopS với ShopS -
           Kênh người bán
         </div>
         <Image
           src="/images/image-ban-hang.png"
-          alt=""
+          alt="ban-hang"
           className={styles.main_container__content_left__image}
         />
       </div>
@@ -166,7 +166,7 @@ export default function Signin() {
                   Tài khoản của bạn chưa đăng ký trở thành người bán.
                 </span>
                 <span>
-                  Nhấn Ok để đến trang đăng ký trở thành người bán của Shopify.
+                  Nhấn Ok để đến trang đăng ký trở thành người bán của ShopS.
                 </span>
               </div>
             }
@@ -209,7 +209,7 @@ export default function Signin() {
         </div>
         <div className={styles.bottom_container}>
           <div className={styles.bottom_container__content}>
-            Bạn mới biết đến Shopify?
+            Bạn mới biết đến ShopS?
             <a
               href="/seller/signup"
               className={styles.bottom_container__content__link}

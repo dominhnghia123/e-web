@@ -73,7 +73,7 @@ export class Product {
 
   @Prop({ default: '0' })
   totalRatings: string;
-
+  
   _id: string;
 }
 

@@ -28,7 +28,7 @@ export class RequestSellerService {
     try {
       if (isSeller) {
         return {
-          msg: 'Bạn đã là người bán của NHShop rồi.',
+          msg: 'Bạn đã là người bán hàng của ShopS rồi.',
           status: false,
         };
       }
@@ -83,7 +83,7 @@ export class RequestSellerService {
         },
       );
 
-      const message = `Chúc mừng,\nYêu cầu đăng ký bán hàng trên NHShop của bạn đã được quản trị viên chấp nhận. Vui lòng thoát khỏi hệ thống và đăng nhập lại để sử dụng dịch vụ.\n Cảm ơn đã tin tưởng và ủng hộ chúng tôi.`;
+      const message = `Chúc mừng,\nYêu cầu đăng ký bán hàng trên ShopS của bạn đã được quản trị viên chấp nhận. Vui lòng thoát khỏi hệ thống và đăng nhập lại để sử dụng dịch vụ.\n Cảm ơn đã tin tưởng và ủng hộ chúng tôi.`;
 
       const dataPayload = {
         to: email,

@@ -118,7 +118,7 @@ export default function RegisterSellerPage() {
       <div className={styles.header}>
         <div className={styles.header_content}>
           <Image
-            src="./images/shopify-icon.jpg"
+            src="./images/avatar.jpg"
             alt=""
             className={styles.image}
           />
@@ -286,7 +286,7 @@ export default function RegisterSellerPage() {
               <span className={styles.policy_container__text_red}>
                 Chính sách bảo mật
               </span>{" "}
-              của Shopify.
+              của ShopS.
             </div>
           </div>
           {dataInputError.checkedPolicy && (

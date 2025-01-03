@@ -37,9 +37,11 @@ export class OrderService {
         user: userId,
         status: statusOrderEnum.pending,
       });
+      console.log("addressId", addressId);
+      
       const createOrder = await this.orderModel.create({
         user: userId,
-        address: addressId,
+        address: addressId || "",
         coupon: couponId,
         orderItems,
         totalPrice: totalPrice.toString(),
@@ -427,6 +429,8 @@ export class OrderService {
     const keySearch: string = req.query?.s?.toString();
     const currentPage: number = req.query.page as any;
     const itemsPerPage: number = req.query.limit as any;
+    console.log("dmmmmmmmmmmmmmmmm", sellerId);
+
     try {
       const options: any = {
         sellerId: sellerId,
@@ -447,6 +451,8 @@ export class OrderService {
         .populate('userId')
         .populate('productId')
         .sort({ createdAt: -1 });
+        console.log("orders", orders);
+        
 
       const page: number = currentPage || 1;
       const limit: number = itemsPerPage || 10;
@@ -458,26 +464,45 @@ export class OrderService {
         parseInt(skip.toString()) + parseInt(limit.toString()),
       );
 
+      console.log("bbbbbbbbbbbbbbbbbbb", data);
+      
       const findVariants = data.map((order: any) => {
         const variant = order.productId.variants.find(
           (item: any) => item._id.toString() === order.variantId.toString(),
         );
+        console.log("cccccccccdddddddc", {
+          cartId: order?._id,
+          image: variant?.image,
+          sold: variant?.sold,
+          color: variant?.color,
+          price: variant?.price,
+          quantity: order?.quantity,
+          status_delivery: order?.status_delivery,
+          buyername: order?.userId?.username,
+          productName: order?.productId?.name,
+          variantName: variant?.color,
+          createdAt: order?.createdAt,
+          updatedAt: order?.updatedAt,
+        });
+        
 
         return {
-          cartId: order._id,
-          image: variant.image,
-          sold: variant.sold,
-          color: variant.color,
-          price: variant.price,
-          quantity: order.quantity,
-          status_delivery: order.status_delivery,
-          buyername: order.userId.username,
-          productName: order.productId.name,
-          variantName: variant.color,
-          createdAt: order.createdAt,
-          updatedAt: order.updatedAt,
+          cartId: order?._id,
+          image: variant?.image,
+          sold: variant?.sold,
+          color: variant?.color,
+          price: variant?.price,
+          quantity: order?.quantity,
+          status_delivery: order?.status_delivery,
+          buyername: order?.userId?.username,
+          productName: order?.productId?.name,
+          variantName: variant?.color,
+          createdAt: order?.createdAt,
+          updatedAt: order?.updatedAt,
         };
       });
+      console.log("aaaaaaaaaaaaaaaa", findVariants);
+      
       return {
         status: true,
         orders: findVariants,

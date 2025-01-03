@@ -108,7 +108,7 @@ export default function Admin() {
     {
       id: 1,
       title: "Doanh thu",
-      content: `${totalSalesAllMonth} VND`,
+      content: `${Number(totalSalesAllMonth).toLocaleString("vi-VN")} VND`,
     },
     {
       id: 2,

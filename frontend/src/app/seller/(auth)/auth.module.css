@@ -1,5 +1,5 @@
 .container {
-  background-color: rgb(247, 247, 247);
+  background-color: red;
   width: 100%;
   height: auto;
   overflow: hidden;
@@ -23,6 +23,11 @@
   align-items: center;
   padding: 0 100px;
 }
+.main_container__content_header__logo_shops {
+  height: 40px;
+  width: 40px;
+  color: rgb(255, 255, 255);
+}
 .nav_content__left {
   display: flex;
   width: auto;
@@ -36,20 +41,20 @@
   justify-content: center;
   cursor: pointer;
 }
-.nav_content__left__shopify {
+.nav_content__left__shops {
   text-decoration: none;
-  color: red;
+  color: rgb(255, 255, 255);
   font-weight: bold;
   font-size: 22px;
 }
 .nav_content__left__signin {
   font-size: 18px;
-  color: black;
+  color: white;
 }
 .nav_content__right {
   text-decoration: none;
   font-size: 14px;
-  color: blue;
+  color: rgb(255, 255, 255);
 }
 
 /* main */

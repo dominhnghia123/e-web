@@ -30,7 +30,7 @@
   top: 0;
   width: 100%;
   height: 120px;
-  background-color: rgb(241, 179, 33);
+  background-color: red;
   display: flex;
   flex-direction: column;
   z-index: 1000;
@@ -158,7 +158,7 @@
   height: 100%;
   width: 85%;
   border: none;
-  border-radius: 5px;
+  border-radius: 7px;
   padding: 0 12px;
 }
 .header__header_bottom__container__search_section__form__input_container__input:hover {
@@ -238,6 +238,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  position: relative;
 }
 .sideBar__container .title {
   font-size: 24px;
@@ -327,7 +328,7 @@
   width: 15%;
   height: 280px;
   margin: 10px 9px;
-  background-color: rgb(248, 212, 218);
+  background-color: rgb(255, 255, 150);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -432,7 +433,7 @@
 .footer {
   width: 100%;
   height: 400px;
-  background-color: rgb(51, 51, 51);
+  background-color: rgb(255, 0, 0);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -533,7 +534,7 @@
   margin-left: 5px;
   border: none;
   border-radius: 15px;
-  background-color: rgb(207, 149, 50);
+  background-color: rgb(0, 162, 255);
   cursor: pointer;
 }
 .footer_container__top__right__container__search__form__button:hover {
@@ -566,4 +567,92 @@
   text-decoration: none;
   margin: 0 10px;
   color: rgb(247, 226, 226);
+}
+.brandIconsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9f9f9;
+  padding: 24px;
+  border-top: 1px solid #e0e0e0;
+  margin-top: 40px;
+  gap: 228px; 
+}
+
+.brandIcon {
+  text-align: center;
+  flex: 1; 
+}
+
+.brandIcon p {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.icon {
+  font-size: 60px;
+  color: #ff5722;
+}
+
+.title {
+  position: relative;
+  z-index: 15; 
+  cursor: pointer;
+  font-weight: bold;
+  padding: 10px; 
+  border-bottom: 1px solid #ddd; 
+}
+
+.arrow {
+  margin-left: 10px;
+  transition: transform 0.3s;
+}
+
+.arrow_up {
+  transform: rotate(180deg);
+}
+
+.arrow_down {
+  transform: rotate(0deg);
+}
+
+.optionsContainer {
+  position: absolute;
+  top: 50px; 
+  left: 0;
+  width: 100%;
+  background-color: white;
+  z-index: 10; 
+  transition: all 0.3s ease;
+}
+
+.optionsContainerOpen {
+  padding-top: 10px; 
+}
+
+.options {
+  padding: 10px;
+}
+
+.options__link {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+}
+
+.imageContainer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  margin: 0; 
+  padding: 0;
+  display: block;
 }

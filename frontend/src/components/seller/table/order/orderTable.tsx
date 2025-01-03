@@ -37,6 +37,8 @@ export default function OrderTable(props: IProps) {
           },
         }
       );
+      console.log("data", data);
+      
       if (data.status === true) {
         setOrders(data.orders);
         setTotalOrders(data.totalOrders);

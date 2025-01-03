@@ -40,7 +40,7 @@ export default function AdminLayout({children}: {children: React.ReactNode}) {
     if (adminString) {
       setAdmin(JSON.parse(adminString));
     }
-  }, []);
+  }, []);0
   const token = getToken();
   const router = useRouter();
   const [openPopupNoti, setOpenPopupNoti] = useState(false);
@@ -54,7 +54,7 @@ export default function AdminLayout({children}: {children: React.ReactNode}) {
     removeStogare("admin");
     router.replace("/");
   };
-
+  
   const [requests, setRequests] = useState<any>([]);
   useEffect(() => {
     const getRequests = async () => {
@@ -108,7 +108,7 @@ export default function AdminLayout({children}: {children: React.ReactNode}) {
   useEffect(() => {
     setIsLoading(false);
   }, [pathname]);
-
+  
   return (
     <div>
       {isLoading && (
@@ -220,11 +220,8 @@ export default function AdminLayout({children}: {children: React.ReactNode}) {
                               >
                                 <div className={styles.item_noti}>
                                   <Image
-                                    src={
-                                      request.userId.avatar
-                                        ? request.userId.avatar
-                                        : "/images/avatar_default.jpg"
-                                    }
+                                    //src={profile.avatar ? profile.avatar : "/images/avatar.jpg"}
+                                    src="/images/admin_avatar.png"
                                     alt="avatar"
                                     className={styles.image_noti}
                                   />
@@ -251,7 +248,7 @@ export default function AdminLayout({children}: {children: React.ReactNode}) {
                 </div>
                 <div className={styles.info_container}>
                   <Image
-                    src="/images/avatar.jpg"
+                    src="/images/admin_avatar.png"
                     alt=""
                     className={styles.avatar}
                   />
