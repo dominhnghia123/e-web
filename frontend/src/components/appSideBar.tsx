@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 interface IProps {
   setIsLoading?: (value: boolean) => void;
+  onCategorySelect?: (category: string) => void; // Callback to pass selected category
 }
 
 interface IBrand {
@@ -44,6 +45,12 @@ export default function AppSideBar(props: IProps) {
     setIsCategoryOpen((prevState) => !prevState);
   };
 
+  // Handle category selection and pass it to the parent component
+  const handleCategorySelect = (category: string) => {
+    props.onCategorySelect?.(category);
+    setIsCategoryOpen(false); // Optionally close the category dropdown after selecting
+  };
+
   return (
     <div className={styles.sideBar}>
       <div className={styles.sideBar__container}>
@@ -75,7 +82,10 @@ export default function AppSideBar(props: IProps) {
                       ? styles.options__link_focus
                       : ""
                   }`}
-                  onClick={() => props.setIsLoading?.(true)}
+                  onClick={() => {
+                    props.setIsLoading?.(true);
+                    handleCategorySelect(""); // Select 'All' category when on main page
+                  }}
                 >
                   Tất cả
                 </a>
@@ -90,7 +100,10 @@ export default function AppSideBar(props: IProps) {
                           ? styles.options__link_focus
                           : ""
                       }`}
-                      onClick={() => props.setIsLoading?.(true)}
+                      onClick={() => {
+                        props.setIsLoading?.(true);
+                        handleCategorySelect(brand.name); // Pass the selected brand name
+                      }}
                     >
                       {brand.name}
                     </a>
